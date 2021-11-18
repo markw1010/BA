@@ -23,8 +23,8 @@ class Amihud:
     np.volumeUSDFlt = []
 
     """
-    the method iterates through the data of a cvs file which is formatted by a DictReader and adds all the values into an 
-    Array called 'data', then it prints the data formatted on the console.
+    the method iterates through the data of a cvs file which is formatted by a DictReader and adds all the values into 
+    an Array called 'data', then it prints the data formatted on the console.
 
     Requires:   cvs files have to be formatted with DictReader
                 the values in the cvs file have to be separated by a semicolon
@@ -41,10 +41,10 @@ class Amihud:
         print(tabulate(Amihud.data))
 
     """
-    this method standardise the unix time stamp. In case that the unix code in the cvs file has parts of the data in second 
-    format and other parts in millisecond format, this method will standardise the timestamp. Therefore it checks, if the 
-    amount of characters of the time stamp is above or under 10. If it is above 10, the code is in milliseconds, otherwise 
-    it will be in seconds
+    this method standardise the unix time stamp. In case that the unix code in the cvs file has parts of the data in 
+    second format and other parts in millisecond format, this method will standardise the timestamp. Therefore it 
+    checks, if the amount of characters of the time stamp is above or under 10. If it is above 10, the code is in 
+    milliseconds, otherwise it will be in seconds
 
     Requires:   the name of the column with the unix time stamp in the cvs file has to be called 'unix'
                 the unix data has to be in seconds or in milliseconds
@@ -108,7 +108,8 @@ class Amihud:
     """
     This method returns an array with the volume data of BTC traded in different currencies in a specific time period
 
-    Requires:   the column with the data for the volume has to be called 'Volume[currency short e.g. USD]'  in the cvs file
+    Requires:   the column with the data for the volume has to be called 'Volume[currency short e.g. USD]'  in the cvs 
+                file
                 The cvs file has to be formatted so that it can be readed
                 The delimiter between the values in the cvs has to be a semicolon
                 Depending on the data set a valid currency has to be given by the argument. 
@@ -154,9 +155,9 @@ class Amihud:
 
     """
     this method prints the values for the open and close data as well as the Volume (in USD). it also prints the counter
-    values which represent close value divided by the open value -1 for value i. expression will divide value i in counter
-    by value i in the dollar volume. sum represents al the summed up values of expression and amihud is the value of sum 
-    divided by the amount of values in expression.
+    values which represent close value divided by the open value -1 for value i. expression will divide value i in 
+    counter by value i in the dollar volume. sum represents al the summed up values of expression and amihud is the 
+    value of sum divided by the amount of values in expression.
 
     ensures:    the values for the open, close, volume USD, counter, expression, sum and the amihud estimator will be 
                 printed on the console
@@ -184,9 +185,9 @@ class Amihud:
         print('----------------')
 
     """
-    this method calculates the value for the amihud estimator and returns it. Therefore it refers to the calculation of the
-    counter part of the estimator as well as the sum value. The value of the amihud 
-    estimator is the sum divided by the number of data for open, close an volume.
+    this method calculates the value for the amihud estimator and returns it. Therefore it refers to the calculation of 
+    the counter part of the estimator as well as the sum value. The value of the amihud estimator is the sum divided by 
+    the number of data for open, close an volume.
 
     requires:   expression should at least contain one element
 
@@ -217,11 +218,11 @@ class Amihud:
 
     """
     This method returns an array of the values for the counter part of the amihud estimator which is the quotient of the 
-    closing price in subinterval i of interval t and opening price in subinterval i of interval t in a specific time period 
-    subtracted by one and divided by the dollar volume (or the volume in any other currency). This term is called 
-    'expression' After all the values are calculated, the data which is nan will be replaced by 0. nan values occur if there 
-    is no valid data for the volume so it is represented as 0 in the cvs document and the counter part divided by 0 is not 
-    defined).
+    closing price in subinterval i of interval t and opening price in subinterval i of interval t in a specific time 
+    period subtracted by one and divided by the dollar volume (or the volume in any other currency). This term is called 
+    'expression' After all the values are calculated, the data which is nan will be replaced by 0. nan values occur if 
+    there is no valid data for the volume so it is represented as 0 in the cvs document and the counter part divided by 
+    0 is not defined).
 
     requires:   np.openFlt shouldn't contain a 0 item
                 np.closeFLt and np.openFlt and np.volumeUSDFlt should contain the same amount of items
@@ -240,8 +241,8 @@ class Amihud:
         return expression
 
     """
-    This method takes the open price, close prise and volume USD amount of the arrays and copies them into arrays which are 
-    saving the values as floater
+    This method takes the open price, close prise and volume USD amount of the arrays and copies them into arrays which 
+    are saving the values as floater
 
     requires:   all the values in openStr, closeStr and volumeUSDStr should contain only floater values 
 
@@ -258,13 +259,14 @@ class Amihud:
             np.volumeUSDFlt.append(float(value))
 
     """
-    This method extract the open prices, close prices and USD volume of a cvs file with daily, hourly or minutely data and 
-    safes them as Strings an separated arrays. 
+    This method extract the open prices, close prices and USD volume of a cvs file with daily, hourly or minutely data 
+    and safes them as Strings an separated arrays. 
 
     requires:   The cvs file has to be formatted so that it can be readed
                 The columns in the cvs file have to be called 'open', 'close' and 'VolumeUSD'
 
-    ensures:    three arrays will be filled with the string values of the open price, close price and VolumeUSD respectively 
+    ensures:    three arrays will be filled with the string values of the open price, close price and VolumeUSD 
+                respectively 
     """
 
     # TODO make it work for all types of currencies not only USD!
