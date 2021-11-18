@@ -64,7 +64,7 @@ amihud = Amihud()
 #amihud.getClose(BTCUSD_csv)
 #amihud.getClose(BTCUSD_csv)
 #amihud.getVolume(BTCUSD_csv, 'USD')
-#amihud.amihud(BTCUSD_csv)
+amihud.amihud(BTCUSD_csv)
 
 
 
