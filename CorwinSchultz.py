@@ -91,27 +91,62 @@ class CorwinSchultz:
         return beta
 
 
-    def getGamma(selfself):
+    """
+    this method takes an array and makes two arrays of it while in the array called arri1 the first element is removed 
+    and on the arrModified array the last element is removed. Then both arrays are compared element wise and the the 
+    bigger item will be put into the max array
+    
+    Requires:   The input Array has to contain numbers only  
+                The input Array has to have at least 2 Items 
+                
+    Ensures:    max contains at least two elements 
+    
+    Returns:    max - Array which contains the maximum of the shifted compared input array
+    """
+    def getMaxPrice(self, arr):
 
-        hi = np.highFlt
-        hi1 = np.delete(hi,0)
-        print('hi')
-        print(hi)
-        print('len(hi)')
-        print(len(hi))
-        print('----------------')
-        print('hi1')
-        print(hi1)
-        print('len(hi1)')
-        print(len(hi1))
+        arrModified = np.delete(arr, -1)   # -1 is the index for the last item in an array
+        arri1 = np.delete(arr, 0)
+
+        max = np.maximum(arrModified, arri1)
+
+        return max
 
 
+    # TODO Error handling if div by 0!
+    def getGamma(self):
+
+        hii1 = self.getMaxPrice(np.highFlt)
+
+        lii1 = self.getMaxPrice(np.lowFlt)
+
+        gamma = self.calcGamma(hii1, lii1)
+
+        return gamma
+
+
+    """
+    This method takes two arrays hii1 and lii1 and divide the values element wise. After the natural logarithm of each 
+    item will be calculated and be set to the power of two. We call the array that includes all the results gamma
+    
+    Requires:   Both input arrays should have the same amount of items
+                All items in teh hii1 and lii1 array should only contain numbers > 0
+                
+    Ensures:    gamma only contains numbers > 0
+    
+    Returns:    gamma - Array which contains all the values after the calculations described above
+    """
+    def calcGamma(self, hii1, lii1):
+        highDivLow = [high / low for high, low in zip(hii1, lii1)]
+        ln = numpy.log(highDivLow)
+        gamma = numpy.power(ln, 2)
+        return gamma
 
     def highDivLow(self):
         np.seterr(invalid='ignore')  # This tells NumPy to hide any warning with some “invalid” message in it
         highDivLow = np.divide(np.highFlt, np.lowFlt, out=np.zeros_like(np.highFlt), where=np.lowFlt != 0)
         highDivLow = highDivLow[
-            ~numpy.isnan(highDivLow)]  # to remove all nan values ( caused by missing USD volume values)
+            ~numpy.isnan(highDivLow)]  # to remove all nan values (caused by missing low prices)
         return highDivLow
 
     """
@@ -180,12 +215,13 @@ class CorwinSchultz:
     """
     This method returns an array with the close prices of BTC in a specific time period
 
-    Requires:   the column with the data for the close prices has to be called 'close' in the cvs file                    The cvs file has to be formatted so that it can be readed
+    Requires:   The cvs file has to be formatted so that it can be read
+                the column with the data for the close prices has to be called 'close' in the cvs file                    
                 The delimiter between the values in the cvs has to be a semicolon
 
     Ensures:    An Array will be returned with all the close data represented as Strings
         
-    Returns: 
+    Returns:    
     """
     def getLowCS(self, fileReader):
         low = []
