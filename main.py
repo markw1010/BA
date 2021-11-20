@@ -1,6 +1,9 @@
 import csv
 
+from tabulate import tabulate
+
 from Amihud import Amihud
+from CorwinSchultz import CorwinSchultz
 
 """
 This program will take a cvs file which contains daily, hourly or minutely high and low, open and close as well as other 
@@ -15,56 +18,42 @@ Corwin, S., Schultz, P., 2012. A simple way to estimate bid-ask spreads from dai
 Finance, Volume 67, Issue 2. 719-760
 """
 
+data = []
+
 file = open('Bitfinex_BTCUSD_d_1.csv', newline='')
 # numpy_array = np.loadtxt(file, delimiter=';')
 
 BTCUSD_csv = csv.DictReader(file, delimiter=';')
 
 
-def calculateCS():
-
-    #getAlphsCS()
-
-    getBetaCS()
-
-    #getGammaCS()
-
-
-def getBetaCS():
-
-    getHighCS()
-
-    #getLowCS()
-
-
 """
-This method returns an array with the close prices of BTC in a specific time period
+the method iterates through the data of a cvs file which is formatted by a DictReader and adds all the values into 
+an Array called 'data', then it prints the data formatted on the console.
 
-Requires:   the column with the data for the close prices has to be called 'close' in the cvs file
-            The cvs file has to be formatted so that it can be readed
-            The delimiter between the values in the cvs has to be a semicolon
+Requires:   cvs files have to be formatted with DictReader
+            the values in the cvs file have to be separated by a semicolon
 
-Ensures:    An Array will be returned with all the close data represented as Strings
+Ensures:    After execution of the method the console will show all data of the cvs file in a formatted way
+            all the data will be saved in an array called 'data' as Strings
 """
-def getHighCS(fileReader):
-
-    high = []
+def filterCvs(fileReader):
 
     for item in fileReader:
-        high.append(item['high'])
+        data.append(item)
 
-    # print(*values, sep='\n')
-    print(high)
-
-    return high
+    print(tabulate(data))
 
 
 amihud = Amihud()
-#amihud.filterCvs(BTCUSD_csv)
+cs = CorwinSchultz()
+
+#filterCvs(BTCUSD_csv)
 #amihud.getClose(BTCUSD_csv)
 #amihud.getClose(BTCUSD_csv)
 #amihud.getVolume(BTCUSD_csv, 'USD')
-amihud.amihud(BTCUSD_csv)
-
+#amihud.amihud(BTCUSD_csv)
+cs.corwinSchultz(BTCUSD_csv)
+#cs.getLowCS(BTCUSD_csv)
+#cs.getGamma()
 
 
