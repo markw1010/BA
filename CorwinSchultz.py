@@ -10,6 +10,8 @@ or minutely datasets respectively.
 """
 class CorwinSchultz:
 
+    denominatorAlpha = 3 - 2 * 2 ** 0.5
+
     highStr = []
     lowStr = []
 
@@ -34,14 +36,13 @@ class CorwinSchultz:
 
         self.extractFlt()
 
-        #self.getBeta()
+        CSii1 = self.calculateCS()
+        sum = np.sum(CSii1)
+        amount = len(CSii1)
+        CS = sum/amount
 
-        self.getGamma()
+        print(CS)
 
-        #print(np.highFlt)
-        #print(self.highDivLow())
-
-        #self.printCS()
 
 
     """
@@ -53,12 +54,53 @@ class CorwinSchultz:
 
     Ensures:    the value for the amihud estimator will be returned
     """
+    # TODO def programming: can e to the power of x can equal -1?
     def calculateCS(self):
-        # self.getAlphsCS()
 
-        self.getBeta()
+        alpha = self.getAlpha()
+        expAlpha = np.exp(alpha)
+        counterA = np.subtract(expAlpha, 1)
+        counter = np.multiply(counterA, 2)
+        denominator = np.add(expAlpha, 1)
 
-        # self.getGammaCS()
+        CSii1 = [counter / denominator for counter, denominator in zip(counter, denominator)]
+
+        return CSii1
+
+
+    def getAlpha(self):
+
+        firstTerm = self.alphaFirstTerm()
+        secondTerm = self.alphaSecondTerm()
+
+        alpha = [frstTerm - secTerm for frstTerm, secTerm in zip(firstTerm, secondTerm)]
+
+        return alpha
+
+
+    def alphaSecondTerm(self):
+
+        gamma = self.getGamma()
+
+        secondTermNoRoot = np.divide(gamma, self.denominatorAlpha)
+        secondTerm = np.power(secondTermNoRoot, 0.5)
+
+        return secondTerm
+
+
+    def alphaFirstTerm(self):
+
+        twoTimesBeta = np.multiply(self.getBeta(), 2)
+        beta = self.getBeta()
+
+        rootTtBeta = np.power(twoTimesBeta, 0.5)
+        rootBeta = np.power(beta, 0.5)
+
+        counterFirstTerm = [rootTtBeta - rootBeta for rootTtBeta, rootBeta in zip(rootTtBeta, rootBeta)]
+        firstTerm = np.divide(counterFirstTerm, self.denominatorAlpha)
+
+        return firstTerm
+
 
     """
     This method returns an array of the values for the counter part of the amihud estimator which is the quotient of the 
