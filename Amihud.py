@@ -180,9 +180,9 @@ class Amihud:
 
     Requires:   expression should at least contain one element
 
-    Ensures:    the value for the amihud estimator will be returned
+    Ensures:    amihud is a single floater
     
-    Returns: 
+    Returns:    amihud - Floater which contains amihud value
     """
     def calculateAmihud(self):
         expression = self.getAmihudExpression()
@@ -197,9 +197,9 @@ class Amihud:
 
     Requires:   expression should at least contain one element otherwise 0 will be returned
 
-    Ensures:    all the summed up values in the expression array will be returned
+    Ensures:    sum is a single floater
     
-    Returns:
+    Returns:    sum - Array of all summed up values in the expression array
     """
     def getAmihudSum(self, expression):
         sum = 0
@@ -218,11 +218,10 @@ class Amihud:
     Requires:   np.openFlt shouldn't contain a 0 item
                 np.closeFLt and np.openFlt and np.volumeUSDFlt should contain the same amount of items
 
-    Ensures:    an array will be returned containing the expression values
+    Ensures:    expression only contains numerical elements
     
-    Returns: 
+    Returns:    expression - Array which contains the expression values
     """
-
     # TODO Exception handling if item in open is 0!
     def getAmihudExpression(self):
         np.seterr(invalid='ignore')  # This tells NumPy to hide any warning with some “invalid” message in it
