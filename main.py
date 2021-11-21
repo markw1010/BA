@@ -5,6 +5,7 @@ from tabulate import tabulate
 from Amihud import Amihud
 from Comparison import Comparison
 from CorwinSchultz import CorwinSchultz
+from Filter import Filter
 
 """
 This program will take a cvs file which contains daily, hourly or minutely high and low, open and close as well as other 
@@ -21,36 +22,18 @@ Finance, Volume 67, Issue 2. 719-760
 Author: Mark Wagner
 """
 
-data = []
-
 # Prototype dataset
 file = open('Bitfinex_BTCUSD_d_1.csv', newline='')
 BTCUSD_csv = csv.DictReader(file, delimiter=';')
 
 
-"""
-the method iterates through the data of a cvs file which is formatted by a DictReader and adds all the values into 
-an Array called 'data', then it prints the data formatted on the console.
-
-Requires:   cvs files have to be formatted with DictReader
-            the values in the cvs file have to be separated by a semicolon
-
-Ensures:    After execution of the method the console will show all data of the cvs file in a formatted way
-            all the data will be saved in an array called 'data' as Strings
-"""
-def filterCvs(fileReader):
-
-    for item in fileReader:
-        data.append(item)
-
-    print(tabulate(data))
-
 
 amihud = Amihud()
 cs = CorwinSchultz()
 comp = Comparison()
+filter = Filter()
 
-#filterCvs(BTCUSD_csv)                      # Uncomment this line of code to show the whole dataset on the console
+filter.filterCvs(BTCUSD_csv)                      # Uncomment this line of code to show the whole dataset on the console
 
 #amihud.amihudDetailed(BTCUSD_csv)          # Uncomment this line of code to show the amihud calculation on the console
 
@@ -60,7 +43,7 @@ comp = Comparison()
 
 #cs.corwinSchultzValueOnly(BTCUSD_csv)
 
-comp.comparison(BTCUSD_csv)
+#comp.comparison(BTCUSD_csv)
 
 
 
