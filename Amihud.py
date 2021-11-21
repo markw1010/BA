@@ -7,7 +7,10 @@ from tabulate import tabulate
 
 """
 This class provides all necessary methods and variables to calculate the amihud liquidity estimator for a daily, hourly 
-or minutely datasets respectively. 
+or minutely cvs datasets respectively. 
+
+Amihud, Y., 2002. Illiquidity and stock returns: cross-section and time-series effects. Journal of Financial Markets 5. 
+31-56
 """
 class Amihud:
     numpy.set_printoptions(threshold=sys.maxsize)
@@ -31,9 +34,8 @@ class Amihud:
 
     Ensures:    The right date and time will be returned in the format: yyyy-mm-dd hh:mm:ss
     
-    Returns: 
+    Returns:    time - The right date and time in the format: yyyy-mm-dd hh:mm:ss
     """
-
     def standardiseUnix(self, item):
         unixMilliseconds = int(item.get('unix')) / 1000
         unixSeconds = int(item.get('unix'))
@@ -44,15 +46,16 @@ class Amihud:
         return time
 
     """
-    This method returns an array of the open prices of BTC in a specific time period
+    This method returns an array of the open prices of BTC in a specific time period and currency filtered out of a cvs 
+    file
 
     Requires:   the column with the data for the open prices has to be called 'open' in the cvs file
-                The cvs file has to be formatted so that it can be readed
+                The cvs file has to be formatted so that it can be read
                 The delimiter between the values in the cvs has to be a semicolon
 
     Ensures:    An Array will be returned with all the open data represented as Strings
     
-    Returns: 
+    Returns:    open - Array with all the open data represented as Strings
     """
 
     def getOpen(self, fileReader):
@@ -68,17 +71,17 @@ class Amihud:
         return open
 
     """
-    This method returns an array with the close prices of BTC in a specific time period
+    This method returns an array with the close prices of BTC in a specific time period and currency filtered out of a 
+    cvs file
 
     Requires:   the column with the data for the close prices has to be called 'close' in the cvs file
-                The cvs file has to be formatted so that it can be readed
+                The cvs file has to be formatted so that it can be read
                 The delimiter between the values in the cvs has to be a semicolon
 
     Ensures:    An Array will be returned with all the close data represented as Strings
     
-    Returns:
+    Returns:    open - Array with all the close data represented as Strings
     """
-
     def getClose(self, fileReader):
 
         close = []
@@ -93,18 +96,18 @@ class Amihud:
 
     """
     This method returns an array with the volume data of BTC traded in different currencies in a specific time period
+    and currency filtered out of a cvs file
 
     Requires:   the column with the data for the volume has to be called 'Volume[currency short e.g. USD]'  in the cvs 
                 file
-                The cvs file has to be formatted so that it can be readed
+                The cvs file has to be formatted so that it can be read
                 The delimiter between the values in the cvs has to be a semicolon
                 Depending on the data set a valid currency has to be given by the argument. 
 
     Ensures:    An Array will be returned with all the volume data represented as Strings
     
-    Returns: 
+    Returns:    volume - Array with all the volume data represented as Strings
     """
-
     def getVolume(self, fileReader, currency):
 
         volume = []
@@ -122,10 +125,10 @@ class Amihud:
     Therefore it first extract all relevant data in String format, then the data will be saved as floater so that the 
     value for the amihud estimator can be calculated. At the end, the value will be printed on the console
 
-    Requires:   The cvs file has to be formatted so that it can be readed
+    Requires:   The cvs file has to be formatted so that it can be read
                 The delimiter between the values in the cvs has to be a semicolon
 
-    Ensures:    a floater value for the amihud estimator will be returned 
+    Ensures:    a floater value for the amihud estimator will be printed on the console 
     """
     def amihud(self, fileReader):
 
@@ -231,8 +234,8 @@ class Amihud:
         return expression
 
     """
-    This method takes the open price, close prise and volume USD amount of the arrays and copies them into arrays which 
-    are saving the values as floater
+    This method copies the open price, close prise and volume USD amount of the arrays into arrays named np.openFlt, 
+    np.closeFlt and np.volumeUSDFlt as floater value
 
     Requires:   all the values in openStr, closeStr and volumeUSDStr should contain only floater values 
 
@@ -250,12 +253,12 @@ class Amihud:
 
     """
     This method extract the open prices, close prices and USD volume of a cvs file with daily, hourly or minutely data 
-    and safes them as Strings an separated arrays. 
+    and safes them as strings in separated arrays called openStr, closeStr and volumeUSDStr. 
 
-    Requires:   The cvs file has to be formatted so that it can be readed
+    Requires:   The cvs file has to be formatted so that it can be read
                 The columns in the cvs file have to be called 'open', 'close' and 'VolumeUSD'
 
-    Ensures:    three arrays will be filled with the string values of the open price, close price and VolumeUSD 
+    Ensures:    three arrays will be filled with the string representatives of the open price, close price and VolumeUSD 
                 respectively 
     """
 
