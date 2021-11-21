@@ -65,7 +65,7 @@ class Amihud:
         for item in fileReader:
             open.append(item['open'])
 
-        # print(*values, sep='\n')
+        # print(*open, sep='\n')
         print(open)
 
         return open
@@ -89,7 +89,7 @@ class Amihud:
         for item in fileReader:
             close.append(item['close'])
 
-        # print(*values, sep='\n')
+        # print(*close, sep='\n')
         print(close)
 
         return close
@@ -115,7 +115,7 @@ class Amihud:
         for item in fileReader:
             volume.append(item['Volume' + currency])
 
-        # print(*values, sep='\n')
+        # print(*volume, sep='\n')
         print(volume)
 
         return volume
@@ -128,9 +128,10 @@ class Amihud:
     Requires:   The cvs file has to be formatted so that it can be read
                 The delimiter between the values in the cvs has to be a semicolon
 
-    Ensures:    a floater value for the amihud estimator will be printed on the console 
+    Ensures:    a floater value for the amihud estimator as well as other pre calculation values will be printed on the 
+                console 
     """
-    def amihud(self, fileReader):
+    def amihudDetailed(self, fileReader):
 
         self.extractStr(fileReader)
 
@@ -143,6 +144,40 @@ class Amihud:
         self.printAmihud(amihud, expression)
 
     """
+    This method prints only the value for the amihud estimator on the console.
+    
+    Requires:   The cvs file has to be formatted so that it can be read
+                The delimiter between the values in the cvs has to be a semicolon
+
+    Ensures:    a floater value for the amihud estimator will be printed on the console 
+    """
+
+    def amihudValueOnly(self, fileReader):
+
+        self.extractStr(fileReader)
+
+        self.extractFlt()
+
+        amihud = self.calculateAmihud()
+
+        print('Amihud:')
+        print(amihud)
+
+    """
+    ...
+    
+    Requires:      
+    
+    Ensures:    
+    """
+    def amihudComparison(self):
+
+        amihud = self.calculateAmihud()
+
+        print('Amihud:')
+        print(amihud)
+
+    """
     this method prints the values for the open and close data as well as the Volume (in USD). it also prints the counter
     values which represent close value divided by the open value -1 for value i. expression will divide value i in 
     counter by value i in the dollar volume. sum represents al the summed up values of expression and amihud is the 
@@ -151,7 +186,6 @@ class Amihud:
     Ensures:    the values for the open, close, volume USD, counter, expression, sum and the amihud estimator will be 
                 printed on the console
     """
-
     def printAmihud(self, amihud, expression):
         print('open')
         print(np.openFlt)
@@ -168,8 +202,13 @@ class Amihud:
         print('expression')
         print(self.getAmihudExpression())
         print('----------------')
+        print('len(expression)')
+        print(len(self.getAmihudExpression()))
+        print('----------------')
+        print('self.getAmihudSum(expression)')
         print(self.getAmihudSum(expression))
         print('----------------')
+        print('amihud')
         print(amihud)
         print('----------------')
 
@@ -255,20 +294,19 @@ class Amihud:
     and safes them as strings in separated arrays called openStr, closeStr and volumeUSDStr. 
 
     Requires:   The cvs file has to be formatted so that it can be read
-                The columns in the cvs file have to be called 'open', 'close' and 'VolumeUSD'
+                The columns in the cvs file have to be called 'open', 'close' and 'Volume USD'
 
-    Ensures:    three arrays will be filled with the string representatives of the open price, close price and VolumeUSD 
-                respectively 
+    Ensures:    three arrays will be filled with the string representatives of the open price, close price and Volume 
+                USD respectively 
     """
-
     # TODO make it work for all types of currencies not only USD!
     def extractStr(self, fileReader):
         for item in fileReader:
             self.openStr.append(item['open'])
             self.closeStr.append(item['close'])
-            self.volumeUSDStr.append(item['VolumeUSD'])
+            self.volumeUSDStr.append(item['Volume USD'])
         self.openStr.remove('open')
         self.closeStr.remove('close')
-        self.volumeUSDStr.remove('VolumeUSD')
+        self.volumeUSDStr.remove('Volume USD')
 
 

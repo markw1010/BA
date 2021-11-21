@@ -3,6 +3,7 @@ import csv
 from tabulate import tabulate
 
 from Amihud import Amihud
+from Comparison import Comparison
 from CorwinSchultz import CorwinSchultz
 
 """
@@ -16,13 +17,14 @@ Amihud, Y., 2002. Illiquidity and stock returns: cross-section and time-series e
 
 Corwin, S., Schultz, P., 2012. A simple way to estimate bid-ask spreads from daily 	high and low prices. The Journal of 
 Finance, Volume 67, Issue 2. 719-760
+
+Author: Mark Wagner
 """
 
 data = []
 
+# Prototype dataset
 file = open('Bitfinex_BTCUSD_d_1.csv', newline='')
-# numpy_array = np.loadtxt(file, delimiter=';')
-
 BTCUSD_csv = csv.DictReader(file, delimiter=';')
 
 
@@ -46,14 +48,19 @@ def filterCvs(fileReader):
 
 amihud = Amihud()
 cs = CorwinSchultz()
+comp = Comparison()
 
-#filterCvs(BTCUSD_csv)
-#amihud.getClose(BTCUSD_csv)
-#amihud.getClose(BTCUSD_csv)
-#amihud.getVolume(BTCUSD_csv, 'USD')
-#amihud.amihud(BTCUSD_csv)
-cs.corwinSchultz(BTCUSD_csv)
-#cs.getLowCS(BTCUSD_csv)
-#cs.getGamma()
+#filterCvs(BTCUSD_csv)                      # Uncomment this line of code to show the whole dataset on the console
+
+#amihud.amihudDetailed(BTCUSD_csv)          # Uncomment this line of code to show the amihud calculation on the console
+
+#cs.corwinSchultzDetailed(BTCUSD_csv)       # Uncomment this line of code to show the CS calculation on the console
+
+#amihud.amihudValueOnly(BTCUSD_csv)
+
+#cs.corwinSchultzValueOnly(BTCUSD_csv)
+
+comp.comparison(BTCUSD_csv)
+
 
 

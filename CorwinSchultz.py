@@ -1,7 +1,6 @@
 import numpy
 import numpy as np
 
-
 """
 This class provides all necessary methods and variables to calculate the Corwin and Schultz (CS) liquidity estimator for 
 a daily, hourly or minutely cvs datasets respectively.
@@ -9,8 +8,9 @@ a daily, hourly or minutely cvs datasets respectively.
 Corwin, S., Schultz, P., 2012. A simple way to estimate bid-ask spreads from daily 	high and low prices. The Journal of 
 Finance, Volume 67, Issue 2. 719-760
 """
-class CorwinSchultz:
 
+
+class CorwinSchultz:
     denominatorAlpha = 3 - 2 * 2 ** 0.5
 
     highStr = []
@@ -33,22 +33,97 @@ class CorwinSchultz:
 
     Ensures:    a floater value for the CS estimator will be printed on the console 
     """
-    def corwinSchultz(self, fileReader):
+
+    def corwinSchultzDetailed(self, fileReader):
 
         self.extractStr(fileReader)
 
         self.extractFlt()
 
-        CSii1 = self.calculateCS()
-        sum = np.sum(CSii1)
-        amount = len(CSii1)
-        CS = sum/amount
+        self.printCS()
+
+    """
+    ...
+    
+    Ensures:    
+    
+    Requires:   
+    """
+    def corwinSchultzValueOnly(self, fileReader):
+
+        self.extractStr(fileReader)
+
+        self.extractFlt()
+
+        CS = self.calculateCSValue()
 
         print('CS:')
         print(CS)
 
     """
-    this method calculates returns the CSii1 Array which contains the CS estimator for two adjacent intervals i and 
+    ...
+
+    Ensures:    
+
+    Requires:   
+    """
+    def corwinSchultzComparison(self):
+
+        CS = self.calculateCSValue()
+
+        print('CS:')
+        print(CS)
+
+    """
+        this method prints the values for the CS alpha, CS beta, CS gamma, CS_i,i+1, CS and other. 
+
+        Ensures:    the values for the CS alpha, CS beta, CS gamma, CS_i,i+1, sum(CS_i,i+1), len(CS_i,i+1) and CS will 
+                    be printed on the console
+        """
+
+    def printCS(self):
+
+        CS = self.calculateCSValue()
+
+        print('Alpha:')
+        print(self.getAlpha())
+        print('-----------')
+        print('Beta:')
+        print(self.getBeta())
+        print('-----------')
+        print('Gamma:')
+        print(self.getGamma())
+        print('-----------')
+        print('CS_i,i+1:')
+        print(self.calculateCSArray())
+        print('-----------')
+        print('sum(CS_i,i+1):')
+        print(np.sum(self.calculateCSArray()))
+        print('-----------')
+        print('len(CS_i,i+1):')
+        print(len(self.calculateCSArray()))
+        print('-----------')
+        print('CS:')
+        print(CS)
+
+    """
+    This method calculates the value for the CS estimator.
+    
+    Requires:   
+    
+    Ensures:    
+    
+    Returns:    
+    """
+    def calculateCSValue(self):
+        CSii1 = self.calculateCSArray()
+        sum = np.sum(CSii1)
+        amount = len(CSii1)
+        CS = sum / amount
+        return CS
+
+    """
+    this method calculates the CS_i,i+1 Array which contains the CS estimator for two adjacent intervals i and 
     i+1.
 
     Requires:   len(alpha) > 0
@@ -60,8 +135,9 @@ class CorwinSchultz:
     Returns:    CSii1 - Array which contains the CS estimator for two adjacent intervals i and i+1
                 
     """
+
     # TODO def programming: can e to the power of x can equal -1?
-    def calculateCS(self):
+    def calculateCSArray(self):
 
         alpha = self.getAlpha()
         expAlpha = np.exp(alpha)
@@ -83,6 +159,7 @@ class CorwinSchultz:
     
     Returns:    alpha - Array
     """
+
     def getAlpha(self):
 
         firstTerm = self.alphaFirstTerm()
@@ -105,6 +182,7 @@ class CorwinSchultz:
     
     Returns:    secondTerm - Array with all values for the second term of the CS alpha 
     """
+
     def alphaSecondTerm(self):
 
         gamma = self.getGamma()
@@ -125,6 +203,7 @@ class CorwinSchultz:
     
     Returns:    firstTerm - Array with all values for the first term of the CS alpha 
     """
+
     def alphaFirstTerm(self):
 
         twoTimesBeta = np.multiply(self.getBeta(), 2)
@@ -149,13 +228,14 @@ class CorwinSchultz:
     
     Returns:    beta - Array which contains all beta items
     """
+
     # TODO Exception handling if item in open is 0!
     def getBeta(self):
 
         highDivLow = self.highDivLow()
         ln = numpy.log(highDivLow)
         firstTerm = numpy.power(ln, 2)
-        secondTerm = np.delete(np.copy(firstTerm),0)
+        secondTerm = np.delete(np.copy(firstTerm), 0)
 
         beta = [x + y for x, y in zip(firstTerm, secondTerm)]
 
@@ -173,9 +253,10 @@ class CorwinSchultz:
     
     Returns:    max - Array which contains the maximum of the shifted compared input array
     """
+
     def getMaxPrice(self, arr):
 
-        arrModified = np.delete(arr, -1)   # -1 is the index for the last item in an array
+        arrModified = np.delete(arr, -1)  # -1 is the index for the last item in an array
         arri1 = np.delete(arr, 0)
 
         max = np.maximum(arrModified, arri1)
@@ -185,6 +266,7 @@ class CorwinSchultz:
     """
     This method calculates and returns the CS gamma. 
     """
+
     # TODO Error handling if div by 0!
     def getGamma(self):
 
@@ -207,6 +289,7 @@ class CorwinSchultz:
     
     Returns:    gamma - Array which contains all the values after the calculations described above
     """
+
     def calcGamma(self, hii1, lii1):
         highDivLow = [high / low for high, low in zip(hii1, lii1)]
         ln = numpy.log(highDivLow)
@@ -224,6 +307,7 @@ class CorwinSchultz:
     
     Returns:    highDivLow - Array which contains all items of np.highFlt divided by np.lowFlt
     """
+
     def highDivLow(self):
         np.seterr(invalid='ignore')  # This tells NumPy to hide any warning with some “invalid” message in it
         highDivLow = np.divide(np.highFlt, np.lowFlt, out=np.zeros_like(np.highFlt), where=np.lowFlt != 0)
@@ -243,6 +327,7 @@ class CorwinSchultz:
     
     Returns:    high - Array will be returned with all the high data represented as strings
     """
+
     def getHighCS(self, fileReader):
         high = []
 
@@ -266,6 +351,7 @@ class CorwinSchultz:
     
     Returns:    low - Array will be returned with all the low data represented as strings
     """
+
     def getLowCS(self, fileReader):
         low = []
 
@@ -291,7 +377,6 @@ class CorwinSchultz:
             np.highFlt.append(float(value))
         for value in self.lowStr:
             np.lowFlt.append(float(value))
-
 
     """
     This method extract the high prices and low prices of a cvs file with daily, hourly or minutely data and safes them 
