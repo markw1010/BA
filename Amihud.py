@@ -12,6 +12,8 @@ or minutely cvs datasets respectively.
 Amihud, Y., 2002. Illiquidity and stock returns: cross-section and time-series effects. Journal of Financial Markets 5. 
 31-56
 """
+
+
 class Amihud:
     numpy.set_printoptions(threshold=sys.maxsize)
 
@@ -36,10 +38,11 @@ class Amihud:
     
     Returns:    time - The right date and time in the format: yyyy-mm-dd hh:mm:ss
     """
+
     def standardiseUnix(self, item):
         unixMilliseconds = int(item.get('unix')) / 1000
         unixSeconds = int(item.get('unix'))
-        if (len(item['unix']) <= 10):
+        if len(item['unix']) <= 10:
             time = datetime.utcfromtimestamp(unixSeconds).strftime('%Y-%m-%d %H:%M:%S')
         else:
             time = datetime.utcfromtimestamp(unixMilliseconds).strftime('%Y-%m-%d %H:%M:%S')
@@ -65,7 +68,7 @@ class Amihud:
         for item in fileReader:
             open.append(item['open'])
 
-        # print(*values, sep='\n')
+        # print(*open, sep='\n')
         print(open)
 
         return open
@@ -89,7 +92,7 @@ class Amihud:
         for item in fileReader:
             close.append(item['close'])
 
-        # print(*values, sep='\n')
+        # print(*close, sep='\n')
         print(close)
 
         return close
@@ -115,7 +118,7 @@ class Amihud:
         for item in fileReader:
             volume.append(item['Volume' + currency])
 
-        # print(*values, sep='\n')
+        # print(*volume, sep='\n')
         print(volume)
 
         return volume
@@ -128,9 +131,10 @@ class Amihud:
     Requires:   The cvs file has to be formatted so that it can be read
                 The delimiter between the values in the cvs has to be a semicolon
 
-    Ensures:    a floater value for the amihud estimator will be printed on the console 
+    Ensures:    a floater value for the amihud estimator as well as other pre calculation values will be printed on the 
+                console 
     """
-    def amihud(self, fileReader):
+    def amihudDetailed(self, fileReader):
 
         self.extractStr(fileReader)
 
@@ -141,6 +145,37 @@ class Amihud:
         expression = self.getAmihudExpression()
 
         self.printAmihud(amihud, expression)
+
+    """
+    This method prints only the value for the amihud estimator on the console.
+    
+    Requires:   The cvs file has to be formatted so that it can be read
+                The delimiter between the values in the cvs has to be a semicolon
+
+    Ensures:    a floater value for the amihud estimator will be printed on the console 
+    """
+
+    def amihudValueOnly(self, fileReader):
+
+        self.extractStr(fileReader)
+
+        self.extractFlt()
+
+        amihud = self.calculateAmihud()
+
+        print('Amihud:')
+        print(amihud)
+
+    """
+    This method is only implemented for the use of comparison to the CS estimator in the comparison class.
+    """
+
+    def amihudComparison(self):
+
+        amihud = self.calculateAmihud()
+
+        print('Amihud:')
+        print(amihud)
 
     """
     this method prints the values for the open and close data as well as the Volume (in USD). it also prints the counter
@@ -168,8 +203,13 @@ class Amihud:
         print('expression')
         print(self.getAmihudExpression())
         print('----------------')
+        print('len(expression)')
+        print(len(self.getAmihudExpression()))
+        print('----------------')
+        print('self.getAmihudSum(expression)')
         print(self.getAmihudSum(expression))
         print('----------------')
+        print('amihud')
         print(amihud)
         print('----------------')
 
@@ -184,6 +224,7 @@ class Amihud:
     
     Returns:    amihud - Floater which contains amihud value
     """
+
     def calculateAmihud(self):
         expression = self.getAmihudExpression()
         sum = self.getAmihudSum(expression)
@@ -201,6 +242,7 @@ class Amihud:
     
     Returns:    sum - Array of all summed up values in the expression array
     """
+
     def getAmihudSum(self, expression):
         sum = 0
         for i in range(0, len(expression)):
@@ -222,6 +264,7 @@ class Amihud:
     
     Returns:    expression - Array which contains the expression values
     """
+
     # TODO Exception handling if item in open is 0!
     def getAmihudExpression(self):
         np.seterr(invalid='ignore')  # This tells NumPy to hide any warning with some “invalid” message in it
@@ -255,10 +298,10 @@ class Amihud:
     and safes them as strings in separated arrays called openStr, closeStr and volumeUSDStr. 
 
     Requires:   The cvs file has to be formatted so that it can be read
-                The columns in the cvs file have to be called 'open', 'close' and 'VolumeUSD'
+                The columns in the cvs file have to be called 'open', 'close' and 'Volume USD'
 
-    Ensures:    three arrays will be filled with the string representatives of the open price, close price and VolumeUSD 
-                respectively 
+    Ensures:    three arrays will be filled with the string representatives of the open price, close price and Volume 
+                USD respectively 
     """
 
     # TODO make it work for all types of currencies not only USD!
@@ -266,9 +309,9 @@ class Amihud:
         for item in fileReader:
             self.openStr.append(item['open'])
             self.closeStr.append(item['close'])
-            self.volumeUSDStr.append(item['VolumeUSD'])
+            self.volumeUSDStr.append(item['Volume USD'])
         self.openStr.remove('open')
         self.closeStr.remove('close')
-        self.volumeUSDStr.remove('VolumeUSD')
+        self.volumeUSDStr.remove('Volume USD')
 
 
