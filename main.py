@@ -1,7 +1,5 @@
 import csv
 
-from tabulate import tabulate
-
 from Amihud import Amihud
 from Comparison import Comparison
 from CorwinSchultz import CorwinSchultz
@@ -26,23 +24,27 @@ Author: Mark Wagner
 file = open('Bitfinex_BTCUSD_d_1.csv', newline='')
 BTCUSD_csv = csv.DictReader(file, delimiter=';')
 
-
-
 amihud = Amihud()
 cs = CorwinSchultz()
 comp = Comparison()
 filter = Filter()
 
-filter.filterCvs(BTCUSD_csv)                      # Uncomment this line of code to show the whole dataset on the console
+# Uncomment this line of code to show the whole dataset on the console
+#filter.filterCvs(BTCUSD_csv)
 
-#amihud.amihudDetailed(BTCUSD_csv)          # Uncomment this line of code to show the amihud calculation on the console
+# Uncomment this line of code to show the detailed Amihud calculation on the console
+#amihud.amihudDetailed(BTCUSD_csv)
 
-#cs.corwinSchultzDetailed(BTCUSD_csv)       # Uncomment this line of code to show the CS calculation on the console
+# Uncomment this line of code to show the detailed CS calculation on the console
+#cs.corwinSchultzDetailed(BTCUSD_csv)
 
+# Uncomment this line of code to show the single Amihud value on the console
 #amihud.amihudValueOnly(BTCUSD_csv)
 
+# Uncomment this line of code to show the single CS value on the console
 #cs.corwinSchultzValueOnly(BTCUSD_csv)
 
+# Uncomment this line of code to show both the CS and the Amihud value
 #comp.comparison(BTCUSD_csv)
 
 

@@ -1,10 +1,12 @@
-"""
-...
-"""
 import numpy as np
 
 from Amihud import Amihud
 from CorwinSchultz import CorwinSchultz
+
+"""
+This class provides variables and methods to make it possible to print both the AH and the CS estimator at the same time
+the console for comparison.
+"""
 
 
 class Comparison:
@@ -24,12 +26,13 @@ class Comparison:
     np.volumeUSDFlt = []
 
     """
-    This method copies the high price and close price of the arrays into other arrays named np.highFlt and np.lowFlt as
-    floater value.
+    This method copies the high price, close price, open price, close price, and the USD volume of the arrays into other 
+    arrays named np.highFlt, np.lowFlt, np.openFlt, np.closeFlt and np.volumeUSDFlt as floater value.
 
-    Requires:   all the values in highStr and lowStr should contain only floater values
+    Requires:   all the values in highStr, lowStr, openStr, closeStr and volumeUSDStr should contain only floater values
 
-    Ensures:    all values in highStr and lowStr will be copied in separated arrays as floater values
+    Ensures:    all values in highStr, lowStr, openStr, closeStr and volumeUSDStr will be copied in separated arrays as 
+                floater values
     """
 
     # TODO make it work for all types of currencies not only USD!
@@ -69,6 +72,14 @@ class Comparison:
         self.closeStr.remove('close')
         self.volumeUSDStr.remove('Volume USD')
 
+    """
+    This method prints both the Amihud and the CS estimator values of a given dataset on the console.
+    
+    Requires:   The cvs file has to be formatted so that it can be read
+                The delimiter between the values in the cvs has to be a semicolon
+    
+    Ensures:    Two floater values for the AH and the CS estimator respectively will be printed on the console
+    """
 
     def comparison(self, fileReader):
 

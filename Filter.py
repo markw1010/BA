@@ -1,5 +1,10 @@
 from tabulate import tabulate
 
+"""
+This class is created to filter all the data from a given dataset in cvs format and print the data on the console with
+the help of the single method in the class
+"""
+
 
 class Filter:
 

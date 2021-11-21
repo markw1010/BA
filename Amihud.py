@@ -12,6 +12,8 @@ or minutely cvs datasets respectively.
 Amihud, Y., 2002. Illiquidity and stock returns: cross-section and time-series effects. Journal of Financial Markets 5. 
 31-56
 """
+
+
 class Amihud:
     numpy.set_printoptions(threshold=sys.maxsize)
 
@@ -36,10 +38,11 @@ class Amihud:
     
     Returns:    time - The right date and time in the format: yyyy-mm-dd hh:mm:ss
     """
+
     def standardiseUnix(self, item):
         unixMilliseconds = int(item.get('unix')) / 1000
         unixSeconds = int(item.get('unix'))
-        if (len(item['unix']) <= 10):
+        if len(item['unix']) <= 10:
             time = datetime.utcfromtimestamp(unixSeconds).strftime('%Y-%m-%d %H:%M:%S')
         else:
             time = datetime.utcfromtimestamp(unixMilliseconds).strftime('%Y-%m-%d %H:%M:%S')
@@ -164,12 +167,9 @@ class Amihud:
         print(amihud)
 
     """
-    ...
-    
-    Requires:      
-    
-    Ensures:    
+    This method is only implemented for the use of comparison to the CS estimator in the comparison class.
     """
+
     def amihudComparison(self):
 
         amihud = self.calculateAmihud()
@@ -186,6 +186,7 @@ class Amihud:
     Ensures:    the values for the open, close, volume USD, counter, expression, sum and the amihud estimator will be 
                 printed on the console
     """
+
     def printAmihud(self, amihud, expression):
         print('open')
         print(np.openFlt)
@@ -223,6 +224,7 @@ class Amihud:
     
     Returns:    amihud - Floater which contains amihud value
     """
+
     def calculateAmihud(self):
         expression = self.getAmihudExpression()
         sum = self.getAmihudSum(expression)
@@ -240,6 +242,7 @@ class Amihud:
     
     Returns:    sum - Array of all summed up values in the expression array
     """
+
     def getAmihudSum(self, expression):
         sum = 0
         for i in range(0, len(expression)):
@@ -261,6 +264,7 @@ class Amihud:
     
     Returns:    expression - Array which contains the expression values
     """
+
     # TODO Exception handling if item in open is 0!
     def getAmihudExpression(self):
         np.seterr(invalid='ignore')  # This tells NumPy to hide any warning with some “invalid” message in it
@@ -299,6 +303,7 @@ class Amihud:
     Ensures:    three arrays will be filled with the string representatives of the open price, close price and Volume 
                 USD respectively 
     """
+
     # TODO make it work for all types of currencies not only USD!
     def extractStr(self, fileReader):
         for item in fileReader:

@@ -11,6 +11,7 @@ Finance, Volume 67, Issue 2. 719-760
 
 
 class CorwinSchultz:
+
     denominatorAlpha = 3 - 2 * 2 ** 0.5
 
     highStr = []
@@ -43,11 +44,12 @@ class CorwinSchultz:
         self.printCS()
 
     """
-    ...
+    This method prints only the value for the CS estimator on the console.
     
-    Ensures:    
-    
-    Requires:   
+    Requires:   The cvs file has to be formatted so that it can be read
+                The delimiter between the values in the cvs has to be a semicolon
+
+    Ensures:    a floater value for the CS estimator will be printed on the console 
     """
     def corwinSchultzValueOnly(self, fileReader):
 
@@ -61,11 +63,7 @@ class CorwinSchultz:
         print(CS)
 
     """
-    ...
-
-    Ensures:    
-
-    Requires:   
+    This method is only implemented for the use of comparison to the CS estimator in the comparison class.
     """
     def corwinSchultzComparison(self):
 
@@ -107,14 +105,14 @@ class CorwinSchultz:
         print(CS)
 
     """
-    This method calculates the value for the CS estimator.
+    This method returns the value for the CS estimator in period t calculating the unweighted average of all CS 
+    estimators for adjacent subintervals in t.
     
-    Requires:   
+    Requires:   len(CSii1) > 0
     
-    Ensures:    
-    
-    Returns:    
+    Ensures:    CS is a numerical value 
     """
+
     def calculateCSValue(self):
         CSii1 = self.calculateCSArray()
         sum = np.sum(CSii1)
@@ -263,10 +261,6 @@ class CorwinSchultz:
 
         return max
 
-    """
-    This method calculates and returns the CS gamma. 
-    """
-
     # TODO Error handling if div by 0!
     def getGamma(self):
 
@@ -371,6 +365,7 @@ class CorwinSchultz:
 
     Ensures:    all values in highStr and lowStr will be copied in separated arrays as floater values 
     """
+
     # TODO make it work for all types of currencies not only USD!
     def extractFlt(self):
         for value in self.highStr:
@@ -387,6 +382,7 @@ class CorwinSchultz:
 
     Ensures:    two arrays will be filled with the string representatives of the high price and low price respectively 
     """
+
     # TODO make it work for all types of currencies not only USD!
     def extractStr(self, fileReader):
         for item in fileReader:
