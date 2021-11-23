@@ -11,6 +11,14 @@ GBP and JPY. The program can also be used to calculate the liquidity of other cr
 
 ###### <sup>2</sup> Cryptodatadownload *https://www.cryptodatadownload.com/data/bitfinex/* access on 11-21-2021
 
+## Getting started 
+
+To use the program, please import the project into your development environment e.g. PyCharm. After importing the project, please open the main file and follow the instructions. At the bottom of the file you will find six lines of outcommented code with an explanation of what the code does, above. To run a method, please outcomment the line of code you want to use and the calculation will be printed on the console. Please note, that you can just run one line of code at the same time! The other five lines of code have to be outcommented!
+
+To test the program, there is already a cvs file provided. Because this project is in a beta version, the included cvs file only contains low frequency 
+data instead of high frequency data. This is because it is easier to test the program with a small dataset instead of a big dataset. The provided data include daily 
+high prices, low prices, open prices, close prices as well as the USD volume and other data. The data is provided from 2015-02-09 until 2021-11-10. You can print the dataset on the console by uncomment the first method in the main file.
+
 ## Requiremnets
 Most of the requirements are fulfilled when the data is downloaded from https://www.cryptodatadownload.com/data/bitfinex/ (11-21-2021). Anyway, in case that the
 data is not provided from the recommended website make sure that the following requirements are given:
