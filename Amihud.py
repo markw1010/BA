@@ -269,6 +269,7 @@ class Amihud:
     def getAmihudExpression(self):
         np.seterr(invalid='ignore')  # This tells NumPy to hide any warning with some “invalid” message in it
         np.counter = [(close / open) - 1 for close, open in zip(np.closeFlt, np.openFlt)]
+        np.counter = np.absolute(np.counter)
         # np.counter = np.divide(np.closeFlt, np.openFlt, out=np.zeros_like(np.closeFlt), where=np.openFlt != 0)
         expression = np.divide(np.counter, np.volumeUSDFlt, out=np.zeros_like(np.counter), where=np.volumeUSDFlt != 0)
         expression = expression[

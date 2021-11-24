@@ -17,6 +17,8 @@ Amihud, Y., 2002. Illiquidity and stock returns: cross-section and time-series e
 Corwin, S., Schultz, P., 2012. A simple way to estimate bid-ask spreads from daily 	high and low prices. The Journal of 
 Finance, Volume 67, Issue 2. 719-760
 
+Please note that you should only uncomment one line of code at the the same time, otherwise the program will not work!
+
 Author: Mark Wagner
 """
 
@@ -33,7 +35,7 @@ filter = Filter()
 #filter.filterCvs(BTCUSD_csv)
 
 # Uncomment this line of code to show the detailed Amihud calculation on the console
-#amihud.amihudDetailed(BTCUSD_csv)
+amihud.amihudDetailed(BTCUSD_csv)
 
 # Uncomment this line of code to show the detailed CS calculation on the console
 #cs.corwinSchultzDetailed(BTCUSD_csv)
@@ -46,6 +48,3 @@ filter = Filter()
 
 # Uncomment this line of code to show both the CS and the Amihud value
 #comp.comparison(BTCUSD_csv)
-
-
-
