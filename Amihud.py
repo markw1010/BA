@@ -294,6 +294,7 @@ class Amihud:
         for value in self.volumeUSDStr:
             np.volumeUSDFlt.append(float(value))
 
+
     """
     This method extract the open prices, close prices and USD volume of a cvs file with daily, hourly or minutely data 
     and safes them as strings in separated arrays called openStr, closeStr and volumeUSDStr. 
