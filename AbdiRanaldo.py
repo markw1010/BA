@@ -11,23 +11,41 @@ class AbdiRanaldo:
     np.lowFlt = []
     np.closeFlt = []
 
-    hi = []
-    li = []
-    ci = []
-    pi = []
+    def abdiRanaldoDetailed(self, fileReader):
+        self.extractStr(fileReader)
+        self.extractFlt()
+        self.printAbdiRanaldo()
 
-    x = []
-    y = []
-    z = []
 
-    max = []
-    ARi = []
+    def printAbdiRanaldo(self):
+        ARt = self.getARt()
+        ARi = self.getARi()
+        print('ARi: ')
+        print(ARi)
+        print('--------------')
+        print('len(ARi): ')
+        print(len(ARi))
+        print('--------------')
+        print('np.sum(ARi): ')
+        print(np.sum(ARi))
+        print('--------------')
+        print('ARt: ')
+        print(ARt)
+        print('--------------')
 
-    def abdiRanaldo(self, fileReader):
+    def abdiRanaldoValueOnly(self, fileReader):
         self.extractStr(fileReader)
         self.extractFlt()
         ARt = self.getARt()
-        return ARt
+
+        print('ARt: ')
+        print(ARt)
+
+    def abdiRanaldoComparison(self):
+        ARt = self.getARt()
+
+        print('ARt: ')
+        print(ARt)
 
     def getHi(self):
         hi = np.log(np.highFlt)
@@ -72,7 +90,6 @@ class AbdiRanaldo:
         sum = np.sum(ARi)
         amount = len(ARi)
         ARt = sum/amount
-        print(ARt)
         return ARt
 
     """

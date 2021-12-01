@@ -1,5 +1,6 @@
 import numpy as np
 
+from AbdiRanaldo import AbdiRanaldo
 from Amihud import Amihud
 from CorwinSchultz import CorwinSchultz
 
@@ -85,6 +86,7 @@ class Comparison:
 
         cs = CorwinSchultz()
         ah = Amihud()
+        ar = AbdiRanaldo()
 
         self.extractStr(fileReader)
         self.extractFlt()
@@ -92,3 +94,5 @@ class Comparison:
         cs.corwinSchultzComparison()
         print('-----------')
         ah.amihudComparison()
+        print('-----------')
+        ar.abdiRanaldoComparison()

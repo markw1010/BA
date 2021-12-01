@@ -19,6 +19,7 @@ Corwin, S., Schultz, P., 2012. A simple way to estimate bid-ask spreads from dai
 Finance, Volume 67, Issue 2. 719-760
 
 Please note that you should only uncomment one line of code at the the same time, otherwise the program will not work!
+Please make sure, that you choose the right csv file to analyse in line 28 and 29 of this file
 
 Author: Mark Wagner
 """
@@ -48,9 +49,13 @@ filter = Filter()
 # Uncomment this line of code to show the single CS value on the console
 #cs.corwinSchultzValueOnly(BTCUSD_csv)
 
-# Uncomment this line of code to show both the CS and the Amihud value
+# Uncomment this line of code to show the single AR value on the console
+#ar.abdiRanaldoValueOnly(BTCUSD_csv)
+
+# Uncomment this line of code to show the CS, the Amihud and the AR value
 #comp.comparison(BTCUSD_csv)
 
+# Uncomment this line of code to show the detailed AR calculation on the console
+#ar.abdiRanaldoDetailed(BTCUSD_csv)
 
-ar.abdiRanaldo(BTCUSD_csv)
 

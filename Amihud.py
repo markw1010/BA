@@ -156,11 +156,8 @@ class Amihud:
     """
 
     def amihudValueOnly(self, fileReader):
-
         self.extractStr(fileReader)
-
         self.extractFlt()
-
         amihud = self.calculateAmihud()
 
         print('Amihud:')
@@ -171,7 +168,6 @@ class Amihud:
     """
 
     def amihudComparison(self):
-
         amihud = self.calculateAmihud()
 
         print('Amihud:')
