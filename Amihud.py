@@ -26,6 +26,8 @@ class Amihud:
     np.volumeUSDFlt = []
 
     """
+    Note: This method is not used up to now!
+    
     this method standardise the unix time stamp. In case that the unix code in the cvs file has parts of the data in 
     second format and other parts in millisecond format, this method will standardise the timestamp. Therefore it 
     checks, if the amount of characters of the time stamp is above or under 10. If it is above 10, the code is in 
@@ -38,7 +40,6 @@ class Amihud:
     
     Returns:    time - The right date and time in the format: yyyy-mm-dd hh:mm:ss
     """
-
     def standardiseUnix(self, item):
         unixMilliseconds = int(item.get('unix')) / 1000
         unixSeconds = int(item.get('unix'))
@@ -60,7 +61,6 @@ class Amihud:
     
     Returns:    open - Array with all the open data represented as Strings
     """
-
     def getOpen(self, fileReader):
 
         open = []
@@ -135,15 +135,10 @@ class Amihud:
                 console 
     """
     def amihudDetailed(self, fileReader):
-
         self.extractStr(fileReader)
-
         self.extractFlt()
-
         amihud = self.calculateAmihud()
-
         expression = self.getAmihudExpression()
-
         self.printAmihud(amihud, expression)
 
     """

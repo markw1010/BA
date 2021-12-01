@@ -1,5 +1,13 @@
 import numpy as np
 
+"""
+This class provides all necessary methods and variables to calculate the AR liquidity estimator for a daily, hourly 
+or minutely cvs datasets respectively. 
+
+Abdi, F., Ranaldo, A., 2017. A simple estimation of bid-ask spreads from daily close, high, and low prices. The Review 
+of Financial Studies, Volume 30, Issue 12, December 2017. 4437-4480
+"""
+
 
 class AbdiRanaldo:
 
@@ -11,6 +19,17 @@ class AbdiRanaldo:
     np.lowFlt = []
     np.closeFlt = []
 
+    """
+    This method prints the value for the AR estimator which is referenced at the top of the class description. 
+    Therefore it first extract all relevant data in String format, then the data will be saved as floater so that the 
+    value for the amihud estimator can be calculated. At the end, the value will be printed on the console
+
+    Requires:   The cvs file has to be formatted so that it can be read
+                The delimiter between the values in the cvs has to be a semicolon
+
+    Ensures:    a floater value for the AR estimator as well as other pre calculation values will be printed on the 
+                console 
+    """
     def abdiRanaldoDetailed(self, fileReader):
         self.extractStr(fileReader)
         self.extractFlt()
@@ -33,6 +52,14 @@ class AbdiRanaldo:
         print(ARt)
         print('--------------')
 
+    """
+    This method prints only the value for the AR estimator on the console.
+
+    Requires:   The cvs file has to be formatted so that it can be read
+                The delimiter between the values in the cvs has to be a semicolon
+
+    Ensures:    a floater value for the AR estimator will be printed on the console 
+    """
     def abdiRanaldoValueOnly(self, fileReader):
         self.extractStr(fileReader)
         self.extractFlt()
@@ -41,6 +68,9 @@ class AbdiRanaldo:
         print('ARt: ')
         print(ARt)
 
+    """
+    This method is only implemented for the use of comparison to the AR estimator in the comparison class.
+    """
     def abdiRanaldoComparison(self):
         ARt = self.getARt()
 
@@ -59,6 +89,13 @@ class AbdiRanaldo:
         ci = np.log(np.closeFlt)
         return ci
 
+    """
+    this method returns the value for p_i which ist the addition of hi and li divided by two.
+.    
+    Requires:   len(hi) = len(li)
+    
+    Ensures: An array with the pi values will be returned   
+    """
     def getPi(self):
         hi = self.getHi()
         li = self.getLi()
@@ -66,6 +103,14 @@ class AbdiRanaldo:
         pi = np.divide(hili, 2)
         return pi
 
+    """
+    This method returns the value of ARi.
+    
+    Requires:   len(pi1) + len(ci1) >= 4
+                term3 >= 0
+    
+    Ensures:    An array with all ARi values will be returned 
+    """
     def getARi(self):
         ci = self.getCi()
         pi = self.getPi()
@@ -85,6 +130,14 @@ class AbdiRanaldo:
 
         return ARi
 
+    """
+    This method calculates and returns the AR_t estimator for interval t which is the average of the AR_t,i measures
+    for all adjacent subintervals i in t
+    
+    Requires:   len(ARi) > 0
+    
+    Ensures:    A floater value will be returned      
+    """
     def getARt(self):
         ARi = self.getARi()
         sum = np.sum(ARi)
@@ -93,15 +146,13 @@ class AbdiRanaldo:
         return ARt
 
     """
-        This method copies the open price, close prise and volume USD amount of the arrays into arrays named np.openFlt,
-        np.closeFlt and np.volumeUSDFlt as floater value
+    This method copies the high price, low prise and close price of the arrays into arrays named np.highFlt,
+    np.lowFlt and np.closeFlt as floater value
 
-        Requires:   all the values in openStr, closeStr and volumeUSDStr should contain only floater values
+    Requires:   all the values in highStr, lowStr and closeStr should contain only floater values
 
-        Ensures:    all values in openStr, closeStr and volumeUSDStr will be copied in separated arrays as floater values
-        """
-
-    # TODO make it work for all types of currencies not only USD!
+    Ensures:    all values in highStr, lowStr and closeStr will be copied in separated arrays as floater values
+    """
     def extractFlt(self):
         for value in self.highStr:
             np.highFlt.append(float(value))
@@ -111,17 +162,15 @@ class AbdiRanaldo:
             np.closeFlt.append(float(value))
 
     """
-       This method extract the open prices, close prices and USD volume of a cvs file with daily, hourly or minutely data 
-       and safes them as strings in separated arrays called openStr, closeStr and volumeUSDStr. 
+       This method extract the high prices, low prices and close price of a cvs file with daily, hourly or minutely data 
+       and safes them as strings in separated arrays called highStr, lowStr and closeStr. 
 
        Requires:   The cvs file has to be formatted so that it can be read
-                   The columns in the cvs file have to be called 'open', 'close' and 'Volume USD'
+                   The columns in the cvs file have to be called 'high', 'low' and 'close'
 
-       Ensures:    three arrays will be filled with the string representatives of the open price, close price and Volume 
-                   USD respectively 
+       Ensures:    three arrays will be filled with the string representatives of the high price, low price and close 
+                   price respectively 
        """
-
-    # TODO make it work for all types of currencies not only USD!
     def extractStr(self, fileReader):
         for item in fileReader:
             self.highStr.append(item['high'])

@@ -74,7 +74,8 @@ class Comparison:
         self.volumeUSDStr.remove('Volume USD')
 
     """
-    This method prints both the Amihud and the CS estimator values of a given dataset on the console.
+    This method prints the Amihud, the CS and the Abdi and Ranaldo estimator values of a given csv dataset on the 
+    console.
     
     Requires:   The cvs file has to be formatted so that it can be read
                 The delimiter between the values in the cvs has to be a semicolon
