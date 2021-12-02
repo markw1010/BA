@@ -25,10 +25,12 @@ Please note that you should only uncomment one line of code at the the same time
 Please make sure, that you choose the right csv file to analyse in line 28 and 29 of this file
 Please note that all the notations for the estimators are from the following paper:
 
-Brauneis, A., Mestel, R., Riordan, R., Theissen, E., 2021. How to measure the liquidi-ty of cryptocurrency markets? 
+Brauneis, A., Mestel, R., Riordan, R., Theissen, E., 2021. How to measure the liquidity of cryptocurrency markets? 
 Journal of Banking and Finance 124 (2021) 106041. 1-26
 
 Author: Mark Wagner
+
+University of Stuttgart
 """
 
 # Prototype dataset
