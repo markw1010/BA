@@ -3,6 +3,7 @@ import numpy as np
 from AbdiRanaldo import AbdiRanaldo
 from Amihud import Amihud
 from CorwinSchultz import CorwinSchultz
+from ExtractData import ExtractData
 
 """
 This class provides variables and methods to make it possible to print both the AH and the CS estimator at the same time
@@ -10,7 +11,7 @@ the console for comparison.
 """
 
 
-class Comparison:
+class Comparison(ExtractData):
 
     highStr = []
     lowStr = []

@@ -1,10 +1,12 @@
 import csv
+import pandas as pd
 
 from AbdiRanaldo import AbdiRanaldo
 from Amihud import Amihud
 from Comparison import Comparison
 from CorwinSchultz import CorwinSchultz
 from Filter import Filter
+from LeadLag import LeadLag
 
 """
 This program will take a cvs file which contains daily, hourly or minutely high and low, open and close as well as other 
@@ -32,26 +34,36 @@ Author: Mark Wagner
 """
 
 # Prototype dataset
-file = open('Bitfinex_BTCUSD_d_1.csv', newline='')
-BTCUSD_csv = csv.DictReader(file, delimiter=';')
+btcusd = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/daily/Bitfinex_BTCUSD_d.csv')
+btceur = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/daily/Bitfinex_BTCEUR_d.csv')
+btcjpy = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/daily/Bitfinex_BTCJPY_d.csv')
+btcgbp = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/daily/Bitfinex_BTCGBP_d.csv')
 
 amihud = Amihud()
 cs = CorwinSchultz()
 comp = Comparison()
 ar = AbdiRanaldo()
 filter = Filter()
+ll = LeadLag()
 
 # Uncomment this line of code to show the whole dataset on the console
-#filter.filterCvs(BTCUSD_csv)
+# filter.print_full(btcusd)
 
+# Uncomment this lines of code to show the dataset on the console
+# print(btcusd)
+# print(btceur)
+# print(btcjpy)
+# print(btcgbp)
+
+# TODO nice printing
 # Uncomment this line of code to show the detailed Amihud calculation on the console
-#amihud.amihudDetailed(BTCUSD_csv)
+# amihud.amihudDetailed(btcusd, 'USD')
 
 # Uncomment this line of code to show the detailed CS calculation on the console
 #cs.corwinSchultzDetailed(BTCUSD_csv)
 
 # Uncomment this line of code to show the single Amihud value on the console
-#amihud.amihudValueOnly(BTCUSD_csv)
+amihud.amihudValueOnly(btcusd, 'USD')
 
 # Uncomment this line of code to show the single CS value on the console
 #cs.corwinSchultzValueOnly(BTCUSD_csv)
@@ -63,4 +75,11 @@ filter = Filter()
 #comp.comparison(BTCUSD_csv)
 
 # Uncomment this line of code to show the detailed AR calculation on the console
-ar.abdiRanaldoDetailed(BTCUSD_csv)
+#ar.abdiRanaldoDetailed(BTCUSD_csv)
+
+# ll.extractReturn(BTCUSD_csv, BTCEUR_csv, BTCJPY_csv, BTCGBP_csv)
+
+# ll.extractUSDstr(BTCUSD_csv)
+
+# ll.extractUSDflt()
+

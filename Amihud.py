@@ -17,14 +17,6 @@ Amihud, Y., 2002. Illiquidity and stock returns: cross-section and time-series e
 class Amihud:
     numpy.set_printoptions(threshold=sys.maxsize)
 
-    openStr = []
-    closeStr = []
-    volumeUSDStr = []
-
-    np.openFlt = []
-    np.closeFlt = []
-    np.volumeUSDFlt = []
-
     """
     Note: This method is not used up to now!
     
@@ -61,12 +53,9 @@ class Amihud:
     
     Returns:    open - Array with all the open data represented as Strings
     """
-    def getOpen(self, fileReader):
+    def getOpen(self, file):
 
-        open = []
-
-        for item in fileReader:
-            open.append(item['open'])
+        open = file['open'].to_numpy()
 
         # print(*open, sep='\n')
         print(open)
@@ -85,12 +74,9 @@ class Amihud:
     
     Returns:    open - Array with all the close data represented as Strings
     """
-    def getClose(self, fileReader):
+    def getClose(self, file):
 
-        close = []
-
-        for item in fileReader:
-            close.append(item['close'])
+        close = file['close'].to_numpy()
 
         # print(*close, sep='\n')
         print(close)
@@ -111,12 +97,9 @@ class Amihud:
     
     Returns:    volume - Array with all the volume data represented as Strings
     """
-    def getVolume(self, fileReader, currency):
+    def getVolume(self, file, currency):
 
-        volume = []
-
-        for item in fileReader:
-            volume.append(item['Volume' + currency])
+        volume = file['Volume ' + currency]
 
         # print(*volume, sep='\n')
         print(volume)
@@ -134,11 +117,9 @@ class Amihud:
     Ensures:    a floater value for the amihud estimator as well as other pre calculation values will be printed on the 
                 console 
     """
-    def amihudDetailed(self, fileReader):
-        self.extractStr(fileReader)
-        self.extractFlt()
-        amihud = self.calculateAmihud()
-        expression = self.getAmihudExpression()
+    def amihudDetailed(self, file, currency):
+        amihud = self.calculateAmihud(file, currency)
+        expression = self.getAmihudExpression(file, currency)
         self.printAmihud(amihud, expression)
 
     """
@@ -150,10 +131,8 @@ class Amihud:
     Ensures:    a floater value for the amihud estimator will be printed on the console 
     """
 
-    def amihudValueOnly(self, fileReader):
-        self.extractStr(fileReader)
-        self.extractFlt()
-        amihud = self.calculateAmihud()
+    def amihudValueOnly(self, file, currency):
+        amihud = self.calculateAmihud(file, currency)
 
         print('Amihud:')
         print(amihud)
@@ -162,8 +141,8 @@ class Amihud:
     This method is only implemented for the use of comparison to the CS estimator in the comparison class.
     """
 
-    def amihudComparison(self):
-        amihud = self.calculateAmihud()
+    def amihudComparison(self, file, currency):
+        amihud = self.calculateAmihud(file, currency)
 
         print('Amihud:')
         print(amihud)
@@ -178,24 +157,24 @@ class Amihud:
                 printed on the console
     """
 
-    def printAmihud(self, amihud, expression):
+    def printAmihud(self, amihud, expression, file, currency):
         print('open')
-        print(np.openFlt)
+        print(self.getOpen(file))
         print('----------------')
         print('close')
-        print(np.closeFlt)
+        print(self.getClose(file))
         print('----------------')
         print('volume USD')
-        print(np.volumeUSDFlt)
+        print(self.getVolume(file, currency))
         print('----------------')
         print('counter')
         print(np.counter)
         print('----------------')
         print('expression')
-        print(self.getAmihudExpression())
+        print(self.getAmihudExpression(file, currency))
         print('----------------')
         print('len(expression)')
-        print(len(self.getAmihudExpression()))
+        print(len(self.getAmihudExpression(file, currency)))
         print('----------------')
         print('self.getAmihudSum(expression)')
         print(self.getAmihudSum(expression))
@@ -216,8 +195,8 @@ class Amihud:
     Returns:    amihud - Floater which contains amihud value
     """
 
-    def calculateAmihud(self):
-        expression = self.getAmihudExpression()
+    def calculateAmihud(self, file, currency):
+        expression = self.getAmihudExpression(file, currency)
         sum = self.getAmihudSum(expression)
         amihud = sum / len(expression)
         return amihud
@@ -257,12 +236,16 @@ class Amihud:
     """
 
     # TODO Exception handling if item in open is 0!
-    def getAmihudExpression(self):
+    def getAmihudExpression(self, file, currency):
+        open = self.getOpen(file)
+        close = self.getClose(file)
+        volume = self.getVolume(file, currency)
+
         np.seterr(invalid='ignore')  # This tells NumPy to hide any warning with some “invalid” message in it
-        np.counter = [(close / open) - 1 for close, open in zip(np.closeFlt, np.openFlt)]
+        np.counter = [(close / open) - 1 for close, open in zip(close, open)]
         np.counter = np.absolute(np.counter)
         # np.counter = np.divide(np.closeFlt, np.openFlt, out=np.zeros_like(np.closeFlt), where=np.openFlt != 0)
-        expression = np.divide(np.counter, np.volumeUSDFlt, out=np.zeros_like(np.counter), where=np.volumeUSDFlt != 0)
+        expression = np.divide(np.counter, volume, out=np.zeros_like(np.counter), where=volume != 0)
         expression = expression[
             ~numpy.isnan(expression)]  # to remove all nan values ( caused by missing USD volume values)
         return expression
@@ -277,13 +260,13 @@ class Amihud:
     """
 
     # TODO make it work for all types of currencies not only USD!
-    def extractFlt(self):
-        for value in self.openStr:
-            np.openFlt.append(float(value))
-        for value in self.closeStr:
-            np.closeFlt.append(float(value))
-        for value in self.volumeUSDStr:
-            np.volumeUSDFlt.append(float(value))
+    # def extractFlt(self):
+    #     for value in self.openStr:
+    #         np.openFlt.append(float(value))
+    #     for value in self.closeStr:
+    #         np.closeFlt.append(float(value))
+    #     for value in self.volumeUSDStr:
+    #         np.volumeUSDFlt.append(float(value))
 
 
     """
@@ -298,13 +281,13 @@ class Amihud:
     """
 
     # TODO make it work for all types of currencies not only USD!
-    def extractStr(self, fileReader):
-        for item in fileReader:
-            self.openStr.append(item['open'])
-            self.closeStr.append(item['close'])
-            self.volumeUSDStr.append(item['Volume USD'])
-        self.openStr.remove('open')
-        self.closeStr.remove('close')
-        self.volumeUSDStr.remove('Volume USD')
+    # def extractStr(self, fileReader):
+    #     for item in fileReader:
+    #         self.openStr.append(item['open'])
+    #         self.closeStr.append(item['close'])
+    #         self.volumeUSDStr.append(item['Volume USD'])
+    #     self.openStr.remove('open')
+    #     self.closeStr.remove('close')
+    #     self.volumeUSDStr.remove('Volume USD')
 
 

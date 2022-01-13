@@ -1,4 +1,5 @@
 from tabulate import tabulate
+import pandas as pd
 
 """
 This class is created to filter all the data from a given dataset in cvs format and print the data on the console with
@@ -18,11 +19,7 @@ class Filter:
     Ensures:    After execution of the method the console will show all data of the cvs file in a formatted way
                 all the data will be saved in an array called 'data' as Strings
     """
-
-    def filterCvs(self, fileReader):
-        data = []
-
-        for item in fileReader:
-            data.append(item)
-
-        print(tabulate(data))
+    # TODO: new Commentation, printing all columns inline
+    def print_full(dataset):
+        pd.set_option("display.max_rows", None, "display.max_columns", None)
+        print(dataset)
