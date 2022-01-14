@@ -87,13 +87,25 @@ ll = LeadLag()
 # cs.corwinSchultzValueOnly(btcgbp, 'GBP')
 
 # Uncomment this line of code to show the single AR value on the console
-#ar.abdiRanaldoValueOnly(BTCUSD_csv)
+# ar.abdiRanaldoValueOnly(btcusd, 'USD')
+# ar.abdiRanaldoValueOnly(btceur, 'EUR')
+# ar.abdiRanaldoValueOnly(btcjpy, 'JPY')
+# ar.abdiRanaldoValueOnly(btcgbp, 'GBP')
+
 
 # Uncomment this line of code to show the CS, the Amihud and the AR value
-#comp.comparison(BTCUSD_csv)
+# comp.comparison(btcusd, 'USD')
+# comp.comparison(btceur, 'EUR')
+# comp.comparison(btcjpy, 'JPY')
+# comp.comparison(btcgbp, 'GBP')
+
 
 # Uncomment this line of code to show the detailed AR calculation on the console
-#ar.abdiRanaldoDetailed(BTCUSD_csv)
+# ar.printAbdiRanaldo(btcusd, 'USD')
+# ar.printAbdiRanaldo(btceur, 'EUR')
+# ar.printAbdiRanaldo(btcjpy, 'JPY')
+# ar.printAbdiRanaldo(btcgbp, 'GBP')
+
 
 # ll.extractReturn(BTCUSD_csv, BTCEUR_csv, BTCJPY_csv, BTCGBP_csv)
 

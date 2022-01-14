@@ -2,9 +2,6 @@ import csv
 
 import numpy as np
 
-from ExtractData import ExtractData
-
-
 class LeadLag():
 
     returnUSD = []

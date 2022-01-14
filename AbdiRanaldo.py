@@ -11,14 +11,6 @@ of Financial Studies, Volume 30, Issue 12, December 2017. 4437-4480
 
 class AbdiRanaldo:
 
-    highStr = []
-    lowStr = []
-    closeStr = []
-
-    np.highFlt = []
-    np.lowFlt = []
-    np.closeFlt = []
-
     """
     This method prints the value for the AR estimator which is referenced at the top of the class description. 
     Therefore it first extract all relevant data in String format, then the data will be saved as floater so that the 
@@ -30,16 +22,11 @@ class AbdiRanaldo:
     Ensures:    a floater value for the AR estimator as well as other pre calculation values will be printed on the 
                 console 
     """
-    def abdiRanaldoDetailed(self, fileReader):
-        self.extractStr(fileReader)
-        self.extractFlt()
-        self.printAbdiRanaldo()
 
-
-    def printAbdiRanaldo(self):
-        ARt = self.getARt()
-        ARi = self.getARi()
-        print('ARi: ')
+    def printAbdiRanaldo(self, file, currency):
+        ARt = self.getARt(file)
+        ARi = self.getARi(file)
+        print(currency + 'ARi: ')
         print(ARi)
         print('--------------')
         print('len(ARi): ')
@@ -48,7 +35,7 @@ class AbdiRanaldo:
         print('np.sum(ARi): ')
         print(np.sum(ARi))
         print('--------------')
-        print('ARt: ')
+        print(currency + 'ARt: ')
         print(ARt)
         print('--------------')
 
@@ -60,33 +47,34 @@ class AbdiRanaldo:
 
     Ensures:    a floater value for the AR estimator will be printed on the console 
     """
-    def abdiRanaldoValueOnly(self, fileReader):
-        self.extractStr(fileReader)
-        self.extractFlt()
-        ARt = self.getARt()
+    def abdiRanaldoValueOnly(self, file, currency):
+        ARt = self.getARt(file)
 
-        print('ARt: ')
+        print(currency + ' ARt: ')
         print(ARt)
 
     """
     This method is only implemented for the use of comparison to the AR estimator in the comparison class.
     """
-    def abdiRanaldoComparison(self):
-        ARt = self.getARt()
+    def abdiRanaldoComparison(self, file, currency):
+        ARt = self.getARt(file)
 
-        print('ARt: ')
+        print(currency + ' ARt: ')
         print(ARt)
 
-    def getHi(self):
-        hi = np.log(np.highFlt)
+    def getHi(self, file):
+        high = file['high'].to_numpy()
+        hi = np.log(high)
         return hi
 
-    def getLi(self):
-        li = np.log(np.lowFlt)
+    def getLi(self, file):
+        low = file['low'].to_numpy()
+        li = np.log(low)
         return li
 
-    def getCi(self):
-        ci = np.log(np.closeFlt)
+    def getCi(self, file):
+        close = file['close'].to_numpy()
+        ci = np.log(close)
         return ci
 
     """
@@ -96,9 +84,9 @@ class AbdiRanaldo:
     
     Ensures: An array with the pi values will be returned   
     """
-    def getPi(self):
-        hi = self.getHi()
-        li = self.getLi()
+    def getPi(self, file):
+        hi = self.getHi(file)
+        li = self.getLi(file)
         hili = np.add(hi, li)
         pi = np.divide(hili, 2)
         return pi
@@ -111,9 +99,9 @@ class AbdiRanaldo:
     
     Ensures:    An array with all ARi values will be returned 
     """
-    def getARi(self):
-        ci = self.getCi()
-        pi = self.getPi()
+    def getARi(self, file):
+        ci = self.getCi(file)
+        pi = self.getPi(file)
 
         pi1 = np.delete(pi, 0)
         ci1 = np.delete(ci, -1)
@@ -138,8 +126,8 @@ class AbdiRanaldo:
     
     Ensures:    A floater value will be returned      
     """
-    def getARt(self):
-        ARi = self.getARi()
+    def getARt(self, file):
+        ARi = self.getARi(file)
         sum = np.sum(ARi)
         amount = len(ARi)
         ARt = sum/amount

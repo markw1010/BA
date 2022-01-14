@@ -118,7 +118,7 @@ class Amihud:
     def amihudComparison(self, file, currency):
         amihud = self.calculateAmihud(file, currency)
 
-        print('Amihud:')
+        print(currency + ' Amihud:')
         print(amihud)
 
     """

@@ -17,23 +17,6 @@ class CorwinSchultz:
     np.arr = []
 
     """
-    This method prints the value for the Corwin and Schultz (CS) estimator which is referenced at the top of the class 
-    description. Therefore it first extract all relevant data in String format, then the data will be saved as floater 
-    so that the value for the CS estimator can be calculated. CSii1 is the CS estimator for two adjacent intervals i and 
-    i+1. At the end, the value will be printed on the console
-
-    Requires:   The cvs file has to be formatted so that it can be read
-                The delimiter between the values in the cvs has to be a semicolon
-                len(CSii1) > 0
-
-    Ensures:    a floater value for the CS estimator will be printed on the console 
-    """
-
-    # def corwinSchultzDetailed(self):
-    #
-    #     self.printCS()
-
-    """
     This method prints only the value for the CS estimator on the console.
     
     Requires:   The cvs file has to be formatted so that it can be read
@@ -55,7 +38,7 @@ class CorwinSchultz:
 
         CS = self.calculateCSValue(file)
 
-        print(currency + 'CS:')
+        print(currency + ' CS:')
         print(CS)
 
     """
