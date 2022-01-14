@@ -14,12 +14,6 @@ class CorwinSchultz:
 
     denominatorAlpha = 3 - 2 * 2 ** 0.5
 
-    highStr = []
-    lowStr = []
-
-    np.highFlt = []
-    np.lowFlt = []
-
     np.arr = []
 
     """
@@ -35,13 +29,9 @@ class CorwinSchultz:
     Ensures:    a floater value for the CS estimator will be printed on the console 
     """
 
-    def corwinSchultzDetailed(self, fileReader):
-
-        self.extractStr(fileReader)
-
-        self.extractFlt()
-
-        self.printCS()
+    # def corwinSchultzDetailed(self):
+    #
+    #     self.printCS()
 
     """
     This method prints only the value for the CS estimator on the console.
@@ -51,25 +41,21 @@ class CorwinSchultz:
 
     Ensures:    a floater value for the CS estimator will be printed on the console 
     """
-    def corwinSchultzValueOnly(self, fileReader):
+    def corwinSchultzValueOnly(self, file, currency):
 
-        self.extractStr(fileReader)
+        CS = self.calculateCSValue(file)
 
-        self.extractFlt()
-
-        CS = self.calculateCSValue()
-
-        print('CS:')
+        print(currency + ' CS:')
         print(CS)
 
     """
     This method is only implemented for the use of comparison to the CS estimator in the comparison class.
     """
-    def corwinSchultzComparison(self):
+    def corwinSchultzComparison(self, file, currency):
 
-        CS = self.calculateCSValue()
+        CS = self.calculateCSValue(file)
 
-        print('CS:')
+        print(currency + 'CS:')
         print(CS)
 
     """
@@ -79,29 +65,29 @@ class CorwinSchultz:
                     be printed on the console
         """
 
-    def printCS(self):
+    def printCS(self, file, currency):
 
-        CS = self.calculateCSValue()
+        CS = self.calculateCSValue(file)
 
         print('Alpha:')
-        print(self.getAlpha())
+        print(self.getAlpha(file))
         print('-----------')
         print('Beta:')
-        print(self.getBeta())
+        print(self.getBeta(file))
         print('-----------')
         print('Gamma:')
-        print(self.getGamma())
+        print(self.getGamma(file))
         print('-----------')
         print('CS_i,i+1:')
-        print(self.calculateCSArray())
+        print(self.calculateCSArray(file))
         print('-----------')
         print('sum(CS_i,i+1):')
-        print(np.sum(self.calculateCSArray()))
+        print(np.sum(self.calculateCSArray(file)))
         print('-----------')
         print('len(CS_i,i+1):')
-        print(len(self.calculateCSArray()))
+        print(len(self.calculateCSArray(file)))
         print('-----------')
-        print('CS:')
+        print(currency + ' CS:')
         print(CS)
 
     """
@@ -113,8 +99,8 @@ class CorwinSchultz:
     Ensures:    CS is a numerical value 
     """
 
-    def calculateCSValue(self):
-        CSii1 = self.calculateCSArray()
+    def calculateCSValue(self, file):
+        CSii1 = self.calculateCSArray(file)
         sum = np.sum(CSii1)
         amount = len(CSii1)
         CS = sum / amount
@@ -135,9 +121,9 @@ class CorwinSchultz:
     """
 
     # TODO def programming: can e to the power of x can equal -1?
-    def calculateCSArray(self):
+    def calculateCSArray(self, file):
 
-        alpha = self.getAlpha()
+        alpha = self.getAlpha(file)
         expAlpha = np.exp(alpha)
         counterA = np.subtract(expAlpha, 1)
         counter = np.multiply(counterA, 2)
@@ -158,10 +144,10 @@ class CorwinSchultz:
     Returns:    alpha - Array
     """
 
-    def getAlpha(self):
+    def getAlpha(self, file):
 
-        firstTerm = self.alphaFirstTerm()
-        secondTerm = self.alphaSecondTerm()
+        firstTerm = self.alphaFirstTerm(file)
+        secondTerm = self.alphaSecondTerm(file)
 
         alpha = [frstTerm - secTerm for frstTerm, secTerm in zip(firstTerm, secondTerm)]
 
@@ -181,9 +167,9 @@ class CorwinSchultz:
     Returns:    secondTerm - Array with all values for the second term of the CS alpha 
     """
 
-    def alphaSecondTerm(self):
+    def alphaSecondTerm(self, file):
 
-        gamma = self.getGamma()
+        gamma = self.getGamma(file)
 
         secondTermNoRoot = np.divide(gamma, self.denominatorAlpha)
         secondTerm = np.power(secondTermNoRoot, 0.5)
@@ -202,10 +188,10 @@ class CorwinSchultz:
     Returns:    firstTerm - Array with all values for the first term of the CS alpha 
     """
 
-    def alphaFirstTerm(self):
+    def alphaFirstTerm(self, file):
 
-        twoTimesBeta = np.multiply(self.getBeta(), 2)
-        beta = self.getBeta()
+        twoTimesBeta = np.multiply(self.getBeta(file), 2)
+        beta = self.getBeta(file)
 
         rootTtBeta = np.power(twoTimesBeta, 0.5)
         rootBeta = np.power(beta, 0.5)
@@ -228,9 +214,9 @@ class CorwinSchultz:
     """
 
     # TODO Exception handling if item in open is 0!
-    def getBeta(self):
+    def getBeta(self, file):
 
-        highDivLow = self.highDivLow()
+        highDivLow = self.highDivLow(file)
         ln = numpy.log(highDivLow)
         firstTerm = numpy.power(ln, 2)
         secondTerm = np.delete(np.copy(firstTerm), 0)
@@ -262,11 +248,13 @@ class CorwinSchultz:
         return max
 
     # TODO Error handling if div by 0!
-    def getGamma(self):
+    def getGamma(self, file):
+        high = self.getHighCS(file)
+        low = self.getLowCS(file)
 
-        hii1 = self.getMaxPrice(np.highFlt)
+        hii1 = self.getMaxPrice(high)
 
-        lii1 = self.getMaxPrice(np.lowFlt)
+        lii1 = self.getMaxPrice(low)
 
         gamma = self.calcGamma(hii1, lii1)
 
@@ -302,9 +290,12 @@ class CorwinSchultz:
     Returns:    highDivLow - Array which contains all items of np.highFlt divided by np.lowFlt
     """
 
-    def highDivLow(self):
+    def highDivLow(self, file):
+        high = self.getHighCS(file)
+        low = self.getLowCS(file)
+
         np.seterr(invalid='ignore')  # This tells NumPy to hide any warning with some “invalid” message in it
-        highDivLow = np.divide(np.highFlt, np.lowFlt, out=np.zeros_like(np.highFlt), where=np.lowFlt != 0)
+        highDivLow = np.divide(high, low, out=np.zeros_like(high), where=low != 0)
         highDivLow = highDivLow[
             ~numpy.isnan(highDivLow)]  # to remove all nan values (caused by missing low prices)
         return highDivLow
@@ -322,14 +313,8 @@ class CorwinSchultz:
     Returns:    high - Array will be returned with all the high data represented as strings
     """
 
-    def getHighCS(self, fileReader):
-        high = []
-
-        for item in fileReader:
-            high.append(item['high'])
-
-        # print(*values, sep='\n')
-        print(high)
+    def getHighCS(self, file):
+        high = file['high'].to_numpy()
 
         return high
 
@@ -346,47 +331,8 @@ class CorwinSchultz:
     Returns:    low - Array will be returned with all the low data represented as strings
     """
 
-    def getLowCS(self, fileReader):
-        low = []
+    def getLowCS(self, file):
 
-        for item in fileReader:
-            low.append(item['low'])
-
-        # print(*values, sep='\n')
-        print(low)
+        low = file['low'].to_numpy()
 
         return low
-
-    """
-    This method copies the high price and close price of the arrays into other arrays named np.highFlt and np.lowFlt as 
-    floater value.
-
-    Requires:   all the values in highStr and lowStr should contain only floater values 
-
-    Ensures:    all values in highStr and lowStr will be copied in separated arrays as floater values 
-    """
-
-    # TODO make it work for all types of currencies not only USD!
-    def extractFlt(self):
-        for value in self.highStr:
-            np.highFlt.append(float(value))
-        for value in self.lowStr:
-            np.lowFlt.append(float(value))
-
-    """
-    This method extract the high prices and low prices of a cvs file with daily, hourly or minutely data and safes them 
-    as strings in separated arrays called highStr and lowStr. 
-
-    Requires:   The cvs file has to be formatted so that it can be read
-                The columns in the cvs file have to be called 'high' and 'close' 
-
-    Ensures:    two arrays will be filled with the string representatives of the high price and low price respectively 
-    """
-
-    # TODO make it work for all types of currencies not only USD!
-    def extractStr(self, fileReader):
-        for item in fileReader:
-            self.highStr.append(item['high'])
-            self.lowStr.append(item['low'])
-        self.highStr.remove('high')
-        self.lowStr.remove('low')

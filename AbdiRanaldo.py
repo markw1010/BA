@@ -144,38 +144,3 @@ class AbdiRanaldo:
         amount = len(ARi)
         ARt = sum/amount
         return ARt
-
-    """
-    This method copies the high price, low prise and close price of the arrays into arrays named np.highFlt,
-    np.lowFlt and np.closeFlt as floater value
-
-    Requires:   all the values in highStr, lowStr and closeStr should contain only floater values
-
-    Ensures:    all values in highStr, lowStr and closeStr will be copied in separated arrays as floater values
-    """
-    def extractFlt(self):
-        for value in self.highStr:
-            np.highFlt.append(float(value))
-        for value in self.lowStr:
-            np.lowFlt.append(float(value))
-        for value in self.closeStr:
-            np.closeFlt.append(float(value))
-
-    """
-       This method extract the high prices, low prices and close price of a cvs file with daily, hourly or minutely data 
-       and safes them as strings in separated arrays called highStr, lowStr and closeStr. 
-
-       Requires:   The cvs file has to be formatted so that it can be read
-                   The columns in the cvs file have to be called 'high', 'low' and 'close'
-
-       Ensures:    three arrays will be filled with the string representatives of the high price, low price and close 
-                   price respectively 
-       """
-    def extractStr(self, fileReader):
-        for item in fileReader:
-            self.highStr.append(item['high'])
-            self.lowStr.append(item['low'])
-            self.closeStr.append(item['close'])
-        self.highStr.remove('high')
-        self.lowStr.remove('low')
-        self.closeStr.remove('close')

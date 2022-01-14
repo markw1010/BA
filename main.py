@@ -48,6 +48,10 @@ ll = LeadLag()
 
 # Uncomment this line of code to show the whole dataset on the console
 # filter.print_full(btcusd)
+# filter.print_full(btceur)
+# filter.print_full(btcjpy)
+# filter.print_full(btcgbp)
+
 
 # Uncomment this lines of code to show the dataset on the console
 # print(btcusd)
@@ -58,15 +62,29 @@ ll = LeadLag()
 # TODO nice printing
 # Uncomment this line of code to show the detailed Amihud calculation on the console
 # amihud.amihudDetailed(btcusd, 'USD')
+# amihud.amihudDetailed(btceur, 'EUR')
+# amihud.amihudDetailed(btcjpy, 'JPY')
+# amihud.amihudDetailed(btcgbp, 'GBP')
 
 # Uncomment this line of code to show the detailed CS calculation on the console
-#cs.corwinSchultzDetailed(BTCUSD_csv)
+# cs.printCS(btcusd, 'USD')
+# cs.printCS(btceur, 'EUR')
+# cs.printCS(btcjpy, 'JPY')
+# cs.printCS(btcgbp, 'GBP')
 
+# TODO JPY values checking
 # Uncomment this line of code to show the single Amihud value on the console
-amihud.amihudValueOnly(btcusd, 'USD')
+#amihud.amihudValueOnly(btcusd, 'USD')
+#amihud.amihudValueOnly(btceur, 'EUR')
+#amihud.amihudValueOnly(btcjpy, 'JPY')
+#amihud.amihudValueOnly(btcgbp, 'GBP')
 
+# TODO Werte prüfen
 # Uncomment this line of code to show the single CS value on the console
-#cs.corwinSchultzValueOnly(BTCUSD_csv)
+# cs.corwinSchultzValueOnly(btcusd, 'USD')
+# cs.corwinSchultzValueOnly(btceur, 'EUR')
+# cs.corwinSchultzValueOnly(btcjpy, 'JPY')
+# cs.corwinSchultzValueOnly(btcgbp, 'GBP')
 
 # Uncomment this line of code to show the single AR value on the console
 #ar.abdiRanaldoValueOnly(BTCUSD_csv)

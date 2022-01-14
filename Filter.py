@@ -20,6 +20,6 @@ class Filter:
                 all the data will be saved in an array called 'data' as Strings
     """
     # TODO: new Commentation, printing all columns inline
-    def print_full(dataset):
+    def print_full(self, dataset):
         pd.set_option("display.max_rows", None, "display.max_columns", None)
         print(dataset)

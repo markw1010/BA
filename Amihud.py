@@ -17,29 +17,6 @@ Amihud, Y., 2002. Illiquidity and stock returns: cross-section and time-series e
 class Amihud:
     numpy.set_printoptions(threshold=sys.maxsize)
 
-    """
-    Note: This method is not used up to now!
-    
-    this method standardise the unix time stamp. In case that the unix code in the cvs file has parts of the data in 
-    second format and other parts in millisecond format, this method will standardise the timestamp. Therefore it 
-    checks, if the amount of characters of the time stamp is above or under 10. If it is above 10, the code is in 
-    milliseconds, otherwise it will be in seconds
-
-    Requires:   the name of the column with the unix time stamp in the cvs file has to be called 'unix'
-                the unix data has to be in seconds or in milliseconds
-
-    Ensures:    The right date and time will be returned in the format: yyyy-mm-dd hh:mm:ss
-    
-    Returns:    time - The right date and time in the format: yyyy-mm-dd hh:mm:ss
-    """
-    def standardiseUnix(self, item):
-        unixMilliseconds = int(item.get('unix')) / 1000
-        unixSeconds = int(item.get('unix'))
-        if len(item['unix']) <= 10:
-            time = datetime.utcfromtimestamp(unixSeconds).strftime('%Y-%m-%d %H:%M:%S')
-        else:
-            time = datetime.utcfromtimestamp(unixMilliseconds).strftime('%Y-%m-%d %H:%M:%S')
-        return time
 
     """
     This method returns an array of the open prices of BTC in a specific time period and currency filtered out of a cvs 
@@ -58,7 +35,6 @@ class Amihud:
         open = file['open'].to_numpy()
 
         # print(*open, sep='\n')
-        print(open)
 
         return open
 
@@ -79,7 +55,6 @@ class Amihud:
         close = file['close'].to_numpy()
 
         # print(*close, sep='\n')
-        print(close)
 
         return close
 
@@ -102,7 +77,6 @@ class Amihud:
         volume = file['Volume ' + currency]
 
         # print(*volume, sep='\n')
-        print(volume)
 
         return volume
 
@@ -134,7 +108,7 @@ class Amihud:
     def amihudValueOnly(self, file, currency):
         amihud = self.calculateAmihud(file, currency)
 
-        print('Amihud:')
+        print(currency + ' Amihud:')
         print(amihud)
 
     """
@@ -249,45 +223,3 @@ class Amihud:
         expression = expression[
             ~numpy.isnan(expression)]  # to remove all nan values ( caused by missing USD volume values)
         return expression
-
-    """
-    This method copies the open price, close prise and volume USD amount of the arrays into arrays named np.openFlt, 
-    np.closeFlt and np.volumeUSDFlt as floater value
-
-    Requires:   all the values in openStr, closeStr and volumeUSDStr should contain only floater values 
-
-    Ensures:    all values in openStr, closeStr and volumeUSDStr will be copied in separated arrays as floater values
-    """
-
-    # TODO make it work for all types of currencies not only USD!
-    # def extractFlt(self):
-    #     for value in self.openStr:
-    #         np.openFlt.append(float(value))
-    #     for value in self.closeStr:
-    #         np.closeFlt.append(float(value))
-    #     for value in self.volumeUSDStr:
-    #         np.volumeUSDFlt.append(float(value))
-
-
-    """
-    This method extract the open prices, close prices and USD volume of a cvs file with daily, hourly or minutely data 
-    and safes them as strings in separated arrays called openStr, closeStr and volumeUSDStr. 
-
-    Requires:   The cvs file has to be formatted so that it can be read
-                The columns in the cvs file have to be called 'open', 'close' and 'Volume USD'
-
-    Ensures:    three arrays will be filled with the string representatives of the open price, close price and Volume 
-                USD respectively 
-    """
-
-    # TODO make it work for all types of currencies not only USD!
-    # def extractStr(self, fileReader):
-    #     for item in fileReader:
-    #         self.openStr.append(item['open'])
-    #         self.closeStr.append(item['close'])
-    #         self.volumeUSDStr.append(item['Volume USD'])
-    #     self.openStr.remove('open')
-    #     self.closeStr.remove('close')
-    #     self.volumeUSDStr.remove('Volume USD')
-
-
