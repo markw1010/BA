@@ -54,8 +54,6 @@ class Amihud:
 
         close = file['close'].to_numpy()
 
-        # print(*close, sep='\n')
-
         return close
 
     """
@@ -75,8 +73,6 @@ class Amihud:
     def getVolume(self, file, currency):
 
         volume = file['Volume ' + currency]
-
-        # print(*volume, sep='\n')
 
         return volume
 

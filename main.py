@@ -1,4 +1,3 @@
-import csv
 import pandas as pd
 
 from AbdiRanaldo import AbdiRanaldo
@@ -107,9 +106,15 @@ ll = LeadLag()
 # ar.printAbdiRanaldo(btcgbp, 'GBP')
 
 
-# ll.extractReturn(BTCUSD_csv, BTCEUR_csv, BTCJPY_csv, BTCGBP_csv)
+# Uncomment this lines of code to show the returns of each BTC-currency pair
+# ll.printFullReturns(btcusd, btceur, btcjpy, btcgbp)
+# ll.printFullPercentageReturns(btcusd, btceur, btcjpy, btcgbp)
+# ll.printReturns(btcusd, btceur, btcjpy, btcgbp)
+# ll.printPercentageReturns(btcusd, btceur, btcjpy, btcgbp)
 
-# ll.extractUSDstr(BTCUSD_csv)
 
-# ll.extractUSDflt()
-
+# Uncomment this lines of code to plot the returns of BTC currency pairs
+#ll.plotDf(btcusd, btceur, btcjpy, btcgbp, 'USD')
+#ll.plotDf(btcusd, btceur, btcjpy, btcgbp, 'EUR')
+#ll.plotDf(btcusd, btceur, btcjpy, btcgbp, 'GBP')
+#ll.plotDf(btcusd, btceur, btcjpy, btcgbp, 'JPY')
