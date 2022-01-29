@@ -115,4 +115,5 @@ ll = LeadLag()
 
 # TODO Ausreißerwert
 # Uncomment this lines of code to plot the returns of BTC currency pairs
-ll.plotDf(btcusd, btceur, btcjpy, btcgbp, 'JPY', 'USD', 'EUR', 'JPY')
+#ll.plotDf(btcusd, btceur, btcjpy, btcgbp, 'JPY', 'USD', 'EUR', 'JPY')
+#ll.createDataFrameSingeCurrency(btcusd, btceur, btcjpy, btcgbp, 'USD')
