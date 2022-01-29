@@ -60,7 +60,7 @@ ll = LeadLag()
 
 # TODO nice printing
 # Uncomment this line of code to show the detailed Amihud calculation on the console
-# amihud.amihudDetailed(btcusd, 'USD')
+# amihud.amihudDetailed(btcusd, 'USD') # TODO fail
 # amihud.amihudDetailed(btceur, 'EUR')
 # amihud.amihudDetailed(btcjpy, 'JPY')
 # amihud.amihudDetailed(btcgbp, 'GBP')
@@ -113,8 +113,6 @@ ll = LeadLag()
 # ll.printPercentageReturns(btcusd, btceur, btcjpy, btcgbp)
 
 
+# TODO Ausreißerwert
 # Uncomment this lines of code to plot the returns of BTC currency pairs
-#ll.plotDf(btcusd, btceur, btcjpy, btcgbp, 'USD')
-#ll.plotDf(btcusd, btceur, btcjpy, btcgbp, 'EUR')
-#ll.plotDf(btcusd, btceur, btcjpy, btcgbp, 'GBP')
-#ll.plotDf(btcusd, btceur, btcjpy, btcgbp, 'JPY')
+ll.plotDf(btcusd, btceur, btcjpy, btcgbp, 'JPY', 'USD', 'EUR', 'JPY')

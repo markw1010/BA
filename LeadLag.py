@@ -34,6 +34,7 @@ class LeadLag():
 
         return df
 
+
     def printFullReturns(self, usdReturns, eurReturns, jpyReturns, gbpReturns):
         pandas.set_option("display.max_rows", None, "display.max_columns", None)
         df = self.createDataFrame(usdReturns, eurReturns, jpyReturns, gbpReturns).apply(lambda x: x * 100)
@@ -47,6 +48,7 @@ class LeadLag():
 
     def printReturns(self, usdReturns, eurReturns, jpyReturns, gbpReturns):
         print(self.createDataFrame(usdReturns, eurReturns, jpyReturns, gbpReturns))
+
 
     def printPercentageReturns(self, usdReturns, eurReturns, jpyReturns, gbpReturns):
         df = self.createDataFrame(usdReturns, eurReturns, jpyReturns, gbpReturns).apply(lambda x: x * 100)
@@ -73,11 +75,12 @@ class LeadLag():
 
         return time, usd, eur, jpy, gbp
 
-    def plotDf(self, usdReturns, eurReturns, jpyReturns, gbpReturns, currency):
+    def plotDf(self, usdReturns, eurReturns, jpyReturns, gbpReturns, currency, currency2, currency3, currency4):
 
         df = self.createDataFrame(usdReturns, eurReturns, jpyReturns, gbpReturns)
-        plt.title('BTC/' + currency + ' returns')
-        plt.plot(df['time'], df['BTC/' + currency + ' returns'])
+        plt.title('returns')
+        plt.plot(df['time'], df['BTC/' + currency + ' returns'], df['time'], df['BTC/' + currency2 + ' returns'],
+                 df['BTC/' + currency3 + ' returns'], df['BTC/' + currency4 + ' returns'])
         plt.xlabel('time')
         plt.ylabel('return')
         plt.show()
