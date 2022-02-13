@@ -46,7 +46,7 @@ filter = Filter()
 ll = LeadLag()
 
 # Uncomment this line of code to show the whole dataset on the console
-# filter.print_full(btcusd)
+filter.print_full(btcusd)
 # filter.print_full(btceur)
 # filter.print_full(btcjpy)
 # filter.print_full(btcgbp)
@@ -116,4 +116,11 @@ ll = LeadLag()
 # TODO Ausreißerwert
 # Uncomment this lines of code to plot the returns of BTC currency pairs
 #ll.plotDf(btcusd, btceur, btcjpy, btcgbp, 'JPY', 'USD', 'EUR', 'JPY')
+#ll.createDataFrame(btcusd, btceur, btcjpy, btcgbp)
 #ll.createDataFrameSingeCurrency(btcusd, btceur, btcjpy, btcgbp, 'USD')
+#ll.plotOne(btcusd, btceur, btcjpy, btcgbp, 'USD')
+#ll.plotOne(btcusd, btceur, btcjpy, btcgbp, 'EUR')
+#ll.plotOne(btcusd, btceur, btcjpy, btcgbp, 'GBP')
+#ll.plotOne(btcusd, btceur, btcjpy, btcgbp, 'JPY')
+
+ll.getOutliers(btcusd)

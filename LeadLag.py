@@ -40,6 +40,7 @@ class LeadLag():
                    }
 
         df = pandas.DataFrame(returns)
+        print(df)
 
         return df
 
@@ -47,7 +48,7 @@ class LeadLag():
     This method returns the returns of one BTC- currency pair with the specific timestamp. The length of the dataset 
     is standardise of the smallest dataset of each BTC-currency pair available
     """
-    def createDataFrameSingeCurrency(self, usdReturns, eurReturns, jpyReturns, gbpReturns, currency):
+    def createDataFrameSingleCurrency(self, usdReturns, eurReturns, jpyReturns, gbpReturns, currency):
 
         if currency == 'USD':
             returns = {'time': self.standardiseLength(usdReturns, eurReturns, jpyReturns, gbpReturns)[0],
@@ -102,7 +103,6 @@ class LeadLag():
         gbp = self.getReturn(gbpReturns)
         return eur, gbp, jpy, usd
 
-
     """
     This method plots all of the BTC-currency pairs in one line diagram
     """
@@ -116,4 +116,27 @@ class LeadLag():
         plt.ylabel('return')
         plt.show()
 
-    #def plotOne(self, ):
+    """
+    This method plots the returns of only one BTC-currency pair with the time on the x-axis and the return amount on the 
+    y-axis
+    """
+    def plotOne(self, usdReturns, eurReturns, jpyReturns, gbpReturns, currency):
+
+        df = self.createDataFrameSingleCurrency(usdReturns, eurReturns, jpyReturns, gbpReturns, currency)
+        plt.title('returns')
+        plt.plot(df['time'], df['BTC/' + currency + ' returns'])
+        plt.xlabel('time')
+        plt.ylabel('return')
+        plt.show()
+
+    """
+    This method calculates the outlier data on a simple way. The standarddeviation of the whole dataset will be
+    calculated and all data which are above or under 3 time standarddeviation are considered as outlier data
+    """
+    def getOutliers(self, file):
+        outliers = []
+        close = file['close'].to_numpy()
+
+        datasetStd = np.std(close)
+        print(datasetStd)
+
