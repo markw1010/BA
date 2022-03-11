@@ -46,14 +46,13 @@ filter = Filter()
 ll = LeadLag()
 
 # Uncomment this line of code to show the whole dataset on the console
-filter.print_full(btcusd)
+# filter.print_full(btcusd)
 # filter.print_full(btceur)
 # filter.print_full(btcjpy)
 # filter.print_full(btcgbp)
 
-
 # Uncomment this lines of code to show the dataset on the console
-# print(btcusd)
+#print(btcusd)
 # print(btceur)
 # print(btcjpy)
 # print(btcgbp)
@@ -123,4 +122,5 @@ filter.print_full(btcusd)
 #ll.plotOne(btcusd, btceur, btcjpy, btcgbp, 'GBP')
 #ll.plotOne(btcusd, btceur, btcjpy, btcgbp, 'JPY')
 
-ll.getOutliers(btcusd)
+#ll.getOutliersIndex(btcusd)
+ll.getDates(ll.getOutliersIndex(btcusd), btcusd)

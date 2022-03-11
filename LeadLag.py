@@ -25,6 +25,14 @@ class LeadLag():
 
         return expression
 
+
+    def getDates(self, index, file):
+
+        print(file.index)
+        for index in index:
+            file.iloc[[index]]
+            print(file.iloc[[index]])
+
     """
     This method takes datasets of the currency pairs BTC/USD, BTC/EUR, BTC/JPY and BTC/GBP and prints all the returns
     of each currency pair in one dataframe. The amount of data is limited by the shortest available dataset of the 
@@ -133,10 +141,20 @@ class LeadLag():
     This method calculates the outlier data on a simple way. The standarddeviation of the whole dataset will be
     calculated and all data which are above or under 3 time standarddeviation are considered as outlier data
     """
-    def getOutliers(self, file):
+    def getOutliersIndex(self, file):
         outliers = []
-        close = file['close'].to_numpy()
+        index = []
+        returns = self.getReturn(file)
 
-        datasetStd = np.std(close)
-        print(datasetStd)
+        datasetStd = np.std(returns)
+        datasetMean = np.mean(returns)
+        cutOff = datasetStd * 3
 
+        lowerLimit = datasetMean - cutOff
+        upperLimit = datasetMean + cutOff
+
+        for outlier in returns:
+            if outlier > upperLimit or outlier < lowerLimit:
+                outliers.append(outlier)
+                index.append(returns.index(outlier))
+        return index
