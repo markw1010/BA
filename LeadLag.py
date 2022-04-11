@@ -10,6 +10,14 @@ This class contains methods to calculate the Lead Lag effects of one BTC-currenc
 class LeadLag():
 
     """
+    lag 1
+    """
+    def getAutocorrelation(self, file, currencypair):
+        file['Return'] = file['close'].pct_change()
+        autocorrelation = file['Return'].autocorr()
+        print('The autocorrelation of the currencypair ' + currencypair + ' is: ', autocorrelation)
+
+    """
     This method calculates the returns of the close values of a cryptocurrency dataset by dividing the close value at
     t+1 by the close value at t and subtract the value by 1
     """
@@ -157,4 +165,8 @@ class LeadLag():
             if outlier > upperLimit or outlier < lowerLimit:
                 outliers.append(outlier)
                 index.append(returns.index(outlier))
+        print('index')
+        print(index)
+        print('len(index)')
+        print(len(index))
         return index

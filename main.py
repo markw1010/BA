@@ -46,13 +46,13 @@ filter = Filter()
 ll = LeadLag()
 
 # Uncomment this line of code to show the whole dataset on the console
-# filter.print_full(btcusd)
+#filter.print_full(btcusd)
 # filter.print_full(btceur)
 # filter.print_full(btcjpy)
 # filter.print_full(btcgbp)
 
 # Uncomment this lines of code to show the dataset on the console
-#print(btcusd)
+# print(btcusd)
 # print(btceur)
 # print(btcjpy)
 # print(btcgbp)
@@ -63,6 +63,7 @@ ll = LeadLag()
 # amihud.amihudDetailed(btceur, 'EUR')
 # amihud.amihudDetailed(btcjpy, 'JPY')
 # amihud.amihudDetailed(btcgbp, 'GBP')
+# amihud.getAmihudExpression(btcusd, 'USD')
 
 # Uncomment this line of code to show the detailed CS calculation on the console
 # cs.printCS(btcusd, 'USD')
@@ -76,6 +77,7 @@ ll = LeadLag()
 #amihud.amihudValueOnly(btceur, 'EUR')
 #amihud.amihudValueOnly(btcjpy, 'JPY')
 #amihud.amihudValueOnly(btcgbp, 'GBP')
+amihud.printStandardisedAh(btcusd, btceur, btcgbp, btcjpy)
 
 # TODO Werte prüfen
 # Uncomment this line of code to show the single CS value on the console
@@ -114,7 +116,7 @@ ll = LeadLag()
 
 # TODO Ausreißerwert
 # Uncomment this lines of code to plot the returns of BTC currency pairs
-#ll.plotDf(btcusd, btceur, btcjpy, btcgbp, 'JPY', 'USD', 'EUR', 'JPY')
+#ll.plotDf(btcusd, btceur, btcjpy, btcgbp, 'JPY', 'USD', 'EUR', 'JPY')       #Ausreißer
 #ll.createDataFrame(btcusd, btceur, btcjpy, btcgbp)
 #ll.createDataFrameSingeCurrency(btcusd, btceur, btcjpy, btcgbp, 'USD')
 #ll.plotOne(btcusd, btceur, btcjpy, btcgbp, 'USD')
@@ -123,4 +125,8 @@ ll = LeadLag()
 #ll.plotOne(btcusd, btceur, btcjpy, btcgbp, 'JPY')
 
 #ll.getOutliersIndex(btcusd)
-ll.getDates(ll.getOutliersIndex(btcusd), btcusd)
+#ll.getDates(ll.getOutliersIndex(btcusd), btcusd)
+#ll.getAutocorrelation(btcusd, 'btcusd')
+#ll.getAutocorrelation(btceur, 'btceur')
+#ll.getAutocorrelation(btcjpy, 'btcjpy')
+#ll.getAutocorrelation(btcgbp, 'btcgbp')

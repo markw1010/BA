@@ -218,4 +218,50 @@ class Amihud:
         expression = np.divide(np.counter, volume, out=np.zeros_like(np.counter), where=volume != 0)
         expression = expression[
             ~numpy.isnan(expression)]  # to remove all nan values ( caused by missing USD volume values)
+
         return expression
+
+    """
+    this method takes four arrays which are containing the amihud values 
+    """
+    def getSmallest(self, usd, eur, gbp, jpy):
+        usd = len(self.getAmihudExpression(usd, 'USD'))
+        eur = len(self.getAmihudExpression(eur, 'EUR'))
+        gbp = len(self.getAmihudExpression(gbp, 'GBP'))
+        jpy = len(self.getAmihudExpression(jpy, 'JPY'))
+
+        amihudValues = (usd, eur, gbp, jpy)
+
+        smallest = amihudValues.index(min(amihudValues))
+
+        print('smallest: ')
+        print(smallest)
+        print(amihudValues[smallest])
+
+        return amihudValues[smallest]
+
+    def cutAhArray(self, usd, eur, gbp, jpy):
+
+        smallestArray = self.getSmallest(usd, eur, gbp, jpy)
+
+        usd = self.getAmihudExpression(usd, 'USD')
+        eur = self.getAmihudExpression(eur, 'EUR')
+        gbp = self.getAmihudExpression(gbp, 'GBP')
+        jpy = self.getAmihudExpression(jpy, 'JPY')
+
+        usd = usd[:smallestArray]
+        eur = eur[:smallestArray]
+        jpy = jpy[:smallestArray]
+        gbp = gbp[:smallestArray]
+
+        return usd, eur, gbp, jpy
+
+    def printStandardisedAh(self, fileUSD, fileEUR, fileGBP, fileJPY):
+
+        usd, eur, gbp, jpy = self.cutAhArray(fileUSD, fileEUR, fileGBP, fileJPY)
+
+        print(usd)
+        print(eur)
+        print(gbp)
+        print(jpy)
+
