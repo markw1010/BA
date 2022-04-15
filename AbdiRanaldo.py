@@ -11,14 +11,6 @@ of Financial Studies, Volume 30, Issue 12, December 2017. 4437-4480
 
 class AbdiRanaldo:
 
-    highStr = []
-    lowStr = []
-    closeStr = []
-
-    np.highFlt = []
-    np.lowFlt = []
-    np.closeFlt = []
-
     """
     This method prints the value for the AR estimator which is referenced at the top of the class description. 
     Therefore it first extract all relevant data in String format, then the data will be saved as floater so that the 
@@ -30,16 +22,11 @@ class AbdiRanaldo:
     Ensures:    a floater value for the AR estimator as well as other pre calculation values will be printed on the 
                 console 
     """
-    def abdiRanaldoDetailed(self, fileReader):
-        self.extractStr(fileReader)
-        self.extractFlt()
-        self.printAbdiRanaldo()
 
-
-    def printAbdiRanaldo(self):
-        ARt = self.getARt()
-        ARi = self.getARi()
-        print('ARi: ')
+    def printAbdiRanaldo(self, file, currency):
+        ARt = self.getARt(file)
+        ARi = self.getARi(file)
+        print(currency + 'ARi: ')
         print(ARi)
         print('--------------')
         print('len(ARi): ')
@@ -48,7 +35,7 @@ class AbdiRanaldo:
         print('np.sum(ARi): ')
         print(np.sum(ARi))
         print('--------------')
-        print('ARt: ')
+        print(currency + 'ARt: ')
         print(ARt)
         print('--------------')
 
@@ -60,33 +47,34 @@ class AbdiRanaldo:
 
     Ensures:    a floater value for the AR estimator will be printed on the console 
     """
-    def abdiRanaldoValueOnly(self, fileReader):
-        self.extractStr(fileReader)
-        self.extractFlt()
-        ARt = self.getARt()
+    def abdiRanaldoValueOnly(self, file, currency):
+        ARt = self.getARt(file)
 
-        print('ARt: ')
+        print(currency + ' ARt: ')
         print(ARt)
 
     """
     This method is only implemented for the use of comparison to the AR estimator in the comparison class.
     """
-    def abdiRanaldoComparison(self):
-        ARt = self.getARt()
+    def abdiRanaldoComparison(self, file, currency):
+        ARt = self.getARt(file)
 
-        print('ARt: ')
+        print(currency + ' ARt: ')
         print(ARt)
 
-    def getHi(self):
-        hi = np.log(np.highFlt)
+    def getHi(self, file):
+        high = file['high'].to_numpy()
+        hi = np.log(high)
         return hi
 
-    def getLi(self):
-        li = np.log(np.lowFlt)
+    def getLi(self, file):
+        low = file['low'].to_numpy()
+        li = np.log(low)
         return li
 
-    def getCi(self):
-        ci = np.log(np.closeFlt)
+    def getCi(self, file):
+        close = file['close'].to_numpy()
+        ci = np.log(close)
         return ci
 
     """
@@ -96,9 +84,9 @@ class AbdiRanaldo:
     
     Ensures: An array with the pi values will be returned   
     """
-    def getPi(self):
-        hi = self.getHi()
-        li = self.getLi()
+    def getPi(self, file):
+        hi = self.getHi(file)
+        li = self.getLi(file)
         hili = np.add(hi, li)
         pi = np.divide(hili, 2)
         return pi
@@ -111,9 +99,9 @@ class AbdiRanaldo:
     
     Ensures:    An array with all ARi values will be returned 
     """
-    def getARi(self):
-        ci = self.getCi()
-        pi = self.getPi()
+    def getARi(self, file):
+        ci = self.getCi(file)
+        pi = self.getPi(file)
 
         pi1 = np.delete(pi, 0)
         ci1 = np.delete(ci, -1)
@@ -138,44 +126,73 @@ class AbdiRanaldo:
     
     Ensures:    A floater value will be returned      
     """
-    def getARt(self):
-        ARi = self.getARi()
+    def getARt(self, file):
+        ARi = self.getARi(file)
         sum = np.sum(ARi)
         amount = len(ARi)
         ARt = sum/amount
         return ARt
 
     """
-    This method copies the high price, low prise and close price of the arrays into arrays named np.highFlt,
-    np.lowFlt and np.closeFlt as floater value
+    this method takes four arrays which are containing the amihud values in all representative currency pairs and 
+    figures out which array contains the fewest data.
 
-    Requires:   all the values in highStr, lowStr and closeStr should contain only floater values
+    Requires:   
 
-    Ensures:    all values in highStr, lowStr and closeStr will be copied in separated arrays as floater values
+    Ensures:    An integer value above -1 will be return
+
+    Returns:    the amount of data that the smallest array contains
     """
-    def extractFlt(self):
-        for value in self.highStr:
-            np.highFlt.append(float(value))
-        for value in self.lowStr:
-            np.lowFlt.append(float(value))
-        for value in self.closeStr:
-            np.closeFlt.append(float(value))
+    def getSmallest(self, usd, eur, gbp, jpy):
+        usd = len(self.getARi(usd))
+        eur = len(self.getARi(eur))
+        gbp = len(self.getARi(gbp))
+        jpy = len(self.getARi(jpy))
+
+        arValues = (usd, eur, gbp, jpy)
+
+        smallest = arValues.index(min(arValues))
+
+        print('smallest: ')
+        print(smallest)
+        print(arValues[smallest])
+
+        return arValues[smallest]
 
     """
-       This method extract the high prices, low prices and close price of a cvs file with daily, hourly or minutely data 
-       and safes them as strings in separated arrays called highStr, lowStr and closeStr. 
+    This method cuts all four arrays to the amount of data that contains the smallest of the four arrays. The arrays 
+    are containing the AR values and each array represent one currency pair
 
-       Requires:   The cvs file has to be formatted so that it can be read
-                   The columns in the cvs file have to be called 'high', 'low' and 'close'
+    Requires:
 
-       Ensures:    three arrays will be filled with the string representatives of the high price, low price and close 
-                   price respectively 
-       """
-    def extractStr(self, fileReader):
-        for item in fileReader:
-            self.highStr.append(item['high'])
-            self.lowStr.append(item['low'])
-            self.closeStr.append(item['close'])
-        self.highStr.remove('high')
-        self.lowStr.remove('low')
-        self.closeStr.remove('close')
+    Ensures:    four arrays with the exact same amount of data will be returned
+
+    Returns:    cuttet arrays on the smallest amount of data of each currency pair 
+    """
+    def cutArArray(self, usd, eur, gbp, jpy):
+
+        smallestArray = self.getSmallest(usd, eur, gbp, jpy)
+
+        usd = self.getARi(usd)
+        eur = self.getARi(eur)
+        gbp = self.getARi(gbp)
+        jpy = self.getARi(jpy)
+
+        usd = usd[:smallestArray]
+        eur = eur[:smallestArray]
+        jpy = jpy[:smallestArray]
+        gbp = gbp[:smallestArray]
+
+        return usd, eur, gbp, jpy
+
+    """
+    This method prints the standardised arrays containing the amihud values for each currency pair
+    """
+    def printStandardisedAr(self, fileUSD, fileEUR, fileGBP, fileJPY):
+
+        usd, eur, gbp, jpy = self.cutArArray(fileUSD, fileEUR, fileGBP, fileJPY)
+
+        print(usd)
+        print(eur)
+        print(gbp)
+        print(jpy)

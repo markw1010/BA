@@ -1,10 +1,11 @@
-import csv
+import pandas as pd
 
 from AbdiRanaldo import AbdiRanaldo
 from Amihud import Amihud
 from Comparison import Comparison
 from CorwinSchultz import CorwinSchultz
 from Filter import Filter
+from LeadLag import LeadLag
 
 """
 This program will take a cvs file which contains daily, hourly or minutely high and low, open and close as well as other 
@@ -34,35 +35,103 @@ University of Stuttgart
 """
 
 # Prototype dataset
-file = open('Bitfinex_BTCUSD_d_1.csv', newline='')
-BTCUSD_csv = csv.DictReader(file, delimiter=';')
+btcusd = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/daily/Bitfinex_BTCUSD_d.csv')
+btceur = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/daily/Bitfinex_BTCEUR_d.csv')
+btcjpy = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/daily/Bitfinex_BTCJPY_d.csv')
+btcgbp = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/daily/Bitfinex_BTCGBP_d.csv')
 
 amihud = Amihud()
 cs = CorwinSchultz()
 comp = Comparison()
 ar = AbdiRanaldo()
 filter = Filter()
+ll = LeadLag()
 
 # Uncomment this line of code to show the whole dataset on the console
-#filter.filterCvs(BTCUSD_csv)
+#filter.print_full(btcusd)
+# filter.print_full(btceur)
+# filter.print_full(btcjpy)
+# filter.print_full(btcgbp)
 
+# Uncomment this lines of code to show the dataset on the console
+# print(btcusd)
+# print(btceur)
+# print(btcjpy)
+# print(btcgbp)
+
+# TODO nice printing
 # Uncomment this line of code to show the detailed Amihud calculation on the console
-#amihud.amihudDetailed(BTCUSD_csv)
+# amihud.amihudDetailed(btcusd, 'USD') # TODO fail
+# amihud.amihudDetailed(btceur, 'EUR')
+# amihud.amihudDetailed(btcjpy, 'JPY')
+# amihud.amihudDetailed(btcgbp, 'GBP')
+# amihud.getAmihudExpression(btcusd, 'USD')
 
 # Uncomment this line of code to show the detailed CS calculation on the console
-#cs.corwinSchultzDetailed(BTCUSD_csv)
+# cs.printCS(btcusd, 'USD')
+# cs.printCS(btceur, 'EUR')
+# cs.printCS(btcjpy, 'JPY')
+# cs.printCS(btcgbp, 'GBP')
+# cs.cutCsArray(btcusd, btceur, btcgbp, btcjpy)
+# cs.printstandardisedCS(btcusd, btceur, btcgbp, btcjpy)
 
+# TODO JPY values checking
 # Uncomment this line of code to show the single Amihud value on the console
-#amihud.amihudValueOnly(BTCUSD_csv)
+# amihud.amihudValueOnly(btcusd, 'USD')
+# amihud.amihudValueOnly(btceur, 'EUR')
+# amihud.amihudValueOnly(btcjpy, 'JPY')
+# amihud.amihudValueOnly(btcgbp, 'GBP')
+# amihud.printStandardisedAh(btcusd, btceur, btcgbp, btcjpy)
 
+# TODO Werte prüfen
 # Uncomment this line of code to show the single CS value on the console
-#cs.corwinSchultzValueOnly(BTCUSD_csv)
+# cs.corwinSchultzValueOnly(btcusd, 'USD')
+# cs.corwinSchultzValueOnly(btceur, 'EUR')
+# cs.corwinSchultzValueOnly(btcjpy, 'JPY')
+# cs.corwinSchultzValueOnly(btcgbp, 'GBP')
 
 # Uncomment this line of code to show the single AR value on the console
-#ar.abdiRanaldoValueOnly(BTCUSD_csv)
+# ar.abdiRanaldoValueOnly(btcusd, 'USD')
+# ar.abdiRanaldoValueOnly(btceur, 'EUR')
+# ar.abdiRanaldoValueOnly(btcjpy, 'JPY')
+# ar.abdiRanaldoValueOnly(btcgbp, 'GBP')
+ar.printStandardisedAr(btcusd, btceur, btcgbp, btcjpy)
+
 
 # Uncomment this line of code to show the CS, the Amihud and the AR value
-#comp.comparison(BTCUSD_csv)
+# comp.comparison(btcusd, 'USD')
+# comp.comparison(btceur, 'EUR')
+# comp.comparison(btcjpy, 'JPY')
+# comp.comparison(btcgbp, 'GBP')
+
 
 # Uncomment this line of code to show the detailed AR calculation on the console
-ar.abdiRanaldoDetailed(BTCUSD_csv)
+# ar.printAbdiRanaldo(btcusd, 'USD')
+# ar.printAbdiRanaldo(btceur, 'EUR')
+# ar.printAbdiRanaldo(btcjpy, 'JPY')
+# ar.printAbdiRanaldo(btcgbp, 'GBP')
+
+
+# Uncomment this lines of code to show the returns of each BTC-currency pair
+# ll.printFullReturns(btcusd, btceur, btcjpy, btcgbp)
+# ll.printFullPercentageReturns(btcusd, btceur, btcjpy, btcgbp)
+# ll.printReturns(btcusd, btceur, btcjpy, btcgbp)
+# ll.printPercentageReturns(btcusd, btceur, btcjpy, btcgbp)
+
+
+# TODO Ausreißerwert
+# Uncomment this lines of code to plot the returns of BTC currency pairs
+#ll.plotDf(btcusd, btceur, btcjpy, btcgbp, 'JPY', 'USD', 'EUR', 'JPY')       #Ausreißer
+#ll.createDataFrame(btcusd, btceur, btcjpy, btcgbp)
+#ll.createDataFrameSingeCurrency(btcusd, btceur, btcjpy, btcgbp, 'USD')
+#ll.plotOne(btcusd, btceur, btcjpy, btcgbp, 'USD')
+#ll.plotOne(btcusd, btceur, btcjpy, btcgbp, 'EUR')
+#ll.plotOne(btcusd, btceur, btcjpy, btcgbp, 'GBP')
+#ll.plotOne(btcusd, btceur, btcjpy, btcgbp, 'JPY')
+
+#ll.getOutliersIndex(btcusd)
+#ll.getDates(ll.getOutliersIndex(btcusd), btcusd)
+#ll.getAutocorrelation(btcusd, 'btcusd')
+#ll.getAutocorrelation(btceur, 'btceur')
+#ll.getAutocorrelation(btcjpy, 'btcjpy')
+#ll.getAutocorrelation(btcgbp, 'btcgbp')

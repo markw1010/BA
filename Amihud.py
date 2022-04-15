@@ -17,37 +17,6 @@ Amihud, Y., 2002. Illiquidity and stock returns: cross-section and time-series e
 class Amihud:
     numpy.set_printoptions(threshold=sys.maxsize)
 
-    openStr = []
-    closeStr = []
-    volumeUSDStr = []
-
-    np.openFlt = []
-    np.closeFlt = []
-    np.volumeUSDFlt = []
-
-    """
-    Note: This method is not used up to now!
-    
-    this method standardise the unix time stamp. In case that the unix code in the cvs file has parts of the data in 
-    second format and other parts in millisecond format, this method will standardise the timestamp. Therefore it 
-    checks, if the amount of characters of the time stamp is above or under 10. If it is above 10, the code is in 
-    milliseconds, otherwise it will be in seconds
-
-    Requires:   the name of the column with the unix time stamp in the cvs file has to be called 'unix'
-                the unix data has to be in seconds or in milliseconds
-
-    Ensures:    The right date and time will be returned in the format: yyyy-mm-dd hh:mm:ss
-    
-    Returns:    time - The right date and time in the format: yyyy-mm-dd hh:mm:ss
-    """
-    def standardiseUnix(self, item):
-        unixMilliseconds = int(item.get('unix')) / 1000
-        unixSeconds = int(item.get('unix'))
-        if len(item['unix']) <= 10:
-            time = datetime.utcfromtimestamp(unixSeconds).strftime('%Y-%m-%d %H:%M:%S')
-        else:
-            time = datetime.utcfromtimestamp(unixMilliseconds).strftime('%Y-%m-%d %H:%M:%S')
-        return time
 
     """
     This method returns an array of the open prices of BTC in a specific time period and currency filtered out of a cvs 
@@ -61,15 +30,11 @@ class Amihud:
     
     Returns:    open - Array with all the open data represented as Strings
     """
-    def getOpen(self, fileReader):
+    def getOpen(self, file):
 
-        open = []
-
-        for item in fileReader:
-            open.append(item['open'])
+        open = file['open'].to_numpy()
 
         # print(*open, sep='\n')
-        print(open)
 
         return open
 
@@ -85,15 +50,9 @@ class Amihud:
     
     Returns:    open - Array with all the close data represented as Strings
     """
-    def getClose(self, fileReader):
+    def getClose(self, file):
 
-        close = []
-
-        for item in fileReader:
-            close.append(item['close'])
-
-        # print(*close, sep='\n')
-        print(close)
+        close = file['close'].to_numpy()
 
         return close
 
@@ -111,15 +70,9 @@ class Amihud:
     
     Returns:    volume - Array with all the volume data represented as Strings
     """
-    def getVolume(self, fileReader, currency):
+    def getVolume(self, file, currency):
 
-        volume = []
-
-        for item in fileReader:
-            volume.append(item['Volume' + currency])
-
-        # print(*volume, sep='\n')
-        print(volume)
+        volume = file['Volume ' + currency]
 
         return volume
 
@@ -134,11 +87,9 @@ class Amihud:
     Ensures:    a floater value for the amihud estimator as well as other pre calculation values will be printed on the 
                 console 
     """
-    def amihudDetailed(self, fileReader):
-        self.extractStr(fileReader)
-        self.extractFlt()
-        amihud = self.calculateAmihud()
-        expression = self.getAmihudExpression()
+    def amihudDetailed(self, file, currency):
+        amihud = self.calculateAmihud(file, currency)
+        expression = self.getAmihudExpression(file, currency)
         self.printAmihud(amihud, expression)
 
     """
@@ -150,22 +101,20 @@ class Amihud:
     Ensures:    a floater value for the amihud estimator will be printed on the console 
     """
 
-    def amihudValueOnly(self, fileReader):
-        self.extractStr(fileReader)
-        self.extractFlt()
-        amihud = self.calculateAmihud()
+    def amihudValueOnly(self, file, currency):
+        amihud = self.calculateAmihud(file, currency)
 
-        print('Amihud:')
+        print(currency + ' Amihud:')
         print(amihud)
 
     """
     This method is only implemented for the use of comparison to the CS estimator in the comparison class.
     """
 
-    def amihudComparison(self):
-        amihud = self.calculateAmihud()
+    def amihudComparison(self, file, currency):
+        amihud = self.calculateAmihud(file, currency)
 
-        print('Amihud:')
+        print(currency + ' Amihud:')
         print(amihud)
 
     """
@@ -178,24 +127,24 @@ class Amihud:
                 printed on the console
     """
 
-    def printAmihud(self, amihud, expression):
+    def printAmihud(self, amihud, expression, file, currency):
         print('open')
-        print(np.openFlt)
+        print(self.getOpen(file))
         print('----------------')
         print('close')
-        print(np.closeFlt)
+        print(self.getClose(file))
         print('----------------')
         print('volume USD')
-        print(np.volumeUSDFlt)
+        print(self.getVolume(file, currency))
         print('----------------')
         print('counter')
         print(np.counter)
         print('----------------')
         print('expression')
-        print(self.getAmihudExpression())
+        print(self.getAmihudExpression(file, currency))
         print('----------------')
         print('len(expression)')
-        print(len(self.getAmihudExpression()))
+        print(len(self.getAmihudExpression(file, currency)))
         print('----------------')
         print('self.getAmihudSum(expression)')
         print(self.getAmihudSum(expression))
@@ -216,8 +165,8 @@ class Amihud:
     Returns:    amihud - Floater which contains amihud value
     """
 
-    def calculateAmihud(self):
-        expression = self.getAmihudExpression()
+    def calculateAmihud(self, file, currency):
+        expression = self.getAmihudExpression(file, currency)
         sum = self.getAmihudSum(expression)
         amihud = sum / len(expression)
         return amihud
@@ -257,54 +206,82 @@ class Amihud:
     """
 
     # TODO Exception handling if item in open is 0!
-    def getAmihudExpression(self):
+    def getAmihudExpression(self, file, currency):
+        open = self.getOpen(file)
+        close = self.getClose(file)
+        volume = self.getVolume(file, currency)
+
         np.seterr(invalid='ignore')  # This tells NumPy to hide any warning with some “invalid” message in it
-        np.counter = [(close / open) - 1 for close, open in zip(np.closeFlt, np.openFlt)]
+        np.counter = [(close / open) - 1 for close, open in zip(close, open)]
         np.counter = np.absolute(np.counter)
         # np.counter = np.divide(np.closeFlt, np.openFlt, out=np.zeros_like(np.closeFlt), where=np.openFlt != 0)
-        expression = np.divide(np.counter, np.volumeUSDFlt, out=np.zeros_like(np.counter), where=np.volumeUSDFlt != 0)
+        expression = np.divide(np.counter, volume, out=np.zeros_like(np.counter), where=volume != 0)
         expression = expression[
             ~numpy.isnan(expression)]  # to remove all nan values ( caused by missing USD volume values)
+
         return expression
 
     """
-    This method copies the open price, close prise and volume USD amount of the arrays into arrays named np.openFlt, 
-    np.closeFlt and np.volumeUSDFlt as floater value
-
-    Requires:   all the values in openStr, closeStr and volumeUSDStr should contain only floater values 
-
-    Ensures:    all values in openStr, closeStr and volumeUSDStr will be copied in separated arrays as floater values
+    this method takes four arrays which are containing the amihud values in all representative currency pairs and 
+    figures out which array contains the fewest data.
+    
+    Requires:   
+    
+    Ensures:    An integer value above -1 will be return
+    
+    Returns:    the amount of data that the smallest array contains
     """
+    def getSmallest(self, usd, eur, gbp, jpy):
+        usd = len(self.getAmihudExpression(usd, 'USD'))
+        eur = len(self.getAmihudExpression(eur, 'EUR'))
+        gbp = len(self.getAmihudExpression(gbp, 'GBP'))
+        jpy = len(self.getAmihudExpression(jpy, 'JPY'))
 
-    # TODO make it work for all types of currencies not only USD!
-    def extractFlt(self):
-        for value in self.openStr:
-            np.openFlt.append(float(value))
-        for value in self.closeStr:
-            np.closeFlt.append(float(value))
-        for value in self.volumeUSDStr:
-            np.volumeUSDFlt.append(float(value))
+        amihudValues = (usd, eur, gbp, jpy)
 
+        smallest = amihudValues.index(min(amihudValues))
+
+        print('smallest: ')
+        print(smallest)
+        print(amihudValues[smallest])
+
+        return amihudValues[smallest]
 
     """
-    This method extract the open prices, close prices and USD volume of a cvs file with daily, hourly or minutely data 
-    and safes them as strings in separated arrays called openStr, closeStr and volumeUSDStr. 
-
-    Requires:   The cvs file has to be formatted so that it can be read
-                The columns in the cvs file have to be called 'open', 'close' and 'Volume USD'
-
-    Ensures:    three arrays will be filled with the string representatives of the open price, close price and Volume 
-                USD respectively 
+    This method cuts all four arrays to the amount of data that contains the smallest of the four arrays. The arrays 
+    are containing the Amihud values and each array represent one currency pair
+    
+    Requires:
+    
+    Ensures: four arrays with the exact same amount of data will be returned
+    
+    Returns:    cuted arrays on the smallest amount of data of each currency pair 
     """
+    def cutAhArray(self, usd, eur, gbp, jpy):
 
-    # TODO make it work for all types of currencies not only USD!
-    def extractStr(self, fileReader):
-        for item in fileReader:
-            self.openStr.append(item['open'])
-            self.closeStr.append(item['close'])
-            self.volumeUSDStr.append(item['Volume USD'])
-        self.openStr.remove('open')
-        self.closeStr.remove('close')
-        self.volumeUSDStr.remove('Volume USD')
+        smallestArray = self.getSmallest(usd, eur, gbp, jpy)
 
+        usd = self.getAmihudExpression(usd, 'USD')
+        eur = self.getAmihudExpression(eur, 'EUR')
+        gbp = self.getAmihudExpression(gbp, 'GBP')
+        jpy = self.getAmihudExpression(jpy, 'JPY')
+
+        usd = usd[:smallestArray]
+        eur = eur[:smallestArray]
+        jpy = jpy[:smallestArray]
+        gbp = gbp[:smallestArray]
+
+        return usd, eur, gbp, jpy
+
+    """
+    This method prints the standardised arrays containing the amihud values for each currency pair
+    """
+    def printStandardisedAh(self, fileUSD, fileEUR, fileGBP, fileJPY):
+
+        usd, eur, gbp, jpy = self.cutAhArray(fileUSD, fileEUR, fileGBP, fileJPY)
+
+        print(usd)
+        print(eur)
+        print(gbp)
+        print(jpy)
 
