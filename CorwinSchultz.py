@@ -99,10 +99,8 @@ class CorwinSchultz:
 
     Ensures:    CSii1 only contains numerical items
     
-    Returns:    CSii1 - Array which contains the CS estimator for two adjacent intervals i and i+1
-                
+    Returns:    CSii1 - Array which contains the CS estimator for two adjacent intervals i and i+1       
     """
-
     # TODO def programming: can e to the power of x can equal -1?
     def calculateCSArray(self, file):
 
@@ -319,3 +317,69 @@ class CorwinSchultz:
         low = file['low'].to_numpy()
 
         return low
+
+    """
+    this method takes four arrays which are containing the amihud values in all representative currency pairs and 
+    figures out which array contains the fewest data.
+
+    Requires:   
+
+    Ensures:    An integer value above -1 will be return
+
+    Returns:    the amount of data that the smallest array contains
+    """
+    def getSmallest(self, btcusd, btceur, btcgbp, btcjpy):
+
+        usd = len(self.calculateCSArray(btcusd))
+        eur = len(self.calculateCSArray(btceur))
+        gbp = len(self.calculateCSArray(btcgbp))
+        jpy = len(self.calculateCSArray(btcjpy))
+
+        csValues = (usd, eur, gbp, jpy)
+
+        smallest = csValues.index(min(csValues))
+
+        print('smallest: ')
+        print(smallest)
+        print(csValues[smallest])
+
+        return csValues[smallest]
+
+    """
+    This method cuts all four arrays to the amount of data that contains the smallest of the four arrays. The arrays 
+    are containing the AR values and each array represent one currency pair
+
+    Requires:
+
+    Ensures:    four arrays with the exact same amount of data will be returned
+
+    Returns:    cuttet arrays on the smallest amount of data of each currency pair 
+    """
+    def cutCsArray(self, usd, eur, gbp, jpy):
+
+        smallestArray = self.getSmallest(usd, eur, gbp, jpy)
+
+        usd = self.calculateCSArray(usd)
+        eur = self.calculateCSArray(eur)
+        gbp = self.calculateCSArray(gbp)
+        jpy = self.calculateCSArray(jpy)
+
+        usd = usd[:smallestArray]
+        eur = eur[:smallestArray]
+        jpy = jpy[:smallestArray]
+        gbp = gbp[:smallestArray]
+
+        return usd, eur, gbp, jpy
+
+
+    """
+    This method prints the standardised arrays containing the amihud values for each currency pair
+    """
+    def printstandardisedCS(self, fileUSD, fileEUR, fileGBP, fileJPY):
+
+        usd, eur, gbp, jpy = self.cutCsArray(fileUSD, fileEUR, fileGBP, fileJPY)
+
+        print(usd)
+        print(eur)
+        print(gbp)
+        print(jpy)

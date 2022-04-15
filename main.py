@@ -70,14 +70,16 @@ ll = LeadLag()
 # cs.printCS(btceur, 'EUR')
 # cs.printCS(btcjpy, 'JPY')
 # cs.printCS(btcgbp, 'GBP')
+# cs.cutCsArray(btcusd, btceur, btcgbp, btcjpy)
+# cs.printstandardisedCS(btcusd, btceur, btcgbp, btcjpy)
 
 # TODO JPY values checking
 # Uncomment this line of code to show the single Amihud value on the console
-#amihud.amihudValueOnly(btcusd, 'USD')
-#amihud.amihudValueOnly(btceur, 'EUR')
-#amihud.amihudValueOnly(btcjpy, 'JPY')
-#amihud.amihudValueOnly(btcgbp, 'GBP')
-amihud.printStandardisedAh(btcusd, btceur, btcgbp, btcjpy)
+# amihud.amihudValueOnly(btcusd, 'USD')
+# amihud.amihudValueOnly(btceur, 'EUR')
+# amihud.amihudValueOnly(btcjpy, 'JPY')
+# amihud.amihudValueOnly(btcgbp, 'GBP')
+# amihud.printStandardisedAh(btcusd, btceur, btcgbp, btcjpy)
 
 # TODO Werte prüfen
 # Uncomment this line of code to show the single CS value on the console
@@ -91,6 +93,7 @@ amihud.printStandardisedAh(btcusd, btceur, btcgbp, btcjpy)
 # ar.abdiRanaldoValueOnly(btceur, 'EUR')
 # ar.abdiRanaldoValueOnly(btcjpy, 'JPY')
 # ar.abdiRanaldoValueOnly(btcgbp, 'GBP')
+ar.printStandardisedAr(btcusd, btceur, btcgbp, btcjpy)
 
 
 # Uncomment this line of code to show the CS, the Amihud and the AR value

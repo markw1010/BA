@@ -222,7 +222,14 @@ class Amihud:
         return expression
 
     """
-    this method takes four arrays which are containing the amihud values 
+    this method takes four arrays which are containing the amihud values in all representative currency pairs and 
+    figures out which array contains the fewest data.
+    
+    Requires:   
+    
+    Ensures:    An integer value above -1 will be return
+    
+    Returns:    the amount of data that the smallest array contains
     """
     def getSmallest(self, usd, eur, gbp, jpy):
         usd = len(self.getAmihudExpression(usd, 'USD'))
@@ -240,6 +247,16 @@ class Amihud:
 
         return amihudValues[smallest]
 
+    """
+    This method cuts all four arrays to the amount of data that contains the smallest of the four arrays. The arrays 
+    are containing the Amihud values and each array represent one currency pair
+    
+    Requires:
+    
+    Ensures: four arrays with the exact same amount of data will be returned
+    
+    Returns:    cuted arrays on the smallest amount of data of each currency pair 
+    """
     def cutAhArray(self, usd, eur, gbp, jpy):
 
         smallestArray = self.getSmallest(usd, eur, gbp, jpy)
@@ -256,6 +273,9 @@ class Amihud:
 
         return usd, eur, gbp, jpy
 
+    """
+    This method prints the standardised arrays containing the amihud values for each currency pair
+    """
     def printStandardisedAh(self, fileUSD, fileEUR, fileGBP, fileJPY):
 
         usd, eur, gbp, jpy = self.cutAhArray(fileUSD, fileEUR, fileGBP, fileJPY)

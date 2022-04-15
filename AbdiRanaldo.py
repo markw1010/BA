@@ -132,3 +132,67 @@ class AbdiRanaldo:
         amount = len(ARi)
         ARt = sum/amount
         return ARt
+
+    """
+    this method takes four arrays which are containing the amihud values in all representative currency pairs and 
+    figures out which array contains the fewest data.
+
+    Requires:   
+
+    Ensures:    An integer value above -1 will be return
+
+    Returns:    the amount of data that the smallest array contains
+    """
+    def getSmallest(self, usd, eur, gbp, jpy):
+        usd = len(self.getARi(usd))
+        eur = len(self.getARi(eur))
+        gbp = len(self.getARi(gbp))
+        jpy = len(self.getARi(jpy))
+
+        arValues = (usd, eur, gbp, jpy)
+
+        smallest = arValues.index(min(arValues))
+
+        print('smallest: ')
+        print(smallest)
+        print(arValues[smallest])
+
+        return arValues[smallest]
+
+    """
+    This method cuts all four arrays to the amount of data that contains the smallest of the four arrays. The arrays 
+    are containing the AR values and each array represent one currency pair
+
+    Requires:
+
+    Ensures:    four arrays with the exact same amount of data will be returned
+
+    Returns:    cuttet arrays on the smallest amount of data of each currency pair 
+    """
+    def cutArArray(self, usd, eur, gbp, jpy):
+
+        smallestArray = self.getSmallest(usd, eur, gbp, jpy)
+
+        usd = self.getARi(usd)
+        eur = self.getARi(eur)
+        gbp = self.getARi(gbp)
+        jpy = self.getARi(jpy)
+
+        usd = usd[:smallestArray]
+        eur = eur[:smallestArray]
+        jpy = jpy[:smallestArray]
+        gbp = gbp[:smallestArray]
+
+        return usd, eur, gbp, jpy
+
+    """
+    This method prints the standardised arrays containing the amihud values for each currency pair
+    """
+    def printStandardisedAr(self, fileUSD, fileEUR, fileGBP, fileJPY):
+
+        usd, eur, gbp, jpy = self.cutArArray(fileUSD, fileEUR, fileGBP, fileJPY)
+
+        print(usd)
+        print(eur)
+        print(gbp)
+        print(jpy)
