@@ -1,9 +1,9 @@
 import sys
-from datetime import datetime
 
 import np as np
 import numpy
-from tabulate import tabulate
+import matplotlib.pyplot as plt
+import pandas as pd
 
 """
 This class provides all necessary methods and variables to calculate the amihud liquidity estimator for a daily, hourly 
@@ -241,10 +241,6 @@ class Amihud:
 
         smallest = amihudValues.index(min(amihudValues))
 
-        print('smallest: ')
-        print(smallest)
-        print(amihudValues[smallest])
-
         return amihudValues[smallest]
 
     """
@@ -261,27 +257,37 @@ class Amihud:
 
         smallestArray = self.getSmallest(usd, eur, gbp, jpy)
 
+        date = usd['date'].to_numpy()
         usd = self.getAmihudExpression(usd, 'USD')
         eur = self.getAmihudExpression(eur, 'EUR')
         gbp = self.getAmihudExpression(gbp, 'GBP')
         jpy = self.getAmihudExpression(jpy, 'JPY')
 
+        date = date[:smallestArray]
         usd = usd[:smallestArray]
         eur = eur[:smallestArray]
         jpy = jpy[:smallestArray]
         gbp = gbp[:smallestArray]
 
-        return usd, eur, gbp, jpy
+        return date, usd, eur, gbp, jpy
 
     """
     This method prints the standardised arrays containing the amihud values for each currency pair
     """
     def printStandardisedAh(self, fileUSD, fileEUR, fileGBP, fileJPY):
 
-        usd, eur, gbp, jpy = self.cutAhArray(fileUSD, fileEUR, fileGBP, fileJPY)
+        date, usd, eur, gbp, jpy = self.cutAhArray(fileUSD, fileEUR, fileGBP, fileJPY)
 
-        print(usd)
-        print(eur)
-        print(gbp)
-        print(jpy)
+        ahValues = {
+            'Date': date,
+            'BTCUSD': usd,
+            'BTCEUR': eur,
+            'BTCGBP': gbp,
+            'BTCJPY': jpy
+        }
+
+        dataframe = pd.DataFrame(ahValues)
+        dataframe = dataframe.set_index('Date')
+
+        print(dataframe)
 

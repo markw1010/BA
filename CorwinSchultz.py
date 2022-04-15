@@ -1,5 +1,6 @@
 import numpy
 import numpy as np
+import pandas as pd
 
 """
 This class provides all necessary methods and variables to calculate the Corwin and Schultz (CS) liquidity estimator for 
@@ -339,10 +340,6 @@ class CorwinSchultz:
 
         smallest = csValues.index(min(csValues))
 
-        print('smallest: ')
-        print(smallest)
-        print(csValues[smallest])
-
         return csValues[smallest]
 
     """
@@ -359,17 +356,19 @@ class CorwinSchultz:
 
         smallestArray = self.getSmallest(usd, eur, gbp, jpy)
 
+        date = usd['date'].to_numpy()
         usd = self.calculateCSArray(usd)
         eur = self.calculateCSArray(eur)
         gbp = self.calculateCSArray(gbp)
         jpy = self.calculateCSArray(jpy)
 
+        date = date[:smallestArray]
         usd = usd[:smallestArray]
         eur = eur[:smallestArray]
         jpy = jpy[:smallestArray]
         gbp = gbp[:smallestArray]
 
-        return usd, eur, gbp, jpy
+        return date, usd, eur, gbp, jpy
 
 
     """
@@ -377,9 +376,17 @@ class CorwinSchultz:
     """
     def printstandardisedCS(self, fileUSD, fileEUR, fileGBP, fileJPY):
 
-        usd, eur, gbp, jpy = self.cutCsArray(fileUSD, fileEUR, fileGBP, fileJPY)
+        date, usd, eur, gbp, jpy = self.cutCsArray(fileUSD, fileEUR, fileGBP, fileJPY)
 
-        print(usd)
-        print(eur)
-        print(gbp)
-        print(jpy)
+        csValues = {
+            'Date': date,
+            'BTCUSD': usd,
+            'BTCEUR': eur,
+            'BTCGBP': gbp,
+            'BTCJPY': jpy
+        }
+
+        dataframe = pd.DataFrame(csValues)
+        dataframe = dataframe.set_index('Date')
+
+        print(dataframe)

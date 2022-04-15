@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 
 """
 This class provides all necessary methods and variables to calculate the AR liquidity estimator for a daily, hourly 
@@ -153,10 +154,6 @@ class AbdiRanaldo:
 
         smallest = arValues.index(min(arValues))
 
-        print('smallest: ')
-        print(smallest)
-        print(arValues[smallest])
-
         return arValues[smallest]
 
     """
@@ -173,26 +170,36 @@ class AbdiRanaldo:
 
         smallestArray = self.getSmallest(usd, eur, gbp, jpy)
 
+        date = usd['date'].to_numpy()
         usd = self.getARi(usd)
         eur = self.getARi(eur)
         gbp = self.getARi(gbp)
         jpy = self.getARi(jpy)
 
+        date = date[:smallestArray]
         usd = usd[:smallestArray]
         eur = eur[:smallestArray]
         jpy = jpy[:smallestArray]
         gbp = gbp[:smallestArray]
 
-        return usd, eur, gbp, jpy
+        return date, usd, eur, gbp, jpy
 
     """
     This method prints the standardised arrays containing the amihud values for each currency pair
     """
     def printStandardisedAr(self, fileUSD, fileEUR, fileGBP, fileJPY):
 
-        usd, eur, gbp, jpy = self.cutArArray(fileUSD, fileEUR, fileGBP, fileJPY)
+        date, usd, eur, gbp, jpy = self.cutArArray(fileUSD, fileEUR, fileGBP, fileJPY)
 
-        print(usd)
-        print(eur)
-        print(gbp)
-        print(jpy)
+        arValues = {
+            'Date': date,
+            'BTCUSD': usd,
+            'BTCEUR': eur,
+            'BTCGBP': gbp,
+            'BTCJPY': jpy
+        }
+
+        dataframe = pd.DataFrame(arValues)
+        dataframe = dataframe.set_index('Date')
+
+        print(dataframe)

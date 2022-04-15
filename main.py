@@ -93,7 +93,7 @@ ll = LeadLag()
 # ar.abdiRanaldoValueOnly(btceur, 'EUR')
 # ar.abdiRanaldoValueOnly(btcjpy, 'JPY')
 # ar.abdiRanaldoValueOnly(btcgbp, 'GBP')
-ar.printStandardisedAr(btcusd, btceur, btcgbp, btcjpy)
+# ar.printStandardisedAr(btcusd, btceur, btcgbp, btcjpy)
 
 
 # Uncomment this line of code to show the CS, the Amihud and the AR value
