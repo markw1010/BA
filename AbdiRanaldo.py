@@ -1,5 +1,7 @@
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
+from pandas.plotting import autocorrelation_plot
 
 """
 This class provides all necessary methods and variables to calculate the AR liquidity estimator for a daily, hourly 
@@ -186,6 +188,8 @@ class AbdiRanaldo:
 
     """
     This method prints the standardised arrays containing the amihud values for each currency pair
+    
+    Returns    pandas dataframe containing AR values for each currency pair and date as int
     """
     def printStandardisedAr(self, fileUSD, fileEUR, fileGBP, fileJPY):
 
@@ -200,6 +204,34 @@ class AbdiRanaldo:
         }
 
         dataframe = pd.DataFrame(arValues)
+        dataframe['Date'] = dataframe['Date'].astype('datetime64')  # to set date as integer values
         dataframe = dataframe.set_index('Date')
 
         print(dataframe)
+        return dataframe
+
+
+    """
+    This method plots all the CS values in one graph with the date oin the x-axis and the value on the y-axis
+    """
+    def arGraph(self, fileUSD, fileEUR, fileGBP, fileJPY):
+
+        dataframe = self.printStandardisedAr(fileUSD, fileEUR, fileGBP, fileJPY)
+
+        plt.xlabel('Date')
+        plt.ylabel('Values')
+        plt.title('CS values')
+        plt.plot(dataframe)
+
+        plt.show()
+
+    """
+    This method plots the autocorrelation of the amihud values in a graph
+    """
+
+    def autocorrGraph(self, fileUSD, fileEUR, fileGBP, fileJPY):
+        dataframe = self.printStandardisedAr(fileUSD, fileEUR, fileGBP, fileJPY)
+
+        autocorrelation_plot(dataframe)
+
+        plt.show()

@@ -4,6 +4,7 @@ import np as np
 import numpy
 import matplotlib.pyplot as plt
 import pandas as pd
+from pandas.plotting import autocorrelation_plot
 
 """
 This class provides all necessary methods and variables to calculate the amihud liquidity estimator for a daily, hourly 
@@ -273,6 +274,8 @@ class Amihud:
 
     """
     This method prints the standardised arrays containing the amihud values for each currency pair
+    
+    Returns    pandas dataframe containing AH values for each currency pair and date as int
     """
     def printStandardisedAh(self, fileUSD, fileEUR, fileGBP, fileJPY):
 
@@ -287,7 +290,35 @@ class Amihud:
         }
 
         dataframe = pd.DataFrame(ahValues)
+        dataframe['Date'] = dataframe['Date'].astype('datetime64')  # to set date as integer values
         dataframe = dataframe.set_index('Date')
 
         print(dataframe)
+        return dataframe
+
+    """
+    This method plots all the Amihud values in one graph with the date oin the x-axis and the value on the y-axis
+    """
+    def amihudGraph(self, fileUSD, fileEUR, fileGBP, fileJPY):
+
+        dataframe = self.printStandardisedAh(fileUSD, fileEUR, fileGBP, fileJPY)
+
+        plt.xlabel('Date')
+        plt.ylabel('Values')
+        plt.title('Amihud values')
+        plt.plot(dataframe)
+
+        plt.show()
+
+    """
+    This method plots the autocorrelation of the amihud values in a graph
+    """
+    def autocorrGraph(self, fileUSD, fileEUR, fileGBP, fileJPY):
+
+        dataframe = self.printStandardisedAh(fileUSD, fileEUR, fileGBP, fileJPY)
+
+        autocorrelation_plot(dataframe)
+
+        plt.show()
+
 
