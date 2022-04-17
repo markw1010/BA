@@ -228,10 +228,59 @@ class AbdiRanaldo:
     """
     This method plots the autocorrelation of the amihud values in a graph
     """
+    def autocorrGraph(self, fileUSD, fileEUR, fileGBP, fileJPY, int):
 
-    def autocorrGraph(self, fileUSD, fileEUR, fileGBP, fileJPY):
-        dataframe = self.printStandardisedAr(fileUSD, fileEUR, fileGBP, fileJPY)
+        date, usd, eur, gbp, jpy = self.cutArArray(fileUSD, fileEUR, fileGBP, fileJPY)
+
+        csValues = self.chooseCurrencyPair(date, eur, gbp, int, jpy, usd)
+
+        dataframe = pd.DataFrame(csValues)
+        dataframe['Date'] = dataframe['Date'].astype('datetime64')  # to set date as integer values
+        dataframe = dataframe.set_index('Date')
 
         autocorrelation_plot(dataframe)
 
+        self.chooseTitle(int)
+
         plt.show()
+
+    """
+    This is a helper method to set a title for autocorrelation graph of the autocorrGraph method, depending on what 
+    currency should be shown. 0 refers to USD, 1 refers to EUR, 2 refers GBP and 3 refers to JPY
+    """
+    def chooseTitle(self, int):
+        if int == 0:
+            plt.title('Abdi and Ranaldo measure USD')
+        if int == 1:
+            plt.title('Abdi and Ranaldo measure EUR')
+        if int == 2:
+            plt.title('Abdi and Ranaldo measure GBP')
+        if int == 3:
+            plt.title('Abdi and Ranaldo measure JPY')
+
+    """
+    This is a helper method to for the autocorrGraph method to choose a currency pair. 0 refers to USD, 1 refers to EUR, 
+    2 refers GBP and 3 refers to JPY
+    """
+    def chooseCurrencyPair(self, date, eur, gbp, int, jpy, usd):
+        if int == 0:
+            arValues = {
+                'Date': date,
+                'BTCUSD': usd,
+            }
+        if int == 1:
+            arValues = {
+                'Date': date,
+                'BTCEUR': eur,
+            }
+        if int == 2:
+            arValues = {
+                'Date': date,
+                'BTCGBP': gbp,
+            }
+        if int == 3:
+            arValues = {
+                'Date': date,
+                'BTCJPY': jpy,
+            }
+        return arValues

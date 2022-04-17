@@ -50,7 +50,6 @@ class CorwinSchultz:
         Ensures:    the values for the CS alpha, CS beta, CS gamma, CS_i,i+1, sum(CS_i,i+1), len(CS_i,i+1) and CS will 
                     be printed on the console
         """
-
     def printCS(self, file, currency):
 
         CS = self.calculateCSValue(file)
@@ -84,7 +83,6 @@ class CorwinSchultz:
     
     Ensures:    CS is a numerical value 
     """
-
     def calculateCSValue(self, file):
         CSii1 = self.calculateCSArray(file)
         sum = np.sum(CSii1)
@@ -127,7 +125,6 @@ class CorwinSchultz:
     
     Returns:    alpha - Array
     """
-
     def getAlpha(self, file):
 
         firstTerm = self.alphaFirstTerm(file)
@@ -150,7 +147,6 @@ class CorwinSchultz:
     
     Returns:    secondTerm - Array with all values for the second term of the CS alpha 
     """
-
     def alphaSecondTerm(self, file):
 
         gamma = self.getGamma(file)
@@ -171,7 +167,6 @@ class CorwinSchultz:
     
     Returns:    firstTerm - Array with all values for the first term of the CS alpha 
     """
-
     def alphaFirstTerm(self, file):
 
         twoTimesBeta = np.multiply(self.getBeta(file), 2)
@@ -196,7 +191,6 @@ class CorwinSchultz:
     
     Returns:    beta - Array which contains all beta items
     """
-
     # TODO Exception handling if item in open is 0!
     def getBeta(self, file):
 
@@ -221,7 +215,6 @@ class CorwinSchultz:
     
     Returns:    max - Array which contains the maximum of the shifted compared input array
     """
-
     def getMaxPrice(self, arr):
 
         arrModified = np.delete(arr, -1)  # -1 is the index for the last item in an array
@@ -255,7 +248,6 @@ class CorwinSchultz:
     
     Returns:    gamma - Array which contains all the values after the calculations described above
     """
-
     def calcGamma(self, hii1, lii1):
         highDivLow = [high / low for high, low in zip(hii1, lii1)]
         ln = numpy.log(highDivLow)
@@ -273,7 +265,6 @@ class CorwinSchultz:
     
     Returns:    highDivLow - Array which contains all items of np.highFlt divided by np.lowFlt
     """
-
     def highDivLow(self, file):
         high = self.getHighCS(file)
         low = self.getLowCS(file)
@@ -372,7 +363,6 @@ class CorwinSchultz:
 
         return date, usd, eur, gbp, jpy
 
-
     """
     This method prints the standardised arrays containing the amihud values for each currency pair
     
@@ -414,10 +404,59 @@ class CorwinSchultz:
     """
     This method plots the autocorrelation of the amihud values in a graph
     """
+    def autocorrGraph(self, fileUSD, fileEUR, fileGBP, fileJPY, int):
 
-    def autocorrGraph(self, fileUSD, fileEUR, fileGBP, fileJPY):
-        dataframe = self.printstandardisedCS(fileUSD, fileEUR, fileGBP, fileJPY)
+        date, usd, eur, gbp, jpy = self.cutCsArray(fileUSD, fileEUR, fileGBP, fileJPY)
+
+        csValues = self.chooseCurrencyPair(date, eur, gbp, int, jpy, usd)
+
+        dataframe = pd.DataFrame(csValues)
+        dataframe['Date'] = dataframe['Date'].astype('datetime64')  # to set date as integer values
+        dataframe = dataframe.set_index('Date')
 
         autocorrelation_plot(dataframe)
 
+        self.chooseTitle(int)
+
         plt.show()
+
+    """
+    This is a helper method to set a title for autocorrelation graph of the autocorrGraph method, depending on what 
+    currency should be shown. 0 refers to USD, 1 refers to EUR, 2 refers GBP and 3 refers to JPY
+    """
+    def chooseTitle(self, int):
+        if int == 0:
+            plt.title('Corwin and Schultz liquidity measure USD')
+        if int == 1:
+            plt.title('Corwin and Schultz liquidity measure EUR')
+        if int == 2:
+            plt.title('Corwin and Schultz liquidity measure GBP')
+        if int == 3:
+            plt.title('Corwin and Schultz liquidity measure JPY')
+
+    """
+    This is a helper method to for the autocorrGraph method to choose a currency pair. 0 refers to USD, 1 refers to EUR, 
+    2 refers GBP and 3 refers to JPY
+    """
+    def chooseCurrencyPair(self, date, eur, gbp, int, jpy, usd):
+        if int == 0:
+            csValues = {
+                'Date': date,
+                'BTCUSD': usd,
+            }
+        if int == 1:
+            csValues = {
+                'Date': date,
+                'BTCEUR': eur,
+            }
+        if int == 2:
+            csValues = {
+                'Date': date,
+                'BTCGBP': gbp,
+            }
+        if int == 3:
+            csValues = {
+                'Date': date,
+                'BTCJPY': jpy,
+            }
+        return csValues

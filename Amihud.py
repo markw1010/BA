@@ -5,6 +5,7 @@ import numpy
 import matplotlib.pyplot as plt
 import pandas as pd
 from pandas.plotting import autocorrelation_plot
+from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
 
 """
 This class provides all necessary methods and variables to calculate the amihud liquidity estimator for a daily, hourly 
@@ -17,7 +18,6 @@ Amihud, Y., 2002. Illiquidity and stock returns: cross-section and time-series e
 
 class Amihud:
     numpy.set_printoptions(threshold=sys.maxsize)
-
 
     """
     This method returns an array of the open prices of BTC in a specific time period and currency filtered out of a cvs 
@@ -183,7 +183,6 @@ class Amihud:
     
     Returns:    sum - Array of all summed up values in the expression array
     """
-
     def getAmihudSum(self, expression):
         sum = 0
         for i in range(0, len(expression)):
@@ -313,12 +312,59 @@ class Amihud:
     """
     This method plots the autocorrelation of the amihud values in a graph
     """
-    def autocorrGraph(self, fileUSD, fileEUR, fileGBP, fileJPY):
+    def autocorrGraph(self, fileUSD, fileEUR, fileGBP, fileJPY, int):
 
-        dataframe = self.printStandardisedAh(fileUSD, fileEUR, fileGBP, fileJPY)
+        date, usd, eur, gbp, jpy = self.cutAhArray(fileUSD, fileEUR, fileGBP, fileJPY)
+
+        csValues = self.chooseCurrencyPair(date, eur, gbp, int, jpy, usd)
+
+        dataframe = pd.DataFrame(csValues)
+        dataframe['Date'] = dataframe['Date'].astype('datetime64')  # to set date as integer values
+        dataframe = dataframe.set_index('Date')
 
         autocorrelation_plot(dataframe)
 
+        self.chooseTitle(int)
+
         plt.show()
 
+    """
+    This is a helper method to set a title for autocorrelation graph of the autocorrGraph method, depending on what 
+    currency should be shown. 0 refers to USD, 1 refers to EUR, 2 refers GBP and 3 refers to JPY
+    """
+    def chooseTitle(self, int):
+        if int == 0:
+            plt.title('Amihud liquidity measure USD')
+        if int == 1:
+            plt.title('Amihud liquidity measure EUR')
+        if int == 2:
+            plt.title('Amihud liquidity measure GBP')
+        if int == 3:
+            plt.title('Amihud liquidity measure JPY')
 
+    """
+    This is a helper method to for the autocorrGraph method to choose a currency pair. 0 refers to USD, 1 refers to EUR, 
+    2 refers GBP and 3 refers to JPY
+    """
+    def chooseCurrencyPair(self, date, eur, gbp, int, jpy, usd):
+        if int == 0:
+            ahValues = {
+                'Date': date,
+                'BTCUSD': usd,
+            }
+        if int == 1:
+            ahValues = {
+                'Date': date,
+                'BTCEUR': eur,
+            }
+        if int == 2:
+            ahValues = {
+                'Date': date,
+                'BTCGBP': gbp,
+            }
+        if int == 3:
+            ahValues = {
+                'Date': date,
+                'BTCJPY': jpy,
+            }
+        return ahValues

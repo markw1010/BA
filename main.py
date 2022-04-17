@@ -33,10 +33,16 @@ Author: Mark Wagner
 """
 
 # Prototype dataset
-btcusd = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/daily/Bitfinex_BTCUSD_d.csv')
-btceur = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/daily/Bitfinex_BTCEUR_d.csv')
-btcjpy = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/daily/Bitfinex_BTCJPY_d.csv')
-btcgbp = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/daily/Bitfinex_BTCGBP_d.csv')
+btcusdD = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/daily/Bitfinex_BTCUSD_d.csv')
+btceurD = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/daily/Bitfinex_BTCEUR_d.csv')
+btcjpyD = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/daily/Bitfinex_BTCJPY_d.csv')
+btcgbpD = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/daily/Bitfinex_BTCGBP_d.csv')
+
+# Hourly Data
+btcusd = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/hourly/Bitfinex_BTCUSD_1h.csv')
+btceur = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/hourly/Bitfinex_BTCEUR_1h.csv')
+btcjpy = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/hourly/Bitfinex_BTCJPY_1h.csv')
+btcgbp = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/hourly/Bitfinex_BTCGBP_1h.csv')
 
 amihud = Amihud()
 cs = CorwinSchultz()
@@ -46,7 +52,7 @@ filter = Filter()
 ll = LeadLag()
 
 # Uncomment this line of code to show the whole dataset on the console
-#filter.print_full(btcusd)
+# filter.print_full(btcusd)
 # filter.print_full(btceur)
 # filter.print_full(btcjpy)
 # filter.print_full(btcgbp)
@@ -73,7 +79,7 @@ ll = LeadLag()
 # cs.cutCsArray(btcusd, btceur, btcgbp, btcjpy)
 # cs.printstandardisedCS(btcusd, btceur, btcgbp, btcjpy)
 # cs.csGraph(btcusd, btceur, btcgbp, btcjpy)
-# cs.autocorrGraph(btcusd, btceur, btcgbp, btcjpy)
+# cs.autocorrGraph(btcusd, btceur, btcgbp, btcjpy, 1)
 
 # TODO JPY values checking
 # Uncomment this line of code to show the single Amihud value on the console
@@ -83,7 +89,8 @@ ll = LeadLag()
 # amihud.amihudValueOnly(btcgbp, 'GBP')
 # amihud.printStandardisedAh(btcusd, btceur, btcgbp, btcjpy)
 # amihud.amihudGraph(btcusd, btceur, btcgbp, btcjpy)
-# amihud.autocorrGraph(btcusd, btceur, btcgbp, btcjpy)
+# amihud.autocorrGraph(btcusd, btceur, btcgbp, btcjpy, 1)
+# amihud.calcPartialAutocorr(btcusd, btceur, btcgbp, btcjpy, 2)
 
 # TODO Werte prüfen
 # Uncomment this line of code to show the single CS value on the console
@@ -99,7 +106,7 @@ ll = LeadLag()
 # ar.abdiRanaldoValueOnly(btcgbp, 'GBP')
 # ar.printStandardisedAr(btcusd, btceur, btcgbp, btcjpy)
 # ar.arGraph(btcusd, btceur, btcgbp, btcjpy)
-# ar.autocorrGraph(btcusd, btceur, btcgbp, btcjpy)
+# ar.autocorrGraph(btcusd, btceur, btcgbp, btcjpy, 3)
 
 
 # Uncomment this line of code to show the CS, the Amihud and the AR value
