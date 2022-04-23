@@ -1,3 +1,4 @@
+import itertools
 import sys
 
 import np as np
@@ -5,6 +6,10 @@ import numpy
 import matplotlib.pyplot as plt
 import pandas as pd
 from pandas.plotting import autocorrelation_plot
+from collections import OrderedDict
+import statsmodels.formula.api as smf
+
+from patsy.highlevel import dmatrices
 from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
 
 """
@@ -310,23 +315,50 @@ class Amihud:
         plt.show()
 
     """
-    This method plots the autocorrelation of the amihud values in a graph
+    This method plots the autocorrelation of the amihud values in a graph Following int values allow access to following 
+    currency pairs:
+    
+    int = 0: BTC/USD
+    int = 1: BTC/EUR
+    int = 2: BTC/GBP
+    int = 3: BTC/JPY
     """
-    def autocorrGraph(self, fileUSD, fileEUR, fileGBP, fileJPY, int):
+    def showAutocorrGraph(self, fileUSD, fileEUR, fileGBP, fileJPY, int):
 
-        date, usd, eur, gbp, jpy = self.cutAhArray(fileUSD, fileEUR, fileGBP, fileJPY)
-
-        csValues = self.chooseCurrencyPair(date, eur, gbp, int, jpy, usd)
-
-        dataframe = pd.DataFrame(csValues)
-        dataframe['Date'] = dataframe['Date'].astype('datetime64')  # to set date as integer values
-        dataframe = dataframe.set_index('Date')
-
-        autocorrelation_plot(dataframe)
-
-        self.chooseTitle(int)
+        self.calcAutocorrGraph(fileEUR, fileGBP, fileJPY, fileUSD, int)
 
         plt.show()
+
+    """
+    This method calculates the autocorrelation of of past BTC liquidity data for each BTC currency pair. Date values are 
+    the index. Following int values allow access to following currency pairs:
+    
+    int = 0: BTC/USD
+    int = 1: BTC/EUR
+    int = 2: BTC/GBP
+    int = 3: BTC/JPY
+    """
+    def calcAutocorrGraph(self, fileEUR, fileGBP, fileJPY, fileUSD, int):
+        date, usd, eur, gbp, jpy = self.cutAhArray(fileUSD, fileEUR, fileGBP, fileJPY)
+        ahValues = self.chooseCurrencyPair(date, eur, gbp, int, jpy, usd)
+        dataframe = pd.DataFrame(ahValues)
+        dataframe['Date'] = dataframe['Date'].astype('datetime64')  # to set date as integer values
+        dataframe = dataframe.set_index('Date')
+        autocorrelation_plot(dataframe)
+        self.chooseTitle(int)
+
+    """
+    This method gets the autocorrelation of the amihud values in a graph Following int values allow access to following 
+    currency pairs:
+
+    int = 0: BTC/USD
+    int = 1: BTC/EUR
+    int = 2: BTC/GBP
+    int = 3: BTC/JPY
+    """
+    def getAutocorrGraph(self, fileEUR, fileGBP, fileJPY, fileUSD, int):
+        data = self.calcAutocorrGraph(fileEUR, fileGBP, fileJPY, fileUSD, int)
+        return data
 
     """
     This is a helper method to set a title for autocorrelation graph of the autocorrGraph method, depending on what 
@@ -367,4 +399,120 @@ class Amihud:
                 'Date': date,
                 'BTCJPY': jpy,
             }
+
+        print(int)
         return ahValues
+
+    """
+    This method prints the pandas table where the values are aggregated by the month
+    """
+    def getMonthlyAggregated(self, fileUSD, fileEUR, fileGBP, fileJPY, int):
+
+        date, usd, eur, gbp, jpy = self.cutAhArray(fileUSD, fileEUR, fileGBP, fileJPY)
+
+        dataset = self.chooseCurrencyPair(date, eur, gbp, int, jpy, usd)
+
+        dataset = pd.DataFrame(dataset)
+        dataset['Date'] = dataset['Date'].astype('datetime64')  # to set date as integer values
+        dataset = dataset.set_index('Date')
+
+        dataset = dataset.resample('M').mean()
+
+        #print(dataset[dataset.columns[0]].count())
+        #print(dataset)
+        #print(int)
+
+        return dataset
+
+    def addLaggedVariableColumns(self, fileUSD, fileEUR, fileGBP, fileJPY, int):
+
+        df_lagged = self.getMonthlyAggregated(fileUSD, fileEUR, fileGBP, fileJPY, int)
+
+        if int == 0:
+            for i in range(1, 13, 1):
+                df_lagged['BTCUSD_LAG_' + str(i)] = df_lagged['BTCUSD'].shift(i)
+        if int == 1:
+            for i in range(1, 13, 1):
+                df_lagged['BTCEUR_LAG_' + str(i)] = df_lagged['BTCEUR'].shift(i)
+        if int == 2:
+            for i in range(1, 13, 1):
+                df_lagged['BTCGBP_LAG_' + str(i)] = df_lagged['BTCGBP'].shift(i)
+        if int == 3:
+            for i in range(1, 13, 1):
+                df_lagged['BTCJPY_LAG_' + str(i)] = df_lagged['BTCJPY'].shift(i)
+
+        #print(df_lagged.head(15))
+
+        for i in range(0, 12, 1):                               # The first 12 rows contain NaNs introduced by the
+            df_lagged = df_lagged.drop(df_lagged.index[0])      # shift function. Let’s remove these 12 rows.
+
+        print(df_lagged.head())
+        return df_lagged
+
+
+    def filterDataset(self, fileUSD, fileEUR, fileGBP, fileJPY, int):
+
+        df_lagged = self.addLaggedVariableColumns(fileUSD, fileEUR, fileGBP, fileJPY, int)
+        split_index = round(len(df_lagged) * 0.8)
+        split_date = df_lagged.index[split_index]
+        df_train = df_lagged.loc[df_lagged.index <= split_date].copy()
+        df_test = df_lagged.loc[df_lagged.index > split_date].copy()
+
+        return df_test, df_train
+
+    def lagCombinations(self):
+
+        lag_combinations = OrderedDict()
+        l = list(range(1, 13, 1))
+
+        for i in range(1, 13, 1):
+            for combination in itertools.combinations(l, i):
+                lag_combinations[combination] = 0.0
+
+        print('Number of combinations to be tested: ' + str(len(lag_combinations)))
+
+        return lag_combinations
+
+    def linearRegressionModel(self, fileUSD, fileEUR, fileGBP, fileJPY, int):
+
+        lag_combinations = self.lagCombinations()
+        df_test , df_train = self.filterDataset(fileUSD, fileEUR, fileGBP, fileJPY, int)
+        expr_prefix = 'BTCUSD ~ '
+
+        min_aic = sys.float_info.max
+        best_expr = ''
+        best_olsr_model_results = None
+
+        # Iterate over each combination
+        for combination in lag_combinations:
+            expr = expr_prefix
+            i = 1
+            # Setup the model expression using patsy syntax
+            for lag_num in combination:
+                if i < len(combination):
+                    expr = expr + 'BTCUSD_LAG_' + str(lag_num) + ' + '
+                else:
+                    expr = expr + 'BTCUSD_LAG_' + str(lag_num)
+
+                i += 1
+
+            print('Building model for expr: ' + expr)
+
+            # Carve out the X,y vectors using patsy. We will use X_test, y_test later for testing the model.
+            y_test, X_test = dmatrices(expr, df_test, return_type='dataframe')
+
+            # Build and train the OLSR model on the training data set
+            olsr_results = smf.ols(expr, df_train).fit()
+
+            # Store it's AIC value
+            lag_combinations[combination] = olsr_results.aic
+
+            # Keep track of the best model (the one with the lowest AIC score) seen so far
+            if olsr_results.aic < min_aic:
+                min_aic = olsr_results.aic
+                best_expr = expr
+                best_olsr_model_results = olsr_results
+
+            #print('AIC=' + str(lag_combinations[combination]))
+
+        print(best_olsr_model_results.summary())

@@ -39,7 +39,8 @@ btcjpyD = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/daily/Bitfi
 btcgbpD = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/daily/Bitfinex_BTCGBP_d.csv')
 
 # Hourly Data
-btcusd = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/hourly/Bitfinex_BTCUSD_1h.csv')
+btcusd = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/hourly/Bitfinex_BTCUSD_1h.csv', header=0,
+                     infer_datetime_format=True, parse_dates=[0], index_col=[0])
 btceur = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/hourly/Bitfinex_BTCEUR_1h.csv')
 btcjpy = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/hourly/Bitfinex_BTCJPY_1h.csv')
 btcgbp = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/hourly/Bitfinex_BTCGBP_1h.csv')
@@ -56,6 +57,7 @@ ll = LeadLag()
 # filter.print_full(btceur)
 # filter.print_full(btcjpy)
 # filter.print_full(btcgbp)
+
 
 # Uncomment this lines of code to show the dataset on the console
 # print(btcusd)
@@ -89,8 +91,17 @@ ll = LeadLag()
 # amihud.amihudValueOnly(btcgbp, 'GBP')
 # amihud.printStandardisedAh(btcusd, btceur, btcgbp, btcjpy)
 # amihud.amihudGraph(btcusd, btceur, btcgbp, btcjpy)
-# amihud.autocorrGraph(btcusd, btceur, btcgbp, btcjpy, 1)
+amihud.showAutocorrGraph(btcusd, btceur, btcgbp, btcjpy, 1)
+
+
+
 # amihud.calcPartialAutocorr(btcusd, btceur, btcgbp, btcjpy, 2)
+# amihud.getMonthlyAggregated(btcusd, btceur, btcgbp, btcjpy, 0)
+
+# amihud.addLaggedVariableColumns(btcusd, btceur, btcgbp, btcjpy, 0)
+# amihud.lagCombinations()
+# amihud.linearRegressionModel(btcusd, btceur, btcgbp, btcjpy, 0)
+
 
 # TODO Werte prüfen
 # Uncomment this line of code to show the single CS value on the console
