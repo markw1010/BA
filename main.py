@@ -39,8 +39,7 @@ btcjpyD = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/daily/Bitfi
 btcgbpD = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/daily/Bitfinex_BTCGBP_d.csv')
 
 # Hourly Data
-btcusd = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/hourly/Bitfinex_BTCUSD_1h.csv', header=0,
-                     infer_datetime_format=True, parse_dates=[0], index_col=[0])
+btcusd = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/hourly/Bitfinex_BTCUSD_1h.csv')
 btceur = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/hourly/Bitfinex_BTCEUR_1h.csv')
 btcjpy = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/hourly/Bitfinex_BTCJPY_1h.csv')
 btcgbp = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/hourly/Bitfinex_BTCGBP_1h.csv')
@@ -65,7 +64,7 @@ ll = LeadLag()
 # print(btcjpy)
 # print(btcgbp)
 
-# TODO nice printing
+
 # Uncomment this line of code to show the detailed Amihud calculation on the console
 # amihud.amihudDetailed(btcusd, 'USD') # TODO fail
 # amihud.amihudDetailed(btceur, 'EUR')
@@ -80,8 +79,8 @@ ll = LeadLag()
 # cs.printCS(btcgbp, 'GBP')
 # cs.cutCsArray(btcusd, btceur, btcgbp, btcjpy)
 # cs.printstandardisedCS(btcusd, btceur, btcgbp, btcjpy)
-# cs.csGraph(btcusd, btceur, btcgbp, btcjpy)
-# cs.autocorrGraph(btcusd, btceur, btcgbp, btcjpy, 1)
+cs.csGraph(btcusd, btceur, btcgbp, btcjpy, int)    #TODO: single values per currency pair
+# cs.autocorrGraph(btcusd, btceur, btcgbp, btcjpy, 0)
 
 # TODO JPY values checking
 # Uncomment this line of code to show the single Amihud value on the console
@@ -90,8 +89,8 @@ ll = LeadLag()
 # amihud.amihudValueOnly(btcjpy, 'JPY')
 # amihud.amihudValueOnly(btcgbp, 'GBP')
 # amihud.printStandardisedAh(btcusd, btceur, btcgbp, btcjpy)
-# amihud.amihudGraph(btcusd, btceur, btcgbp, btcjpy)
-amihud.showAutocorrGraph(btcusd, btceur, btcgbp, btcjpy, 1)
+# amihud.amihudGraph(btcusd, btceur, btcgbp, btcjpy, 3)
+# amihud.showAutocorrGraph(btcusd, btceur, btcgbp, btcjpy, 3)
 
 
 
@@ -116,7 +115,7 @@ amihud.showAutocorrGraph(btcusd, btceur, btcgbp, btcjpy, 1)
 # ar.abdiRanaldoValueOnly(btcjpy, 'JPY')
 # ar.abdiRanaldoValueOnly(btcgbp, 'GBP')
 # ar.printStandardisedAr(btcusd, btceur, btcgbp, btcjpy)
-# ar.arGraph(btcusd, btceur, btcgbp, btcjpy)
+# ar.arGraph(btcusd, btceur, btcgbp, btcjpy)        #TODO: single values per currency pair
 # ar.autocorrGraph(btcusd, btceur, btcgbp, btcjpy, 3)
 
 

@@ -301,22 +301,65 @@ class Amihud:
         return dataframe
 
     """
-    This method plots all the Amihud values in one graph with the date oin the x-axis and the value on the y-axis
+    This method plots all the Amihud values in one graph with the date on the x-axis and the value on the y-axis
     """
-    def amihudGraph(self, fileUSD, fileEUR, fileGBP, fileJPY):
+    def amihudGraph(self, fileUSD, fileEUR, fileGBP, fileJPY, int):
 
-        dataframe = self.printStandardisedAh(fileUSD, fileEUR, fileGBP, fileJPY)
+        dataframe = self.getNormalizedDataframe(fileEUR, fileGBP, fileJPY, fileUSD, int)
+        dataframe = self.setDateIndex(dataframe)
+        self.pltShow(dataframe, int)
 
+    """
+    This method helps to get a dataframe of Amihud values of one currency pair, depending on the int value that is 
+    given. Therefore the Amihud values of each currency pair has to be standardised on the same length. Following int 
+    values allow access to following currency pairs:
+    
+    int = 0: BTC/USD
+    int = 1: BTC/EUR
+    int = 2: BTC/GBP
+    int = 3: BTC/JPY
+    """
+    def getNormalizedDataframe(self, fileEUR, fileGBP, fileJPY, fileUSD, int):
+        date, usd, eur, gbp, jpy = self.cutAhArray(fileUSD, fileEUR, fileGBP, fileJPY)
+        dataframe = self.chooseCurrencyPair(date, eur, gbp, int, jpy, usd)
+        return dataframe
+
+    """
+    This method sets the index of a given dataframe to the date column of the dataframe. Therefore the date values have 
+    to transferred to integer values first.
+    
+    Requires:       The given dataframe has to have one column with date values
+                    the dataframe has to store at least one row of values
+    
+    Ensures:        a dataframe will be returned 
+    
+    returns:        a dataframe with Date values as index
+    """
+    def setDateIndex(self, dataframe):
+        dataframe = pd.DataFrame(dataframe)
+        dataframe['Date'] = dataframe['Date'].astype('datetime64')  # to set date as integer values
+        dataframe = dataframe.set_index('Date')
+        return dataframe
+
+    """
+    In this method are all the settings defined to plot a dataframe with some kind of numerical values on y-axis and 
+    date values on the x-axis. Following int values allow access to following currency pairs:
+    
+    int = 0: BTC/USD
+    int = 1: BTC/EUR
+    int = 2: BTC/GBP
+    int = 3: BTC/JPY
+    """
+    def pltShow(self, dataframe, int):
         plt.xlabel('Date')
         plt.ylabel('Values')
-        plt.title('Amihud values')
+        self.chooseTitle(int)
         plt.plot(dataframe)
-
         plt.show()
 
     """
-    This method plots the autocorrelation of the amihud values in a graph Following int values allow access to following 
-    currency pairs:
+    This method plots the autocorrelation of the amihud values in a graph. Following int values allow access to 
+    following currency pairs:
     
     int = 0: BTC/USD
     int = 1: BTC/EUR
@@ -339,8 +382,7 @@ class Amihud:
     int = 3: BTC/JPY
     """
     def calcAutocorrGraph(self, fileEUR, fileGBP, fileJPY, fileUSD, int):
-        date, usd, eur, gbp, jpy = self.cutAhArray(fileUSD, fileEUR, fileGBP, fileJPY)
-        ahValues = self.chooseCurrencyPair(date, eur, gbp, int, jpy, usd)
+        ahValues = self.getNormalizedDataframe(fileEUR, fileGBP, fileJPY, fileUSD, int)
         dataframe = pd.DataFrame(ahValues)
         dataframe['Date'] = dataframe['Date'].astype('datetime64')  # to set date as integer values
         dataframe = dataframe.set_index('Date')
@@ -408,13 +450,9 @@ class Amihud:
     """
     def getMonthlyAggregated(self, fileUSD, fileEUR, fileGBP, fileJPY, int):
 
-        date, usd, eur, gbp, jpy = self.cutAhArray(fileUSD, fileEUR, fileGBP, fileJPY)
+        dataset = self.getNormalizedDataframe(fileEUR, fileGBP, fileJPY, fileUSD, int)
 
-        dataset = self.chooseCurrencyPair(date, eur, gbp, int, jpy, usd)
-
-        dataset = pd.DataFrame(dataset)
-        dataset['Date'] = dataset['Date'].astype('datetime64')  # to set date as integer values
-        dataset = dataset.set_index('Date')
+        dataset = self.setDateIndex(dataset)
 
         dataset = dataset.resample('M').mean()
 
