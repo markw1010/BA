@@ -210,39 +210,89 @@ class AbdiRanaldo:
         print(dataframe)
         return dataframe
 
-
     """
     This method plots all the CS values in one graph with the date oin the x-axis and the value on the y-axis
     """
-    def arGraph(self, fileUSD, fileEUR, fileGBP, fileJPY):
+    def arGraph(self, fileUSD, fileEUR, fileGBP, fileJPY, int):
 
-        dataframe = self.printStandardisedAr(fileUSD, fileEUR, fileGBP, fileJPY)
+        dataframe = self.getNormalizedDataframe(fileEUR, fileGBP, fileJPY, fileUSD, int)
+        dataframe = self.setDateIndex(dataframe)
+        self.pltShow(dataframe, int)
 
+    """
+    This method sets the index of a given dataframe to the date column of the dataframe. Therefore the date values have 
+    to transferred to integer values first.
+
+    Requires:       The given dataframe has to have one column with date values
+                    the dataframe has to store at least one row of values
+
+    Ensures:        a dataframe will be returned 
+
+    Returns:        a dataframe with Date values as index
+    """
+
+    def setDateIndex(self, dataframe):
+        dataframe = pd.DataFrame(dataframe)
+        dataframe['Date'] = dataframe['Date'].astype('datetime64')  # to set date as integer values
+        dataframe = dataframe.set_index('Date')
+        return dataframe
+
+    """
+    This method helps to get a dataframe of Amihud values of one currency pair, depending on the int value that is 
+    given. Therefore the Amihud values of each currency pair has to be standardised on the same length. Following int 
+    values allow access to following currency pairs:
+
+    int = 0: BTC/USD
+    int = 1: BTC/EUR
+    int = 2: BTC/GBP
+    int = 3: BTC/JPY
+    """
+    def getNormalizedDataframe(self, fileEUR, fileGBP, fileJPY, fileUSD, int):
+        date, usd, eur, gbp, jpy = self.cutArArray(fileUSD, fileEUR, fileGBP, fileJPY)
+        dataframe = self.chooseCurrencyPair(date, eur, gbp, int, jpy, usd)
+        return dataframe
+
+    """
+    In this method are all the settings defined to plot a dataframe with some kind of numerical values on y-axis and 
+    date values on the x-axis. Following int values allow access to following currency pairs:
+
+    int = 0: BTC/USD
+    int = 1: BTC/EUR
+    int = 2: BTC/GBP
+    int = 3: BTC/JPY
+    """
+    def pltShow(self, dataframe, int):
         plt.xlabel('Date')
         plt.ylabel('Values')
-        plt.title('CS values')
+        self.chooseTitle(int)
         plt.plot(dataframe)
-
         plt.show()
 
     """
     This method plots the autocorrelation of the amihud values in a graph
     """
-    def autocorrGraph(self, fileUSD, fileEUR, fileGBP, fileJPY, int):
+    def showAutocorrGraph(self, fileUSD, fileEUR, fileGBP, fileJPY, int):
 
-        date, usd, eur, gbp, jpy = self.cutArArray(fileUSD, fileEUR, fileGBP, fileJPY)
-
-        csValues = self.chooseCurrencyPair(date, eur, gbp, int, jpy, usd)
-
-        dataframe = pd.DataFrame(csValues)
-        dataframe['Date'] = dataframe['Date'].astype('datetime64')  # to set date as integer values
-        dataframe = dataframe.set_index('Date')
-
-        autocorrelation_plot(dataframe)
-
-        self.chooseTitle(int)
+        self.calcAutocorrGraph(fileEUR, fileGBP, fileJPY, fileUSD, int)
 
         plt.show()
+
+    """
+    This method calculates the autocorrelation of of past BTC liquidity data for each BTC currency pair. Date values are 
+    the index. Following int values allow access to following currency pairs:
+
+    int = 0: BTC/USD
+    int = 1: BTC/EUR
+    int = 2: BTC/GBP
+    int = 3: BTC/JPY
+    """
+    def calcAutocorrGraph(self, fileEUR, fileGBP, fileJPY, fileUSD, int):
+        ahValues = self.getNormalizedDataframe(fileEUR, fileGBP, fileJPY, fileUSD, int)
+        dataframe = pd.DataFrame(ahValues)
+        dataframe['Date'] = dataframe['Date'].astype('datetime64')  # to set date as integer values
+        dataframe = dataframe.set_index('Date')
+        autocorrelation_plot(dataframe)
+        self.chooseTitle(int)
 
     """
     This is a helper method to set a title for autocorrelation graph of the autocorrGraph method, depending on what 

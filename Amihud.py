@@ -333,7 +333,7 @@ class Amihud:
     
     Ensures:        a dataframe will be returned 
     
-    returns:        a dataframe with Date values as index
+    Returns:        a dataframe with Date values as index
     """
     def setDateIndex(self, dataframe):
         dataframe = pd.DataFrame(dataframe)

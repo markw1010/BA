@@ -79,8 +79,8 @@ ll = LeadLag()
 # cs.printCS(btcgbp, 'GBP')
 # cs.cutCsArray(btcusd, btceur, btcgbp, btcjpy)
 # cs.printstandardisedCS(btcusd, btceur, btcgbp, btcjpy)
-cs.csGraph(btcusd, btceur, btcgbp, btcjpy, int)    #TODO: single values per currency pair
-# cs.autocorrGraph(btcusd, btceur, btcgbp, btcjpy, 0)
+# cs.csGraph(btcusd, btceur, btcgbp, btcjpy, 3)
+# cs.showAutocorrGraph(btcusd, btceur, btcgbp, btcjpy, 3)
 
 # TODO JPY values checking
 # Uncomment this line of code to show the single Amihud value on the console
@@ -115,8 +115,8 @@ cs.csGraph(btcusd, btceur, btcgbp, btcjpy, int)    #TODO: single values per curr
 # ar.abdiRanaldoValueOnly(btcjpy, 'JPY')
 # ar.abdiRanaldoValueOnly(btcgbp, 'GBP')
 # ar.printStandardisedAr(btcusd, btceur, btcgbp, btcjpy)
-# ar.arGraph(btcusd, btceur, btcgbp, btcjpy)        #TODO: single values per currency pair
-# ar.autocorrGraph(btcusd, btceur, btcgbp, btcjpy, 3)
+# ar.arGraph(btcusd, btceur, btcgbp, btcjpy, 3)
+ar.showAutocorrGraph(btcusd, btceur, btcgbp, btcjpy, 2)
 
 
 # Uncomment this line of code to show the CS, the Amihud and the AR value
