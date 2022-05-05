@@ -79,8 +79,10 @@ ll = LeadLag()
 # cs.printCS(btcgbp, 'GBP')
 # cs.cutCsArray(btcusd, btceur, btcgbp, btcjpy)
 # cs.printstandardisedCS(btcusd, btceur, btcgbp, btcjpy)
-# cs.csGraph(btcusd, btceur, btcgbp, btcjpy, 3)
-# cs.showAutocorrGraph(btcusd, btceur, btcgbp, btcjpy, 3)
+cs.csGraph(btcusd, btceur, btcgbp, btcjpy, 3)
+# cs.showAutocorrGraph(btcusd, btceur, btcgbp, btcjpy, 0)
+# cs.getCrossCorrelation(btcusd, btceur, btcgbp, btcjpy)
+
 
 # TODO JPY values checking
 # Uncomment this line of code to show the single Amihud value on the console
@@ -109,6 +111,7 @@ ll = LeadLag()
 # cs.corwinSchultzValueOnly(btcjpy, 'JPY')
 # cs.corwinSchultzValueOnly(btcgbp, 'GBP')
 
+
 # Uncomment this line of code to show the single AR value on the console
 # ar.abdiRanaldoValueOnly(btcusd, 'USD')
 # ar.abdiRanaldoValueOnly(btceur, 'EUR')
@@ -116,7 +119,7 @@ ll = LeadLag()
 # ar.abdiRanaldoValueOnly(btcgbp, 'GBP')
 # ar.printStandardisedAr(btcusd, btceur, btcgbp, btcjpy)
 # ar.arGraph(btcusd, btceur, btcgbp, btcjpy, 3)
-ar.showAutocorrGraph(btcusd, btceur, btcgbp, btcjpy, 2)
+# ar.showAutocorrGraph(btcusd, btceur, btcgbp, btcjpy, 3)
 
 
 # Uncomment this line of code to show the CS, the Amihud and the AR value

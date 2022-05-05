@@ -313,7 +313,7 @@ class CorwinSchultz:
         return low
 
     """
-    this method takes four arrays which are containing the amihud values in all representative currency pairs and 
+    this method takes four arrays which are containing the cs values in all representative currency pairs and 
     figures out which array contains the fewest data.
 
     Requires:   
@@ -364,7 +364,7 @@ class CorwinSchultz:
         return date, usd, eur, gbp, jpy
 
     """
-    This method prints the standardised arrays containing the amihud values for each currency pair
+    This method prints the standardised arrays containing the cs values for each currency pair
     
     Returns    pandas dataframe containing CS values for each currency pair and date as int
     """
@@ -397,8 +397,8 @@ class CorwinSchultz:
         self.pltShow(dataframe, int)
 
     """
-    This method helps to get a dataframe of Amihud values of one currency pair, depending on the int value that is 
-    given. Therefore the Amihud values of each currency pair has to be standardised on the same length. Following int 
+    This method helps to get a dataframe of cs values of one currency pair, depending on the int value that is 
+    given. Therefore the cs values of each currency pair has to be standardised on the same length. Following int 
     values allow access to following currency pairs:
 
     int = 0: BTC/USD
@@ -445,7 +445,7 @@ class CorwinSchultz:
         plt.show()
 
     """
-    This method plots the autocorrelation of the amihud values in a graph
+    This method plots the autocorrelation of the cs values in a graph
     """
     def showAutocorrGraph(self, fileUSD, fileEUR, fileGBP, fileJPY, int):
 
@@ -463,12 +463,26 @@ class CorwinSchultz:
     int = 3: BTC/JPY
     """
     def calcAutocorrGraph(self, fileEUR, fileGBP, fileJPY, fileUSD, int):
-        ahValues = self.getNormalizedDataframe(fileEUR, fileGBP, fileJPY, fileUSD, int)
-        dataframe = pd.DataFrame(ahValues)
-        dataframe['Date'] = dataframe['Date'].astype('datetime64')  # to set date as integer values
-        dataframe = dataframe.set_index('Date')
+        dataframe = self.getCsValues(fileEUR, fileGBP, fileJPY, fileUSD, int)
         autocorrelation_plot(dataframe)
         self.chooseTitle(int)
+
+    """
+    This method returns a dataframe with two columns. one column contains all date values and the other column contains 
+    all cs values. the Dataframe is standardised on the length of the smallest amount of data of all of the BTC-
+    currency pairs. The date values are the index. Following int values allow access to following currency pairs:
+
+    int = 0: BTC/USD
+    int = 1: BTC/EUR
+    int = 2: BTC/GBP
+    int = 3: BTC/JPY
+    """
+    def getCsValues(self, fileEUR, fileGBP, fileJPY, fileUSD, int):
+        csValues = self.getNormalizedDataframe(fileEUR, fileGBP, fileJPY, fileUSD, int)
+        dataframe = pd.DataFrame(csValues)
+        dataframe['Date'] = dataframe['Date'].astype('datetime64')  # to set date as integer values
+        dataframe = dataframe.set_index('Date')
+        return dataframe
 
     """
     This is a helper method to set a title for autocorrelation graph of the autocorrGraph method, depending on what 
@@ -510,3 +524,45 @@ class CorwinSchultz:
                 'BTCJPY': jpy,
             }
         return csValues
+
+
+    def getCrossCorrelation(self, fileEUR, fileGBP, fileJPY, fileUSD):
+        usd = self.getCsValues(fileEUR, fileGBP, fileJPY, fileUSD, 0).reset_index(drop=True)
+        eur = self.getCsValues(fileEUR, fileGBP, fileJPY, fileUSD, 1).reset_index(drop=True)
+        gbp = self.getCsValues(fileEUR, fileGBP, fileJPY, fileUSD, 2).reset_index(drop=True)
+        jpy = self.getCsValues(fileEUR, fileGBP, fileJPY, fileUSD, 3).reset_index(drop=True)
+
+        result = pd.concat([usd, eur], axis=1, join='inner')
+        result = pd.concat([result, gbp], axis=1, join='inner')
+        df = pd.concat([result, jpy], axis=1, join='inner')
+        #print(df)
+
+        usd = df['BTCUSD']
+        eur = df['BTCEUR']
+        gbp = df['BTCGBP']
+        jpy = df['BTCJPY']
+
+        xcov_daily = [self.crosscorr(usd, jpy, lag = i) for i in range(24)]
+
+        # xcov_daily = self.crosscorr(usd, jpy, 5)
+
+        print(xcov_daily)
+
+        #correlation = df['BTCUSD'].corr(df['BTCEUR'])
+        #print(correlation)
+
+
+        # lagged_correlation = pd.DataFrame.from_dict(
+        #    {x: [df['BTCUSD'].corr(df[x].shift(-t)) for t in range(24)] for x in df.columns})
+
+        # print(lagged_correlation)
+
+
+    def crosscorr(self, datax, datay, lag):
+
+        return datax.corr(datay.shift(lag))
+
+
+
+
+
