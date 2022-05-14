@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from pandas.plotting import autocorrelation_plot
+import statsmodels.api as sm
 
 """
 This class provides all necessary methods and variables to calculate the Corwin and Schultz (CS) liquidity estimator for 
@@ -364,11 +365,11 @@ class CorwinSchultz:
         return date, usd, eur, gbp, jpy
 
     """
-    This method prints the standardised arrays containing the cs values for each currency pair
+    This method gets the standardised arrays containing the cs values for each currency pair
     
     Returns    pandas dataframe containing CS values for each currency pair and date as int
     """
-    def printstandardisedCS(self, fileUSD, fileEUR, fileGBP, fileJPY):
+    def getStandardisedCS(self, fileUSD, fileEUR, fileGBP, fileJPY):
 
         date, usd, eur, gbp, jpy = self.cutCsArray(fileUSD, fileEUR, fileGBP, fileJPY)
 
@@ -384,8 +385,22 @@ class CorwinSchultz:
         dataframe['Date'] = dataframe['Date'].astype('datetime64')  # to set date as integer values
         dataframe = dataframe.set_index('Date')
 
-        print(dataframe)
         return dataframe
+
+    """
+    This method prints some of the CS values
+    """
+    def printCsValues(self, fileUSD, fileEUR, fileGBP, fileJPY):
+        values = self.getStandardisedCS(fileUSD, fileEUR, fileGBP, fileJPY)
+        print(values)
+
+    """
+    This method prints all of the CS values
+    """
+    def printAllCsValues(self, fileUSD, fileEUR, fileGBP, fileJPY):
+        values = self.getStandardisedCS(fileUSD, fileEUR, fileGBP, fileJPY)
+        #pd.set_option("display.max_rows", None, "display.max_columns", None)
+        print(values.to_string())
 
     """
     This method plots all the CS values in one graph with the date oin the x-axis and the value on the y-axis
@@ -395,6 +410,13 @@ class CorwinSchultz:
         dataframe = self.getNormalizedDataframe(fileEUR, fileGBP, fileJPY, fileUSD, int)
         dataframe = self.setDateIndex(dataframe)
         self.pltShow(dataframe, int)
+
+    """
+    This method exports all CS values to an Excel file
+    """
+    def csToExcel(self, fileUSD, fileEUR, fileGBP, fileJPY):
+        values = self.getStandardisedCS(fileUSD, fileEUR, fileGBP, fileJPY)
+        values.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/CS.xlsx', index=True)
 
     """
     This method helps to get a dataframe of cs values of one currency pair, depending on the int value that is 
@@ -525,8 +547,7 @@ class CorwinSchultz:
             }
         return csValues
 
-
-    def getCrossCorrelation(self, fileEUR, fileGBP, fileJPY, fileUSD):
+    def getCrossCorrelation(self, fileEUR, fileGBP, fileJPY, fileUSD, lead, lag):
         usd = self.getCsValues(fileEUR, fileGBP, fileJPY, fileUSD, 0).reset_index(drop=True)
         eur = self.getCsValues(fileEUR, fileGBP, fileJPY, fileUSD, 1).reset_index(drop=True)
         gbp = self.getCsValues(fileEUR, fileGBP, fileJPY, fileUSD, 2).reset_index(drop=True)
@@ -542,25 +563,261 @@ class CorwinSchultz:
         gbp = df['BTCGBP']
         jpy = df['BTCJPY']
 
-        xcov_daily = [self.crosscorr(usd, jpy, lag = i) for i in range(24)]
+        xcov_daily = self.defineLeaderLagger(eur, gbp, jpy, lag, lead, usd)
+
+        print(xcov_daily)
+
+    """
+    This method defines the leading and the lagging variable and calculates the cross correlation with a lag up to 24.
+    The lag up to 24 is chosen, bc the main use of this program is to work with hourly data and bc BTC is traded 24/7,
+    the maximum lag of 24 is representing one day. The date values are the index. Following int values allow access to 
+    following currency pairs:
+
+    int = 0: BTC/USD
+    int = 1: BTC/EUR
+    int = 2: BTC/GBP
+    int = 3: BTC/JPY
+    """
+    def defineLeaderLagger(self, eur, gbp, jpy, lag, lead, usd):
+        if lead == 0 and lag == 1:
+            print('Correlation: usd-eur')
+            xcov_daily = [self.crosscorr(usd, eur, lag=i) for i in range(24)]
+        if lead == 0 and lag == 2:
+            print('Correlation: usd-gbp')
+            xcov_daily = [self.crosscorr(usd, gbp, lag=i) for i in range(24)]
+        if lead == 0 and lag == 3:
+            print('Correlation: usd-jpy')
+            xcov_daily = [self.crosscorr(usd, jpy, lag=i) for i in range(24)]
+        if lead == 1 and lag == 0:
+            print('Correlation: eur-usd')
+            xcov_daily = [self.crosscorr(eur, usd, lag=i) for i in range(24)]
+        if lead == 1 and lag == 2:
+            print('Correlation: eur-gbp')
+            xcov_daily = [self.crosscorr(eur, gbp, lag=i) for i in range(24)]
+        if lead == 1 and lag == 3:
+            print('Correlation: eur-jpy')
+            xcov_daily = [self.crosscorr(eur, jpy, lag=i) for i in range(24)]
+        if lead == 2 and lag == 0:
+            print('Correlation: gbp-usd')
+            xcov_daily = [self.crosscorr(gbp, usd, lag=i) for i in range(24)]
+        if lead == 2 and lag == 1:
+            print('Correlation: gbp-eur')
+            xcov_daily = [self.crosscorr(gbp, eur, lag=i) for i in range(24)]
+        if lead == 2 and lag == 3:
+            print('Correlation: gbp-jpy')
+            xcov_daily = [self.crosscorr(gbp, jpy, lag=i) for i in range(24)]
+        if lead == 3 and lag == 0:
+            print('Correlation: jpy-usd')
+            xcov_daily = [self.crosscorr(jpy, usd, lag=i) for i in range(24)]
+        if lead == 3 and lag == 1:
+            print('Correlation: jpy-eur')
+            xcov_daily = [self.crosscorr(jpy, eur, lag=i) for i in range(24)]
+        if lead == 3 and lag == 2:
+            print('Correlation: jpy-gbp')
+            xcov_daily = [self.crosscorr(jpy, gbp, lag=i) for i in range(24)]
+
+        return xcov_daily
+
+
+    def crosscorr(self, datax, datay, lag):
+        return datax.corr(datay.shift(lag))
+
+    def ols(self, fileEUR, fileGBP, fileJPY, fileUSD):
+
+        usd = self.getCsValues(fileEUR, fileGBP, fileJPY, fileUSD, 0).reset_index(drop=True)
+        eur = self.getCsValues(fileEUR, fileGBP, fileJPY, fileUSD, 1).reset_index(drop=True)
+        gbp = self.getCsValues(fileEUR, fileGBP, fileJPY, fileUSD, 2).reset_index(drop=True)
+        jpy = self.getCsValues(fileEUR, fileGBP, fileJPY, fileUSD, 3).reset_index(drop=True)
+
+        X = sm.add_constant(usd)
+        model = sm.OLS(usd, X)
+        results = model.fit()
+        plt.scatter(usd, jpy, alpha=0.3)
+        y_predict = results.params[0] + results.params[1] * usd
+        plt.plot(usd, y_predict, linewidth=3)
+        plt.xlim(240, 350)
+        plt.ylim(100, 350)
+        plt.xlabel('BTCUSD')
+        plt.ylabel('BTCEUR')
+        plt.title('OLS Regression')
+        print(results.summary())
+
+
+    """
+    This method prints the N-largest CS values of one BTC-currency pair. Following int values allow access to following 
+    currency pairs:
+
+    int = 0: BTC/USD
+    int = 1: BTC/EUR
+    int = 2: BTC/GBP
+    int = 3: BTC/JPY
+    
+    number: number of N-biggest values to be printed
+    """
+    def getNLargest(self, int, fileUSD, fileEUR, fileGBP, fileJPY, number):
+        df = self.getStandardisedCS(fileUSD, fileEUR, fileGBP, fileJPY)
+
+        if int == 0:
+            #print('BTCUSD')
+            largest = df['BTCUSD'].nlargest(number)
+        if int == 1:
+            #print('BTCEUR')
+            largest = df['BTCEUR'].nlargest(number)
+        if int == 2:
+            #print('BTCGBP')
+            largest = df['BTCGBP'].nlargest(number)
+        if int == 3:
+            #print('BTCJPY')
+            largest = df['BTCJPY'].nlargest(number)
+
+        #print(largest)
+        return largest
+
+    """
+    This method (returns) prints a df with the N largest values of each currency pair. Following int values allow access 
+    to following currency pairs:
+
+    int = 0: BTC/USD
+    int = 1: BTC/EUR
+    int = 2: BTC/GBP
+    int = 3: BTC/JPY
+    
+    number: number of N-biggest values to be printed
+    """
+    def printNLargest(self, fileUSD, fileEUR, fileGBP, fileJPY, number):
+        df = self.concatDf(fileEUR, fileGBP, fileJPY, fileUSD, number)
+
+        print(df)
+        return df
+
+    """
+    This method prints the cross correlation of a leading and a lagging currency pair with a lag up to 24. Following int 
+    values allow access to following currency pairs:
+
+    lead/ lag = 0: BTC/USD
+    lead/ lag = 1: BTC/EUR
+    lead/ lag = 2: BTC/GBP
+    lead/ lag = 3: BTC/JPY
+    
+    number: number of N-biggest values to be printed  
+    """
+    def printCrossCorrNLargest(self, fileUSD, fileEUR, fileGBP, fileJPY, lead, lag, number):
+
+        df = self.concatDf(fileEUR, fileGBP, fileJPY, fileUSD, number)
+        # print(df)
+
+        usd = df['BTCUSD']
+        eur = df['BTCEUR']
+        gbp = df['BTCGBP']
+        jpy = df['BTCJPY']
+
+        xcov_daily = self.defineLeaderLagger(eur, gbp, jpy, lag, lead, usd)
 
         # xcov_daily = self.crosscorr(usd, jpy, 5)
 
         print(xcov_daily)
 
-        #correlation = df['BTCUSD'].corr(df['BTCEUR'])
-        #print(correlation)
+    """
+    This is a helper method which returns a concatenation of the N-largest values of each BTC-currency pair in one 
+    dataframe.
+    
+    number: number of N-biggest values to be printed
+    """
+    def concatDf(self, fileEUR, fileGBP, fileJPY, fileUSD, number):
+        usd = self.getNLargest(0, fileUSD, fileEUR, fileGBP, fileJPY, number).reset_index(drop=True)
+        eur = self.getNLargest(1, fileUSD, fileEUR, fileGBP, fileJPY, number).reset_index(drop=True)
+        gbp = self.getNLargest(2, fileUSD, fileEUR, fileGBP, fileJPY, number).reset_index(drop=True)
+        jpy = self.getNLargest(3, fileUSD, fileEUR, fileGBP, fileJPY, number).reset_index(drop=True)
+
+        result = pd.concat([usd, eur], axis=1, join='inner')
+        result = pd.concat([result, gbp], axis=1, join='inner')
+        df = pd.concat([result, jpy], axis=1, join='inner')
+
+        return df
+
+    """
+    This method returns the dates of the N-largest CS values for a certain currency pair. Following int values allow 
+    access to following currency pairs:
+
+    int = 0: BTC/USD
+    int = 1: BTC/EUR
+    int = 2: BTC/GBP
+    int = 3: BTC/JPY
+    
+    number: number of N-biggest values to be printed
+    """
+    def getDatesNLargest(self, int, fileUSD, fileEUR, fileGBP, fileJPY, number):
+
+        df = self.getNLargest(int, fileUSD, fileEUR, fileGBP, fileJPY, number)
+
+        dates = df.index
+
+        #print(dates)
+        return dates
+
+    """
+    This method prints the values of the 
+    """
+    def getValuesOfLoc(self, int, fileUSD, fileEUR, fileGBP, fileJPY, number):
+
+        #dates = self.getDatesNLargest(int, fileUSD, fileEUR, fileGBP, fileJPY, number)
+        df = self.getStandardisedCS(fileUSD, fileEUR, fileGBP, fileJPY)
+        locations = self.add24(int, fileUSD, fileEUR, fileGBP, fileJPY, number)
+
+        values = df.iloc[locations]
+
+        print(values)
+
+    """
+    This method returns the position of the dates of the biggest CS values of a certain currency pair. Following int 
+    values allow access to following currency pairs:
+
+    int = 0: BTC/USD
+    int = 1: BTC/EUR
+    int = 2: BTC/GBP
+    int = 3: BTC/JPY
+    
+    number: number of N-biggest values to be printed
+    """
+    def getPosOfIndex(self, int, fileUSD, fileEUR, fileGBP, fileJPY, number):
+
+        dates = self.getDatesNLargest(int, fileUSD, fileEUR, fileGBP, fileJPY, number)
+        df = self.getStandardisedCS(fileUSD, fileEUR, fileGBP, fileJPY)
+        index = df.index
+        locations = []
+
+        for date in dates:
+            loc = index.get_loc(date)
+            locations.append(loc)
+        return locations
+
+    """
+    This method adds to each location of the dates with the N-biggest values of a currency pair the following 24 
+    locations. The reason for that is, that after a high value in a currency pair is identified, we want to find out,
+    what cross correlational effect this has on other currency with a maximal lag of 24 which is one day for hourly 
+    data. Following int 
+    values allow access to following currency pairs:
+
+    int = 0: BTC/USD
+    int = 1: BTC/EUR
+    int = 2: BTC/GBP
+    int = 3: BTC/JPY
+    
+    number: number of N-biggest values to be printed
+    """
+    def add24(self, int, fileUSD, fileEUR, fileGBP, fileJPY, number):
+        locations = self.getPosOfIndex(int, fileUSD, fileEUR, fileGBP, fileJPY, number)
+        addedLocations = []
+
+        for location in locations:
+            for x in range(25):
+                addedLocations.append(location + x)
+
+        return addedLocations
 
 
-        # lagged_correlation = pd.DataFrame.from_dict(
-        #    {x: [df['BTCUSD'].corr(df[x].shift(-t)) for t in range(24)] for x in df.columns})
-
-        # print(lagged_correlation)
 
 
-    def crosscorr(self, datax, datay, lag):
-
-        return datax.corr(datay.shift(lag))
 
 
 
