@@ -547,7 +547,7 @@ class CorwinSchultz:
             }
         return csValues
 
-    def getCrossCorrelation(self, fileEUR, fileGBP, fileJPY, fileUSD, lead, lag):
+    def getCrossCorrelationAll(self, fileEUR, fileGBP, fileJPY, fileUSD, lead, lag):
         usd = self.getCsValues(fileEUR, fileGBP, fileJPY, fileUSD, 0).reset_index(drop=True)
         eur = self.getCsValues(fileEUR, fileGBP, fileJPY, fileUSD, 1).reset_index(drop=True)
         gbp = self.getCsValues(fileEUR, fileGBP, fileJPY, fileUSD, 2).reset_index(drop=True)
@@ -687,7 +687,7 @@ class CorwinSchultz:
     def printNLargest(self, fileUSD, fileEUR, fileGBP, fileJPY, number):
         df = self.concatDf(fileEUR, fileGBP, fileJPY, fileUSD, number)
 
-        print(df)
+        #print(df)
         return df
 
     """
@@ -760,13 +760,15 @@ class CorwinSchultz:
     """
     def getValuesOfLoc(self, int, fileUSD, fileEUR, fileGBP, fileJPY, number):
 
-        #dates = self.getDatesNLargest(int, fileUSD, fileEUR, fileGBP, fileJPY, number)
+        pd.set_option("display.max_rows", None, "display.max_columns", None)
+
         df = self.getStandardisedCS(fileUSD, fileEUR, fileGBP, fileJPY)
         locations = self.add24(int, fileUSD, fileEUR, fileGBP, fileJPY, number)
 
         values = df.iloc[locations]
 
-        print(values)
+        #print(values)
+        return values
 
     """
     This method returns the position of the dates of the biggest CS values of a certain currency pair. Following int 
@@ -810,10 +812,51 @@ class CorwinSchultz:
         addedLocations = []
 
         for location in locations:
-            for x in range(25):
-                addedLocations.append(location + x)
+            for x in range(24):
+                addedLocations.append(location - x)
 
         return addedLocations
+
+
+
+    def getCrossCorrelationTopN(self, int, btcusd, btceur, btcgbp, btcjpy, number, leader, lagger, lag):
+        usd = self.getNLargest(int, btcusd, btceur, btcgbp, btcjpy, number).reset_index(drop=True)
+        df = self.getValuesOfLoc(int, btcusd, btceur, btcgbp, btcjpy, number).reset_index(drop=True)
+        df.drop('BTCUSD', inplace=True, axis=1)
+
+        #print(usd)
+        df = df.drop(df.index[0: lag])
+
+
+        max = len(df.index)/24
+        max = round(max)
+        x = 1
+
+        for i in range(max):
+            df = df.drop(df.index[x:23+x])
+            x += 1
+
+        df.reset_index(drop=True, inplace=True)
+        #print(df)
+
+        df = pd.concat([usd, df], axis=1, join='outer')
+        #print(df)
+
+        usd = df['BTCUSD']
+        eur = df['BTCEUR']
+        gbp = df['BTCGBP']
+        jpy = df['BTCJPY']
+
+
+
+        #xcov_daily = self.defineLeaderLagger(eur, gbp, jpy, lag, lead, usd)
+        xcov = usd.corr(eur)
+        print(xcov)
+
+
+
+
+
 
 
 
