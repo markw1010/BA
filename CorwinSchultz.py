@@ -547,7 +547,7 @@ class CorwinSchultz:
             }
         return csValues
 
-    def getCrossCorrelationAll(self, fileEUR, fileGBP, fileJPY, fileUSD, lead, lag):
+    def getCrossCorrelationAll(self, fileEUR, fileGBP, fileJPY, fileUSD, leader, lagger):
         usd = self.getCsValues(fileEUR, fileGBP, fileJPY, fileUSD, 0).reset_index(drop=True)
         eur = self.getCsValues(fileEUR, fileGBP, fileJPY, fileUSD, 1).reset_index(drop=True)
         gbp = self.getCsValues(fileEUR, fileGBP, fileJPY, fileUSD, 2).reset_index(drop=True)
@@ -563,7 +563,7 @@ class CorwinSchultz:
         gbp = df['BTCGBP']
         jpy = df['BTCJPY']
 
-        xcov_daily = self.defineLeaderLagger(eur, gbp, jpy, lag, lead, usd)
+        xcov_daily = self.defineLeaderLagger(eur, gbp, jpy, lagger, leader, usd)
 
         print(xcov_daily)
 
@@ -578,49 +578,45 @@ class CorwinSchultz:
     int = 2: BTC/GBP
     int = 3: BTC/JPY
     """
-    def defineLeaderLagger(self, eur, gbp, jpy, lag, lead, usd):
-        if lead == 0 and lag == 1:
-            print('Correlation: usd-eur')
-            xcov_daily = [self.crosscorr(usd, eur, lag=i) for i in range(24)]
-        if lead == 0 and lag == 2:
-            print('Correlation: usd-gbp')
-            xcov_daily = [self.crosscorr(usd, gbp, lag=i) for i in range(24)]
-        if lead == 0 and lag == 3:
-            print('Correlation: usd-jpy')
-            xcov_daily = [self.crosscorr(usd, jpy, lag=i) for i in range(24)]
-        if lead == 1 and lag == 0:
-            print('Correlation: eur-usd')
-            xcov_daily = [self.crosscorr(eur, usd, lag=i) for i in range(24)]
-        if lead == 1 and lag == 2:
-            print('Correlation: eur-gbp')
-            xcov_daily = [self.crosscorr(eur, gbp, lag=i) for i in range(24)]
-        if lead == 1 and lag == 3:
-            print('Correlation: eur-jpy')
-            xcov_daily = [self.crosscorr(eur, jpy, lag=i) for i in range(24)]
-        if lead == 2 and lag == 0:
-            print('Correlation: gbp-usd')
-            xcov_daily = [self.crosscorr(gbp, usd, lag=i) for i in range(24)]
-        if lead == 2 and lag == 1:
-            print('Correlation: gbp-eur')
-            xcov_daily = [self.crosscorr(gbp, eur, lag=i) for i in range(24)]
-        if lead == 2 and lag == 3:
-            print('Correlation: gbp-jpy')
-            xcov_daily = [self.crosscorr(gbp, jpy, lag=i) for i in range(24)]
-        if lead == 3 and lag == 0:
-            print('Correlation: jpy-usd')
-            xcov_daily = [self.crosscorr(jpy, usd, lag=i) for i in range(24)]
-        if lead == 3 and lag == 1:
-            print('Correlation: jpy-eur')
-            xcov_daily = [self.crosscorr(jpy, eur, lag=i) for i in range(24)]
-        if lead == 3 and lag == 2:
-            print('Correlation: jpy-gbp')
-            xcov_daily = [self.crosscorr(jpy, gbp, lag=i) for i in range(24)]
+    def defineLeaderLagger(self,usd, eur, gbp, jpy, leader, lagger):
+        if leader == 0 and lagger == 1:
+            #print('Correlation: usd-eur')
+            xcov = usd.corr(eur)
+        if leader == 0 and lagger == 2:
+            #print('Correlation: usd-gbp')
+            xcov = usd.corr(gbp)
+        if leader == 0 and lagger == 3:
+            #print('Correlation: usd-jpy')
+            xcov = usd.corr(jpy)
+        if leader == 1 and lagger == 0:
+            #print('Correlation: eur-usd')
+            xcov = eur.corr(usd)
+        if leader == 1 and lagger == 2:
+            #print('Correlation: eur-gbp')
+            xcov = eur.corr(gbp)
+        if leader == 1 and lagger == 3:
+            #print('Correlation: eur-jpy')
+            xcov = eur.corr(jpy)
+        if leader == 2 and lagger == 0:
+            #print('Correlation: gbp-usd')
+            xcov = gbp.corr(usd)
+        if leader == 2 and lagger == 1:
+            #print('Correlation: gbp-eur')
+            xcov = gbp.corr(eur)
+        if leader == 2 and lagger == 3:
+            #print('Correlation: gbp-jpy')
+            xcov = gbp.corr(jpy)
+        if leader == 3 and lagger == 0:
+            #print('Correlation: jpy-usd')
+            xcov = jpy.corr(usd)
+        if leader == 3 and lagger == 1:
+            #print('Correlation: jpy-eur')
+            xcov = jpy.corr(eur)
+        if leader == 3 and lagger == 2:
+            #print('Correlation: jpy-gbp')
+            xcov = jpy.corr(gbp)
 
-        return xcov_daily
-
-
-    def crosscorr(self, datax, datay, lag):
-        return datax.corr(datay.shift(lag))
+        return xcov
 
     def ols(self, fileEUR, fileGBP, fileJPY, fileUSD):
 
@@ -670,7 +666,6 @@ class CorwinSchultz:
             #print('BTCJPY')
             largest = df['BTCJPY'].nlargest(number)
 
-        #print(largest)
         return largest
 
     """
@@ -752,7 +747,6 @@ class CorwinSchultz:
 
         dates = df.index
 
-        #print(dates)
         return dates
 
     """
@@ -797,8 +791,7 @@ class CorwinSchultz:
     This method adds to each location of the dates with the N-biggest values of a currency pair the following 24 
     locations. The reason for that is, that after a high value in a currency pair is identified, we want to find out,
     what cross correlational effect this has on other currency with a maximal lag of 24 which is one day for hourly 
-    data. Following int 
-    values allow access to following currency pairs:
+    data. Following int values allow access to following currency pairs:
 
     int = 0: BTC/USD
     int = 1: BTC/EUR
@@ -812,46 +805,79 @@ class CorwinSchultz:
         addedLocations = []
 
         for location in locations:
-            for x in range(24):
+            for x in range(120):
                 addedLocations.append(location - x)
 
         return addedLocations
 
 
+    """
+    This method calculates the lagged cross correlation between two BTC-currency pairs. Following int values allow 
+    access to following currency pairs:
 
-    def getCrossCorrelationTopN(self, int, btcusd, btceur, btcgbp, btcjpy, number, leader, lagger, lag):
-        usd = self.getNLargest(int, btcusd, btceur, btcgbp, btcjpy, number).reset_index(drop=True)
-        df = self.getValuesOfLoc(int, btcusd, btceur, btcgbp, btcjpy, number).reset_index(drop=True)
+    int = 0: BTC/USD
+    int = 1: BTC/EUR
+    int = 2: BTC/GBP
+    int = 3: BTC/JPY
+    
+    number: number of N-biggest values to be printed
+    lag:    amount of lags (up to 24 makes sense with hourly data to get daily effects in crosscorr)
+    lagger: lagged variable
+    leader: leading variable
+    """
+    def getCrossCorrelationTopN(self, lagger, btcusd, btceur, btcgbp, btcjpy, number, lag):
+        usd = self.getNLargest(0, btcusd, btceur, btcgbp, btcjpy, number).reset_index(drop=True)
+        df = self.getValuesOfLoc(0, btcusd, btceur, btcgbp, btcjpy, number).reset_index(drop=True)
         df.drop('BTCUSD', inplace=True, axis=1)
 
-        #print(usd)
         df = df.drop(df.index[0: lag])
 
-
-        max = len(df.index)/24
+        max = len(df.index)/120
         max = round(max)
         x = 1
 
         for i in range(max):
-            df = df.drop(df.index[x:23+x])
+            df = df.drop(df.index[x:119+x])
             x += 1
 
         df.reset_index(drop=True, inplace=True)
-        #print(df)
-
         df = pd.concat([usd, df], axis=1, join='outer')
-        #print(df)
 
         usd = df['BTCUSD']
         eur = df['BTCEUR']
         gbp = df['BTCGBP']
         jpy = df['BTCJPY']
 
+        xcov = self.defineLeaderLagger(usd, eur, gbp, jpy, 0, lagger)
 
-
-        #xcov_daily = self.defineLeaderLagger(eur, gbp, jpy, lag, lead, usd)
-        xcov = usd.corr(eur)
         print(xcov)
+        return (xcov)
+
+    def crossCorrGraph(self, btcusd, btceur, btcgbp, btcjpy, number):
+
+        crosscorreur = []
+        crosscorrgbp = []
+        crosscorrjpy = []
+
+        lag = []
+        for i in range(120):
+
+            correur = self.getCrossCorrelationTopN(1, btcusd, btceur, btcgbp, btcjpy, number, i)
+            corrgbp = self.getCrossCorrelationTopN(2, btcusd, btceur, btcgbp, btcjpy, number, i)
+            corrjpy = self.getCrossCorrelationTopN(3, btcusd, btceur, btcgbp, btcjpy, number, i)
+            crosscorreur.append(correur)
+            crosscorrgbp.append(corrgbp)
+            crosscorrjpy.append(corrjpy)
+            lag.append(i+1)
+
+        plt.xlabel('Lags')
+        plt.ylabel('Pearson correlation coefficient')
+        plt.title('Corwin and Schultz cross-correlation')
+        plt.plot(lag, crosscorreur)
+        plt.plot(lag, crosscorrgbp)
+        plt.plot(lag, crosscorrjpy)
+        plt.legend(['BTC/USD - BTC/EUR', 'BTC/USD - BTC/GBP', 'BTC/USD - BTC/JPY'])
+        plt.show()
 
 
 

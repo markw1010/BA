@@ -39,6 +39,9 @@ btcjpyD = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/daily/Bitfi
 btcgbpD = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/daily/Bitfinex_BTCGBP_d.csv')
 
 # Hourly Data
+"""
+Amount of standardised data: 34137
+"""
 btcusd = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/hourly/Bitfinex_BTCUSD_1h.csv')
 btceur = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/hourly/Bitfinex_BTCEUR_1h.csv')
 btcjpy = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/hourly/Bitfinex_BTCJPY_1h.csv')
@@ -82,7 +85,7 @@ ll = LeadLag()
 # cs.printAllCsValues(btcusd, btceur, btcgbp, btcjpy)
 # cs.csGraph(btcusd, btceur, btcgbp, btcjpy, 2)
 # cs.showAutocorrGraph(btcusd, btceur, btcgbp, btcjpy, 0)
-# cs.getCrossCorrelationAll(btcusd, btceur, btcgbp, btcjpy, 0, 1)
+# cs.getCrossCorrelationAll(btcusd, btceur, btcgbp, btcjpy, 0, 1) '#TODO: doesnt work
 # cs.ols(btcusd, btceur, btcgbp, btcjpy)
 # cs.csToExcel(btcusd, btceur, btcgbp, btcjpy)
 #cs.getNLargest(0, btcusd, btceur, btcgbp, btcjpy, 50)
@@ -92,7 +95,8 @@ ll = LeadLag()
 #cs.getValuesOfLoc(0, btcusd, btceur, btcgbp, btcjpy, 1)
 # cs.getPosOfIndex(0, btcusd, btceur, btcgbp, btcjpy, 5)
 # cs.add24(0, btcusd, btceur, btcgbp, btcjpy, 5)
-cs.getCrossCorrelationTopN(0, btcusd, btceur, btcgbp, btcjpy, 10000, 0, 1, 6)
+#cs.getCrossCorrelationTopN(3, btcusd, btceur, btcgbp, btcjpy, 1000, 101)
+cs.crossCorrGraph(btcusd, btceur, btcgbp, btcjpy, 10)
 
 
 # TODO JPY values checking
