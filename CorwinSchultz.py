@@ -218,7 +218,7 @@ class CorwinSchultz:
     """
     def getMaxPrice(self, arr):
 
-        arrModified = np.delete(arr, -1)  # -1 is the index for the last item in an array
+        arrModified = np.delete(arr, -1)
         arri1 = np.delete(arr, 0)
 
         max = np.maximum(arrModified, arri1)
@@ -331,7 +331,6 @@ class CorwinSchultz:
         jpy = len(self.calculateCSArray(btcjpy))
 
         csValues = (usd, eur, gbp, jpy)
-
         smallest = csValues.index(min(csValues))
 
         return csValues[smallest]
@@ -556,7 +555,6 @@ class CorwinSchultz:
         result = pd.concat([usd, eur], axis=1, join='inner')
         result = pd.concat([result, gbp], axis=1, join='inner')
         df = pd.concat([result, jpy], axis=1, join='inner')
-        #print(df)
 
         usd = df['BTCUSD']
         eur = df['BTCEUR']
@@ -580,64 +578,31 @@ class CorwinSchultz:
     """
     def defineLeaderLagger(self,usd, eur, gbp, jpy, leader, lagger):
         if leader == 0 and lagger == 1:
-            #print('Correlation: usd-eur')
             xcov = usd.corr(eur)
         if leader == 0 and lagger == 2:
-            #print('Correlation: usd-gbp')
             xcov = usd.corr(gbp)
         if leader == 0 and lagger == 3:
-            #print('Correlation: usd-jpy')
             xcov = usd.corr(jpy)
         if leader == 1 and lagger == 0:
-            #print('Correlation: eur-usd')
             xcov = eur.corr(usd)
         if leader == 1 and lagger == 2:
-            #print('Correlation: eur-gbp')
             xcov = eur.corr(gbp)
         if leader == 1 and lagger == 3:
-            #print('Correlation: eur-jpy')
             xcov = eur.corr(jpy)
         if leader == 2 and lagger == 0:
-            #print('Correlation: gbp-usd')
             xcov = gbp.corr(usd)
         if leader == 2 and lagger == 1:
-            #print('Correlation: gbp-eur')
             xcov = gbp.corr(eur)
         if leader == 2 and lagger == 3:
-            #print('Correlation: gbp-jpy')
             xcov = gbp.corr(jpy)
         if leader == 3 and lagger == 0:
-            #print('Correlation: jpy-usd')
             xcov = jpy.corr(usd)
         if leader == 3 and lagger == 1:
-            #print('Correlation: jpy-eur')
             xcov = jpy.corr(eur)
         if leader == 3 and lagger == 2:
-            #print('Correlation: jpy-gbp')
             xcov = jpy.corr(gbp)
 
         return xcov
-
-    def ols(self, fileEUR, fileGBP, fileJPY, fileUSD):
-
-        usd = self.getCsValues(fileEUR, fileGBP, fileJPY, fileUSD, 0).reset_index(drop=True)
-        eur = self.getCsValues(fileEUR, fileGBP, fileJPY, fileUSD, 1).reset_index(drop=True)
-        gbp = self.getCsValues(fileEUR, fileGBP, fileJPY, fileUSD, 2).reset_index(drop=True)
-        jpy = self.getCsValues(fileEUR, fileGBP, fileJPY, fileUSD, 3).reset_index(drop=True)
-
-        X = sm.add_constant(usd)
-        model = sm.OLS(usd, X)
-        results = model.fit()
-        plt.scatter(usd, jpy, alpha=0.3)
-        y_predict = results.params[0] + results.params[1] * usd
-        plt.plot(usd, y_predict, linewidth=3)
-        plt.xlim(240, 350)
-        plt.ylim(100, 350)
-        plt.xlabel('BTCUSD')
-        plt.ylabel('BTCEUR')
-        plt.title('OLS Regression')
-        print(results.summary())
-
 
     """
     This method prints the N-largest CS values of one BTC-currency pair. Following int values allow access to following 
@@ -654,16 +619,12 @@ class CorwinSchultz:
         df = self.getStandardisedCS(fileUSD, fileEUR, fileGBP, fileJPY)
 
         if int == 0:
-            #print('BTCUSD')
             largest = df['BTCUSD'].nlargest(number)
         if int == 1:
-            #print('BTCEUR')
             largest = df['BTCEUR'].nlargest(number)
         if int == 2:
-            #print('BTCGBP')
             largest = df['BTCGBP'].nlargest(number)
         if int == 3:
-            #print('BTCJPY')
             largest = df['BTCJPY'].nlargest(number)
 
         return largest
@@ -682,7 +643,6 @@ class CorwinSchultz:
     def printNLargest(self, fileUSD, fileEUR, fileGBP, fileJPY, number):
         df = self.concatDf(fileEUR, fileGBP, fileJPY, fileUSD, number)
 
-        #print(df)
         return df
 
     """
@@ -699,7 +659,6 @@ class CorwinSchultz:
     def printCrossCorrNLargest(self, fileUSD, fileEUR, fileGBP, fileJPY, lead, lag, number):
 
         df = self.concatDf(fileEUR, fileGBP, fileJPY, fileUSD, number)
-        # print(df)
 
         usd = df['BTCUSD']
         eur = df['BTCEUR']
@@ -707,8 +666,6 @@ class CorwinSchultz:
         jpy = df['BTCJPY']
 
         xcov_daily = self.defineLeaderLagger(eur, gbp, jpy, lag, lead, usd)
-
-        # xcov_daily = self.crosscorr(usd, jpy, 5)
 
         print(xcov_daily)
 
@@ -750,7 +707,15 @@ class CorwinSchultz:
         return dates
 
     """
-    This method prints the values of the 
+    This method returns the CS values of the of certain index positions of the highest ranked values. Following int 
+    values allow access to following currency pairs:
+
+    int = 0: BTC/USD
+    int = 1: BTC/EUR
+    int = 2: BTC/GBP
+    int = 3: BTC/JPY
+    
+    number: number of N-biggest values
     """
     def getValuesOfLoc(self, int, fileUSD, fileEUR, fileGBP, fileJPY, number):
 
@@ -761,7 +726,6 @@ class CorwinSchultz:
 
         values = df.iloc[locations]
 
-        #print(values)
         return values
 
     """
@@ -850,26 +814,22 @@ class CorwinSchultz:
 
         xcov = self.defineLeaderLagger(usd, eur, gbp, jpy, 0, lagger)
 
-        print(xcov)
         return (xcov)
 
+    """
+    This method shows a graph with the pearson correlaton coefficient on the y-axis and the lags up tp 120 on the 
+    x-Axis. It shows the cross-correlation between all BTC-currency pairs with BTC/USD as leading variable.     
+    """
     def crossCorrGraph(self, btcusd, btceur, btcgbp, btcjpy, number):
 
-        crosscorreur = []
-        crosscorrgbp = []
-        crosscorrjpy = []
+        crosscorreur, crosscorrgbp, crosscorrjpy, lag = self.saveCrossCorrArrays(btceur, btcgbp, btcjpy, btcusd, number)
 
-        lag = []
-        for i in range(120):
+        self.plotCrossCorr(crosscorreur, crosscorrgbp, crosscorrjpy, lag)
 
-            correur = self.getCrossCorrelationTopN(1, btcusd, btceur, btcgbp, btcjpy, number, i)
-            corrgbp = self.getCrossCorrelationTopN(2, btcusd, btceur, btcgbp, btcjpy, number, i)
-            corrjpy = self.getCrossCorrelationTopN(3, btcusd, btceur, btcgbp, btcjpy, number, i)
-            crosscorreur.append(correur)
-            crosscorrgbp.append(corrgbp)
-            crosscorrjpy.append(corrjpy)
-            lag.append(i+1)
-
+    """
+    This is a helper method that defines all attributes for plotting the corosscorr in a graph
+    """
+    def plotCrossCorr(self, crosscorreur, crosscorrgbp, crosscorrjpy, lag):
         plt.xlabel('Lags')
         plt.ylabel('Pearson correlation coefficient')
         plt.title('Corwin and Schultz cross-correlation')
@@ -878,6 +838,25 @@ class CorwinSchultz:
         plt.plot(lag, crosscorrjpy)
         plt.legend(['BTC/USD - BTC/EUR', 'BTC/USD - BTC/GBP', 'BTC/USD - BTC/JPY'])
         plt.show()
+
+    """
+    This is a helper method that saves all crosscorr of every currency pair in separated arrays with a maximal lag of 
+    120.
+    """
+    def saveCrossCorrArrays(self, btceur, btcgbp, btcjpy, btcusd, number):
+        crosscorreur = []
+        crosscorrgbp = []
+        crosscorrjpy = []
+        lag = []
+        for i in range(120):
+            correur = self.getCrossCorrelationTopN(1, btcusd, btceur, btcgbp, btcjpy, number, i)
+            corrgbp = self.getCrossCorrelationTopN(2, btcusd, btceur, btcgbp, btcjpy, number, i)
+            corrjpy = self.getCrossCorrelationTopN(3, btcusd, btceur, btcgbp, btcjpy, number, i)
+            crosscorreur.append(correur)
+            crosscorrgbp.append(corrgbp)
+            crosscorrjpy.append(corrjpy)
+            lag.append(i + 1)
+        return crosscorreur, crosscorrgbp, crosscorrjpy, lag
 
 
 
