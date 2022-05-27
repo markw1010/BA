@@ -191,7 +191,7 @@ class AbdiRanaldo:
     
     Returns    pandas dataframe containing AR values for each currency pair and date as int
     """
-    def printStandardisedAr(self, fileUSD, fileEUR, fileGBP, fileJPY):
+    def getStandardisedAr(self, fileUSD, fileEUR, fileGBP, fileJPY):
 
         date, usd, eur, gbp, jpy = self.cutArArray(fileUSD, fileEUR, fileGBP, fileJPY)
 
@@ -207,7 +207,7 @@ class AbdiRanaldo:
         dataframe['Date'] = dataframe['Date'].astype('datetime64')  # to set date as integer values
         dataframe = dataframe.set_index('Date')
 
-        print(dataframe)
+        #print(dataframe)
         return dataframe
 
     """
@@ -334,3 +334,148 @@ class AbdiRanaldo:
                 'BTCJPY': jpy,
             }
         return arValues
+
+    """
+    This method defines the leading and the lagging variable and calculates the cross correlation with a lag up to 24.
+    The lag up to 24 is chosen, bc the main use of this program is to work with hourly data and bc BTC is traded 24/7,
+    the maximum lag of 24 is representing one day. The date values are the index. Following int values allow access to 
+    following currency pairs:
+
+    int = 0: BTC/USD
+    int = 1: BTC/EUR
+    int = 2: BTC/GBP
+    int = 3: BTC/JPY
+    """
+    def defineLeaderLagger(self,usd, eur, gbp, jpy, leader, lagger):
+        if leader == 0 and lagger == 1:
+            xcov = usd.corr(eur)
+        if leader == 0 and lagger == 2:
+            xcov = usd.corr(gbp)
+        if leader == 0 and lagger == 3:
+            xcov = usd.corr(jpy)
+        if leader == 1 and lagger == 0:
+            xcov = eur.corr(usd)
+        if leader == 1 and lagger == 2:
+            xcov = eur.corr(gbp)
+        if leader == 1 and lagger == 3:
+            xcov = eur.corr(jpy)
+        if leader == 2 and lagger == 0:
+            xcov = gbp.corr(usd)
+        if leader == 2 and lagger == 1:
+            xcov = gbp.corr(eur)
+        if leader == 2 and lagger == 3:
+            xcov = gbp.corr(jpy)
+        if leader == 3 and lagger == 0:
+            xcov = jpy.corr(usd)
+        if leader == 3 and lagger == 1:
+            xcov = jpy.corr(eur)
+        if leader == 3 and lagger == 2:
+            xcov = jpy.corr(gbp)
+
+        return xcov
+
+    """
+    This method calculates the lagged cross correlation between two BTC-currency pairs. Following int values allow 
+    access to following currency pairs:
+
+    int = 0: BTC/USD
+    int = 1: BTC/EUR
+    int = 2: BTC/GBP
+    int = 3: BTC/JPY
+
+    lag:    amount of lags (up to 24 makes sense with hourly data to get daily effects in crosscorr)
+    lagger: lagged variable
+    """
+
+    def getCrossCorrelation(self, lagger, btcusd, btceur, btcgbp, btcjpy, lag):
+        # pd.set_option("display.max_rows", None, "display.max_columns", None)
+        date, df, df2UpsideDown, usd = self.normaliseDfForCc(btceur, btcgbp, btcjpy, btcusd)
+        df2UpsideDown = self.transformDfForLag(date, df, df2UpsideDown, lag, usd)
+        df = self.concatDf(date, df2UpsideDown, usd)
+
+        usd = df['BTCUSD']
+        eur = df['BTCEUR']
+        gbp = df['BTCGBP']
+        jpy = df['BTCJPY']
+
+        xcov = self.defineLeaderLagger(usd, eur, gbp, jpy, 0, lagger)
+        print(xcov)
+        return (xcov)
+
+    """
+    This is a helper method that concatenates the dates and CS values of BTCUSD with the other currencies + their dates.
+    """
+    def concatDf(self, date, df2UpsideDown, usd):
+        df = pd.concat([date, usd], axis=1, join='outer')
+        df = pd.concat([df, df2UpsideDown], axis=1, join='outer')
+        return df
+
+    """
+    This is a helper method that do transformations to the dataframe for the lag that should be used.
+    """
+    def transformDfForLag(self, date, df, df2UpsideDown, lag, usd):
+        df2UpsideDown = df2UpsideDown.drop(df.index[0: lag])
+        df2UpsideDown.reset_index(drop=True, inplace=True)
+        usd.drop(usd.tail(lag).index, inplace=True)
+        date.drop(date.tail(lag).index, inplace=True)
+        return df2UpsideDown
+
+    """
+    This is a helper method that do transformations to the dataframe before it can be used for calculating the 
+    crosscorr.
+    """
+    def normaliseDfForCc(self, btceur, btcgbp, btcjpy, btcusd):
+        df = self.getStandardisedAr(btcusd, btceur, btcgbp, btcjpy).reset_index()
+        df2 = self.getStandardisedAr(btcusd, btceur, btcgbp, btcjpy).reset_index()
+        dfUpsideDown = df.loc[::-1]
+        df2UpsideDown = df2.loc[::-1]
+        dfUpsideDown.reset_index(drop=True, inplace=True)
+        df2UpsideDown.reset_index(drop=True, inplace=True)
+        date = dfUpsideDown['Date']
+        usd = dfUpsideDown['BTCUSD']
+        df2UpsideDown.drop('BTCUSD', inplace=True, axis=1)
+        return date, df, df2UpsideDown, usd
+
+    """
+    This method shows a graph with the pearson correlaton coefficient on the y-axis and the lags up tp 120 on the 
+    x-Axis. It shows the cross-correlation between all BTC-currency pairs with BTC/USD as leading variable.     
+    """
+    def crossCorrGraph(self, btcusd, btceur, btcgbp, btcjpy):
+
+        print('The graph will be shown when the number 168 is reached')
+        crosscorreur = []
+        crosscorrgbp = []
+        crosscorrjpy = []
+        lag = []
+        for i in range(168):
+            correur = self.getCrossCorrelation(1, btcusd, btceur, btcgbp, btcjpy, i)
+            corrgbp = self.getCrossCorrelation(2, btcusd, btceur, btcgbp, btcjpy, i)
+            corrjpy = self.getCrossCorrelation(3, btcusd, btceur, btcgbp, btcjpy, i)
+            crosscorreur.append(correur)
+            crosscorrgbp.append(corrgbp)
+            crosscorrjpy.append(corrjpy)
+            lag.append(i)
+            print(i)
+
+        self.plotCrossCorr(crosscorreur, crosscorrgbp, crosscorrjpy, lag)
+
+    """
+    This is a helper method that defines all attributes for plotting the corosscorr in a graph
+    """
+    def plotCrossCorr(self, crosscorreur, crosscorrgbp, crosscorrjpy, lag):
+        plt.xlabel('Verzögerung')
+        plt.ylabel('Pearson Korrelationskoeffizient')
+        plt.title('Corwin und Schultz Kreuzkorrelation')
+        plt.plot(lag, crosscorreur)
+        plt.plot(lag, crosscorrgbp)
+        plt.plot(lag, crosscorrjpy)
+        plt.legend(['BTC/USD - BTC/EUR', 'BTC/USD - BTC/GBP', 'BTC/USD - BTC/JPY'])
+        plt.show()
+
+
+
+
+
+
+
+

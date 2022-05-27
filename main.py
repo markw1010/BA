@@ -88,15 +88,8 @@ ll = LeadLag()
 # cs.getCrossCorrelationAll(btcusd, btceur, btcgbp, btcjpy, 0, 1) '#TODO: doesnt work
 # cs.ols(btcusd, btceur, btcgbp, btcjpy)
 # cs.csToExcel(btcusd, btceur, btcgbp, btcjpy)
-#cs.getNLargest(0, btcusd, btceur, btcgbp, btcjpy, 50)
-#cs.printNLargest(btcusd, btceur, btcgbp, btcjpy, 30)
-# cs.printCrossCorrNLargest(btcusd, btceur, btcgbp, btcjpy, 1, 0, 40)
-# cs.getDatesNLargest(0, btcusd, btceur, btcgbp, btcjpy, 50)
-#cs.getValuesOfLoc(0, btcusd, btceur, btcgbp, btcjpy, 1)
-# cs.getPosOfIndex(0, btcusd, btceur, btcgbp, btcjpy, 5)
-# cs.add24(0, btcusd, btceur, btcgbp, btcjpy, 5)
-#cs.getCrossCorrelationTopN(3, btcusd, btceur, btcgbp, btcjpy, 1000, 101)
-cs.crossCorrGraph(btcusd, btceur, btcgbp, btcjpy, 10)
+# cs.getCrossCorrelation(3, btcusd, btceur, btcgbp, btcjpy, 101)
+# cs.crossCorrGraph(btcusd, btceur, btcgbp, btcjpy)
 
 
 # TODO JPY values checking
@@ -108,12 +101,8 @@ cs.crossCorrGraph(btcusd, btceur, btcgbp, btcjpy, 10)
 # amihud.printStandardisedAh(btcusd, btceur, btcgbp, btcjpy)
 # amihud.amihudGraph(btcusd, btceur, btcgbp, btcjpy, 3)
 # amihud.showAutocorrGraph(btcusd, btceur, btcgbp, btcjpy, 3)
-
-
-
 # amihud.calcPartialAutocorr(btcusd, btceur, btcgbp, btcjpy, 2)
 # amihud.getMonthlyAggregated(btcusd, btceur, btcgbp, btcjpy, 0)
-
 # amihud.addLaggedVariableColumns(btcusd, btceur, btcgbp, btcjpy, 0)
 # amihud.lagCombinations()
 # amihud.linearRegressionModel(btcusd, btceur, btcgbp, btcjpy, 0)
@@ -132,9 +121,10 @@ cs.crossCorrGraph(btcusd, btceur, btcgbp, btcjpy, 10)
 # ar.abdiRanaldoValueOnly(btceur, 'EUR')
 # ar.abdiRanaldoValueOnly(btcjpy, 'JPY')
 # ar.abdiRanaldoValueOnly(btcgbp, 'GBP')
-# ar.printStandardisedAr(btcusd, btceur, btcgbp, btcjpy)
+# ar.getStandardisedAr(btcusd, btceur, btcgbp, btcjpy)
 # ar.arGraph(btcusd, btceur, btcgbp, btcjpy, 3)
 # ar.showAutocorrGraph(btcusd, btceur, btcgbp, btcjpy, 3)
+ar.crossCorrGraph(btcusd, btceur, btcgbp, btcjpy)
 
 
 # Uncomment this line of code to show the CS, the Amihud and the AR value
