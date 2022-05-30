@@ -404,11 +404,33 @@ class CorwinSchultz:
     """
     This method plots all the CS values in one graph with the date oin the x-axis and the value on the y-axis
     """
-    def csGraph(self, fileUSD, fileEUR, fileGBP, fileJPY, int):
+    def csGraph(self, fileUSD, fileEUR, fileGBP, fileJPY):
 
-        dataframe = self.getNormalizedDataframe(fileEUR, fileGBP, fileJPY, fileUSD, int)
-        dataframe = self.setDateIndex(dataframe)
-        self.pltShow(dataframe, int)
+        #dataframe = self.getNormalizedDataframe(fileEUR, fileGBP, fileJPY, fileUSD, int)
+        dataframe = self.getStandardisedCS(fileEUR, fileGBP, fileJPY, fileUSD)
+
+        date = dataframe.index
+        usd = dataframe['BTCUSD']
+        eur = dataframe['BTCEUR']
+        gbp = dataframe['BTCGBP']
+        jpy = dataframe['BTCJPY']
+
+        plt.plot(date, usd)
+        plt.plot(date, eur)
+        plt.plot(date, gbp)
+        plt.plot(date, jpy)
+
+        plt.xlabel('Datum')
+        plt.ylabel('Wert')
+        plt.legend(['BTC/USD', 'BTC/EUR', 'BTC/GBP', ' BTC/JPY'])
+        plt.title('Corwin und Schultz Liquiditätsmaß')
+        #plt.plot(dataframe)
+        plt.show()
+
+
+        #dataframe = self.setDateIndex(dataframe)
+        #print(dataframe)
+        #self.pltShow(dataframe, int)
 
     """
     This method exports all CS values to an Excel file
@@ -459,8 +481,8 @@ class CorwinSchultz:
     int = 3: BTC/JPY
     """
     def pltShow(self, dataframe, int):
-        plt.xlabel('Date')
-        plt.ylabel('Values')
+        plt.xlabel('Datum')
+        plt.ylabel('Wert')
         self.chooseTitle(int)
         plt.plot(dataframe)
         plt.show()
@@ -468,9 +490,9 @@ class CorwinSchultz:
     """
     This method plots the autocorrelation of the cs values in a graph
     """
-    def showAutocorrGraph(self, fileUSD, fileEUR, fileGBP, fileJPY, int):
+    def showAutocorrGraph(self, fileUSD, fileEUR, fileGBP, fileJPY):
 
-        self.calcAutocorrGraph(fileEUR, fileGBP, fileJPY, fileUSD, int)
+        self.calcAutocorrGraph(fileEUR, fileGBP, fileJPY, fileUSD)
 
         plt.show()
 
@@ -483,9 +505,15 @@ class CorwinSchultz:
     int = 2: BTC/GBP
     int = 3: BTC/JPY
     """
-    def calcAutocorrGraph(self, fileEUR, fileGBP, fileJPY, fileUSD, int):
-        dataframe = self.getCsValues(fileEUR, fileGBP, fileJPY, fileUSD, int)
-        autocorrelation_plot(dataframe)
+    def calcAutocorrGraph(self, fileEUR, fileGBP, fileJPY, fileUSD):
+        dataframe = self.getStandardisedCS(fileEUR, fileGBP, fileJPY, fileUSD)
+
+        for variable in dataframe.columns:
+            autocorr = autocorrelation_plot(dataframe[variable], label= variable)
+
+        autocorr.set_xlim([0, 169])
+        autocorr.set(xlabel="Verzögerung", ylabel="Autokorrelation", title='Corwin und Schultz Autokorrelation')
+
         self.chooseTitle(int)
 
     """
@@ -511,13 +539,13 @@ class CorwinSchultz:
     """
     def chooseTitle(self, int):
         if int == 0:
-            plt.title('Corwin and Schultz liquidity measure USD')
+            plt.title('Corwin und Schultz Liquiditätsmaß BTC/USD')
         if int == 1:
-            plt.title('Corwin and Schultz liquidity measure EUR')
+            plt.title('Corwin und Schultz Liquiditätsmaß BTC/EUR')
         if int == 2:
-            plt.title('Corwin and Schultz liquidity measure GBP')
+            plt.title('Corwin und Schultz Liquiditätsmaß BTC/GBP')
         if int == 3:
-            plt.title('Corwin and Schultz liquidity measure JPY')
+            plt.title('Corwin und Schultz Liquiditätsmaß BTC/JPY')
 
     """
     This is a helper method to for the autocorrGraph method to choose a currency pair. 0 refers to USD, 1 refers to EUR, 
@@ -676,21 +704,20 @@ class CorwinSchultz:
     def crossCorrGraph(self, btcusd, btceur, btcgbp, btcjpy):
 
         print('The graph will be shown when the number 168 is reached')
-        crosscorreur = []
-        crosscorrgbp = []
-        crosscorrjpy = []
-        lag = []
-        for i in range(168):
-            correur = self.getCrossCorrelation(1, btcusd, btceur, btcgbp, btcjpy, i)
-            corrgbp = self.getCrossCorrelation(2, btcusd, btceur, btcgbp, btcjpy, i)
-            corrjpy = self.getCrossCorrelation(3, btcusd, btceur, btcgbp, btcjpy, i)
-            crosscorreur.append(correur)
-            crosscorrgbp.append(corrgbp)
-            crosscorrjpy.append(corrjpy)
-            lag.append(i)
-            print(i)
 
-        self.plotCrossCorr(crosscorreur, crosscorrgbp, crosscorrjpy, lag)
+        crosscorreur, crosscorrgbp, crosscorrjpy, lag = self.crossCorrData(btceur, btcgbp, btcjpy, btcusd)
+
+        #self.plotCrossCorr(crosscorreur, crosscorrgbp, crosscorrjpy, lag)
+
+        df = pd.DataFrame({'lag': lag,
+                           'BTC/USD-BTC/EUR': crosscorreur,
+                           'BTC/USD-BTC/GBP': crosscorrgbp,
+                           'BTC/USD-BTC/JPY': crosscorrjpy})
+
+        df.set_index('lag')
+        df.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/CrossCorrCS.xlsx', index=True)
+
+        print(df)
 
     """
     This is a helper method that defines all attributes for plotting the corosscorr in a graph
@@ -704,6 +731,120 @@ class CorwinSchultz:
         plt.plot(lag, crosscorrjpy)
         plt.legend(['BTC/USD - BTC/EUR', 'BTC/USD - BTC/GBP', 'BTC/USD - BTC/JPY'])
         plt.show()
+
+    """
+    This is a helper method which saves the cross correlations with all BTC-currency pairs with the currency pair BTCUSD 
+    as leading variable in arrays up to lag 168.
+    """
+    def crossCorrData(self, btceur, btcgbp, btcjpy, btcusd):
+        crosscorreur = []
+        crosscorrgbp = []
+        crosscorrjpy = []
+        lag = []
+        for i in range(169):
+            correur = self.getCrossCorrelation(1, btcusd, btceur, btcgbp, btcjpy, i)
+            corrgbp = self.getCrossCorrelation(2, btcusd, btceur, btcgbp, btcjpy, i)
+            corrjpy = self.getCrossCorrelation(3, btcusd, btceur, btcgbp, btcjpy, i)
+            crosscorreur.append(correur)
+            crosscorrgbp.append(corrgbp)
+            crosscorrjpy.append(corrjpy)
+            lag.append(i)
+            print(i)
+
+        print(crosscorreur)
+        return crosscorreur, crosscorrgbp, crosscorrjpy, lag
+
+    def getBiggestUSD(self, fileEUR, fileGBP, fileJPY, fileUSD):
+        df = self.getStandardisedCS(fileEUR, fileGBP, fileJPY, fileUSD)
+        df.drop('BTCEUR', inplace=True, axis=1)
+        df.drop('BTCGBP', inplace=True, axis=1)
+        df.drop('BTCJPY', inplace=True, axis=1)
+
+        largest = df.nlargest(30, 'BTCUSD')
+        largest.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/CSLargestUSD.xlsx', index=True)
+
+        print(largest)
+
+    def getBiggestEUR(self, fileEUR, fileGBP, fileJPY, fileUSD):
+        df = self.getStandardisedCS(fileEUR, fileGBP, fileJPY, fileUSD)
+        df.drop('BTCUSD', inplace=True, axis=1)
+        df.drop('BTCGBP', inplace=True, axis=1)
+        df.drop('BTCJPY', inplace=True, axis=1)
+
+        largest = df.nlargest(30, 'BTCEUR')
+        largest.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/CSLargestEUR.xlsx', index=True)
+
+        print(largest)
+
+    def getBiggestGBP(self, fileEUR, fileGBP, fileJPY, fileUSD):
+        df = self.getStandardisedCS(fileEUR, fileGBP, fileJPY, fileUSD)
+        df.drop('BTCUSD', inplace=True, axis=1)
+        df.drop('BTCEUR', inplace=True, axis=1)
+        df.drop('BTCJPY', inplace=True, axis=1)
+
+        largest = df.nlargest(30, 'BTCGBP')
+        largest.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/CSLargestGBP.xlsx', index=True)
+
+        print(largest)
+
+    def getBiggestJPY(self, fileEUR, fileGBP, fileJPY, fileUSD):
+        df = self.getStandardisedCS(fileEUR, fileGBP, fileJPY, fileUSD)
+        df.drop('BTCUSD', inplace=True, axis=1)
+        df.drop('BTCGBP', inplace=True, axis=1)
+        df.drop('BTCEUR', inplace=True, axis=1)
+
+        largest = df.nlargest(30, 'BTCJPY')
+        largest.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/CSLargestJPY.xlsx', index=True)
+
+        print(largest)
+
+    def getBiggest(self, fileEUR, fileGBP, fileJPY, fileUSD):
+        self.getBiggestUSD(fileEUR, fileGBP, fileJPY, fileUSD)
+        self.getBiggestEUR(fileEUR, fileGBP, fileJPY, fileUSD)
+        self.getBiggestGBP(fileEUR, fileGBP, fileJPY, fileUSD)
+        self.getBiggestJPY(fileEUR, fileGBP, fileJPY, fileUSD)
+
+    def autocorrData(self, fileEUR, fileGBP, fileJPY, fileUSD):
+        df = self.getStandardisedCS(fileEUR, fileGBP, fileJPY, fileUSD)
+
+        usd = df['BTCUSD']
+        eur = df['BTCEUR']
+        gbp = df['BTCGBP']
+        jpy = df['BTCJPY']
+
+        index = []
+        autocorrUSD = []
+        autocorrEUR = []
+        autocorrGBP = []
+        autocorrJPY = []
+
+        for i in range(169):
+            usdAutocorr = usd.autocorr(lag=i)
+            eurAutocorr = eur.autocorr(lag=i)
+            gbpAutocorr = gbp.autocorr(lag=i)
+            jpyAutocorr = jpy.autocorr(lag=i)
+
+            autocorrUSD.append(usdAutocorr)
+            autocorrEUR.append(eurAutocorr)
+            autocorrGBP.append(gbpAutocorr)
+            autocorrJPY.append(jpyAutocorr)
+            index.append(i)
+
+        df = pd.DataFrame({'Verschiebung': index,
+                           'BTCUSD': autocorrUSD,
+                           'BTCEUR': autocorrEUR,
+                           'BTCGBP': autocorrGBP,
+                           'BTCJPY': autocorrJPY})
+        print(df)
+
+        df.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/CSAutocorr.xlsx', index=True)
+
+
+
+
+
+
+
 
 
 

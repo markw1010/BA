@@ -215,9 +215,30 @@ class AbdiRanaldo:
     """
     def arGraph(self, fileUSD, fileEUR, fileGBP, fileJPY, int):
 
-        dataframe = self.getNormalizedDataframe(fileEUR, fileGBP, fileJPY, fileUSD, int)
-        dataframe = self.setDateIndex(dataframe)
-        self.pltShow(dataframe, int)
+        # dataframe = self.getNormalizedDataframe(fileEUR, fileGBP, fileJPY, fileUSD, int)
+        dataframe = self.getStandardisedAr(fileEUR, fileGBP, fileJPY, fileUSD)
+
+        date = dataframe.index
+        usd = dataframe['BTCUSD']
+        eur = dataframe['BTCEUR']
+        gbp = dataframe['BTCGBP']
+        jpy = dataframe['BTCJPY']
+
+        plt.plot(date, usd)
+        plt.plot(date, eur)
+        plt.plot(date, gbp)
+        plt.plot(date, jpy)
+
+        plt.xlabel('Datum')
+        plt.ylabel('Wert')
+        plt.legend(['BTC/USD', 'BTC/EUR', 'BTC/GBP', ' BTC/JPY'])
+        plt.title('Abdi und Ranaldo Liquiditätsmaß')
+        # plt.plot(dataframe)
+        plt.show()
+
+        #dataframe = self.getNormalizedDataframe(fileEUR, fileGBP, fileJPY, fileUSD, int)
+        #dataframe = self.setDateIndex(dataframe)
+        #self.pltShow(dataframe, int)
 
     """
     This method sets the index of a given dataframe to the date column of the dataframe. Therefore the date values have 
@@ -262,8 +283,8 @@ class AbdiRanaldo:
     int = 3: BTC/JPY
     """
     def pltShow(self, dataframe, int):
-        plt.xlabel('Date')
-        plt.ylabel('Values')
+        plt.xlabel('Datum')
+        plt.ylabel('Wert')
         self.chooseTitle(int)
         plt.plot(dataframe)
         plt.show()
@@ -271,9 +292,9 @@ class AbdiRanaldo:
     """
     This method plots the autocorrelation of the amihud values in a graph
     """
-    def showAutocorrGraph(self, fileUSD, fileEUR, fileGBP, fileJPY, int):
+    def showAutocorrGraph(self, fileUSD, fileEUR, fileGBP, fileJPY):
 
-        self.calcAutocorrGraph(fileEUR, fileGBP, fileJPY, fileUSD, int)
+        self.calcAutocorrGraph(fileEUR, fileGBP, fileJPY, fileUSD)
 
         plt.show()
 
@@ -286,13 +307,23 @@ class AbdiRanaldo:
     int = 2: BTC/GBP
     int = 3: BTC/JPY
     """
-    def calcAutocorrGraph(self, fileEUR, fileGBP, fileJPY, fileUSD, int):
-        ahValues = self.getNormalizedDataframe(fileEUR, fileGBP, fileJPY, fileUSD, int)
-        dataframe = pd.DataFrame(ahValues)
-        dataframe['Date'] = dataframe['Date'].astype('datetime64')  # to set date as integer values
-        dataframe = dataframe.set_index('Date')
-        autocorrelation_plot(dataframe)
+    def calcAutocorrGraph(self, fileEUR, fileGBP, fileJPY, fileUSD):
+        dataframe = self.getStandardisedAr(fileEUR, fileGBP, fileJPY, fileUSD)
+
+        for variable in dataframe.columns:
+            autocorr = autocorrelation_plot(dataframe[variable], label=variable)
+
+        autocorr.set_xlim([0, 169])
+        autocorr.set(xlabel="Verzögerung", ylabel="Autokorrelation", title='Abdi und Ranaldo Autokorrelation')
+
         self.chooseTitle(int)
+
+        #ahValues = self.getNormalizedDataframe(fileEUR, fileGBP, fileJPY, fileUSD, int)
+        #dataframe = pd.DataFrame(ahValues)
+        #dataframe['Date'] = dataframe['Date'].astype('datetime64')  # to set date as integer values
+        #dataframe = dataframe.set_index('Date')
+        #autocorrelation_plot(dataframe)
+        #self.chooseTitle(int)
 
     """
     This is a helper method to set a title for autocorrelation graph of the autocorrGraph method, depending on what 
@@ -300,13 +331,13 @@ class AbdiRanaldo:
     """
     def chooseTitle(self, int):
         if int == 0:
-            plt.title('Abdi and Ranaldo measure USD')
+            plt.title('Abdi und Ranaldo Liquiditätsmaß BTC/USD')
         if int == 1:
-            plt.title('Abdi and Ranaldo measure EUR')
+            plt.title('Abdi und Ranaldo Liquiditätsmaß BTC/EUR')
         if int == 2:
-            plt.title('Abdi and Ranaldo measure GBP')
+            plt.title('Abdi und Ranaldo Liquiditätsmaß BTC/GBP')
         if int == 3:
-            plt.title('Abdi and Ranaldo measure JPY')
+            plt.title('Abdi und Ranaldo Liquiditätsmaß BTC/JPY')
 
     """
     This is a helper method to for the autocorrGraph method to choose a currency pair. 0 refers to USD, 1 refers to EUR, 
@@ -447,7 +478,7 @@ class AbdiRanaldo:
         crosscorrgbp = []
         crosscorrjpy = []
         lag = []
-        for i in range(168):
+        for i in range(169):
             correur = self.getCrossCorrelation(1, btcusd, btceur, btcgbp, btcjpy, i)
             corrgbp = self.getCrossCorrelation(2, btcusd, btceur, btcgbp, btcjpy, i)
             corrjpy = self.getCrossCorrelation(3, btcusd, btceur, btcgbp, btcjpy, i)
@@ -457,7 +488,17 @@ class AbdiRanaldo:
             lag.append(i)
             print(i)
 
-        self.plotCrossCorr(crosscorreur, crosscorrgbp, crosscorrjpy, lag)
+        #self.plotCrossCorr(crosscorreur, crosscorrgbp, crosscorrjpy, lag)
+
+        df = pd.DataFrame({'lag': lag,
+                           'BTC/USD-BTC/EUR': crosscorreur,
+                           'BTC/USD-BTC/GBP': crosscorrgbp,
+                           'BTC/USD-BTC/JPY': crosscorrjpy})
+
+        df.set_index('lag')
+        df.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/CrossCorrAR.xlsx', index=True)
+
+        print(df)
 
     """
     This is a helper method that defines all attributes for plotting the corosscorr in a graph
@@ -465,12 +506,98 @@ class AbdiRanaldo:
     def plotCrossCorr(self, crosscorreur, crosscorrgbp, crosscorrjpy, lag):
         plt.xlabel('Verzögerung')
         plt.ylabel('Pearson Korrelationskoeffizient')
-        plt.title('Corwin und Schultz Kreuzkorrelation')
+        plt.title('Abdi und Ranaldo Kreuzkorrelation')
         plt.plot(lag, crosscorreur)
         plt.plot(lag, crosscorrgbp)
         plt.plot(lag, crosscorrjpy)
         plt.legend(['BTC/USD - BTC/EUR', 'BTC/USD - BTC/GBP', 'BTC/USD - BTC/JPY'])
         plt.show()
+
+
+    def getBiggestUSD(self, fileEUR, fileGBP, fileJPY, fileUSD):
+        df = self.getStandardisedAr(fileEUR, fileGBP, fileJPY, fileUSD)
+        df.drop('BTCEUR', inplace=True, axis=1)
+        df.drop('BTCGBP', inplace=True, axis=1)
+        df.drop('BTCJPY', inplace=True, axis=1)
+
+        largest = df.nlargest(30, 'BTCUSD')
+        largest.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/ARLargestUSD.xlsx', index=True)
+
+        print(largest)
+
+    def getBiggestEUR(self, fileEUR, fileGBP, fileJPY, fileUSD):
+        df = self.getStandardisedAr(fileEUR, fileGBP, fileJPY, fileUSD)
+        df.drop('BTCUSD', inplace=True, axis=1)
+        df.drop('BTCGBP', inplace=True, axis=1)
+        df.drop('BTCJPY', inplace=True, axis=1)
+
+        largest = df.nlargest(30, 'BTCEUR')
+        largest.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/ARLargestEUR.xlsx', index=True)
+
+        print(largest)
+
+    def getBiggestGBP(self, fileEUR, fileGBP, fileJPY, fileUSD):
+        df = self.getStandardisedAr(fileEUR, fileGBP, fileJPY, fileUSD)
+        df.drop('BTCUSD', inplace=True, axis=1)
+        df.drop('BTCEUR', inplace=True, axis=1)
+        df.drop('BTCJPY', inplace=True, axis=1)
+
+        largest = df.nlargest(30, 'BTCGBP')
+        largest.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/ARLargestGBP.xlsx', index=True)
+
+        print(largest)
+
+    def getBiggestJPY(self, fileEUR, fileGBP, fileJPY, fileUSD):
+        df = self.getStandardisedAr(fileEUR, fileGBP, fileJPY, fileUSD)
+        df.drop('BTCUSD', inplace=True, axis=1)
+        df.drop('BTCGBP', inplace=True, axis=1)
+        df.drop('BTCEUR', inplace=True, axis=1)
+
+        largest = df.nlargest(30, 'BTCJPY')
+        largest.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/ARLargestJPY.xlsx', index=True)
+
+        print(largest)
+
+    def getBiggest(self, fileEUR, fileGBP, fileJPY, fileUSD):
+        self.getBiggestUSD(fileEUR, fileGBP, fileJPY, fileUSD)
+        self.getBiggestEUR(fileEUR, fileGBP, fileJPY, fileUSD)
+        self.getBiggestGBP(fileEUR, fileGBP, fileJPY, fileUSD)
+        self.getBiggestJPY(fileEUR, fileGBP, fileJPY, fileUSD)
+
+    def autocorrData(self, fileEUR, fileGBP, fileJPY, fileUSD):
+        df = self.getStandardisedAr(fileEUR, fileGBP, fileJPY, fileUSD)
+
+        usd = df['BTCUSD']
+        eur = df['BTCEUR']
+        gbp = df['BTCGBP']
+        jpy = df['BTCJPY']
+
+        index = []
+        autocorrUSD = []
+        autocorrEUR = []
+        autocorrGBP = []
+        autocorrJPY = []
+
+        for i in range(169):
+            usdAutocorr = usd.autocorr(lag=i)
+            eurAutocorr = eur.autocorr(lag=i)
+            gbpAutocorr = gbp.autocorr(lag=i)
+            jpyAutocorr = jpy.autocorr(lag=i)
+
+            autocorrUSD.append(usdAutocorr)
+            autocorrEUR.append(eurAutocorr)
+            autocorrGBP.append(gbpAutocorr)
+            autocorrJPY.append(jpyAutocorr)
+            index.append(i)
+
+        df = pd.DataFrame({'Verschiebung': index,
+                           'BTCUSD': autocorrUSD,
+                           'BTCEUR': autocorrEUR,
+                           'BTCGBP': autocorrGBP,
+                           'BTCJPY': autocorrJPY})
+        print(df)
+
+        df.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/ARAutocorr.xlsx', index=True)
 
 
 

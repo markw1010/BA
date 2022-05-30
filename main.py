@@ -60,7 +60,6 @@ ll = LeadLag()
 # filter.print_full(btcjpy)
 # filter.print_full(btcgbp)
 
-
 # Uncomment this lines of code to show the dataset on the console
 # print(btcusd)
 # print(btceur)
@@ -68,63 +67,33 @@ ll = LeadLag()
 # print(btcgbp)
 
 
-# Uncomment this line of code to show the detailed Amihud calculation on the console
-# amihud.amihudDetailed(btcusd, 'USD') # TODO fail
-# amihud.amihudDetailed(btceur, 'EUR')
-# amihud.amihudDetailed(btcjpy, 'JPY')
-# amihud.amihudDetailed(btcgbp, 'GBP')
-# amihud.getAmihudExpression(btcusd, 'USD')
-
 # Uncomment this line of code to show the detailed CS calculation on the console
-# cs.printCS(btcusd, 'USD')
-# cs.printCS(btceur, 'EUR')
-# cs.printCS(btcjpy, 'JPY')
-# cs.printCS(btcgbp, 'GBP')
-# cs.cutCsArray(btcusd, btceur, btcgbp, btcjpy)
 # cs.printCsValues(btcusd, btceur, btcgbp, btcjpy)
 # cs.printAllCsValues(btcusd, btceur, btcgbp, btcjpy)
-# cs.csGraph(btcusd, btceur, btcgbp, btcjpy, 2)
-# cs.showAutocorrGraph(btcusd, btceur, btcgbp, btcjpy, 0)
-# cs.getCrossCorrelationAll(btcusd, btceur, btcgbp, btcjpy, 0, 1) '#TODO: doesnt work
-# cs.ols(btcusd, btceur, btcgbp, btcjpy)
-# cs.csToExcel(btcusd, btceur, btcgbp, btcjpy)
+# cs.csGraph(btcusd, btceur, btcgbp, btcjpy)
+#cs.showAutocorrGraph(btcusd, btceur, btcgbp, btcjpy)
 # cs.getCrossCorrelation(3, btcusd, btceur, btcgbp, btcjpy, 101)
-# cs.crossCorrGraph(btcusd, btceur, btcgbp, btcjpy)
+#cs.crossCorrGraph(btcusd, btceur, btcgbp, btcjpy)
+#cs.crossCorrTable(btcusd, btceur, btcgbp, btcjpy)
+#cs.crossCorrData(btcusd, btceur, btcgbp, btcjpy)
+#cs.getBiggest(btcusd, btceur, btcgbp, btcjpy)
+#cs.autocorrData(btcusd, btceur, btcgbp, btcjpy)
+
 
 
 # TODO JPY values checking
 # Uncomment this line of code to show the single Amihud value on the console
-# amihud.amihudValueOnly(btcusd, 'USD')
-# amihud.amihudValueOnly(btceur, 'EUR')
-# amihud.amihudValueOnly(btcjpy, 'JPY')
-# amihud.amihudValueOnly(btcgbp, 'GBP')
 # amihud.printStandardisedAh(btcusd, btceur, btcgbp, btcjpy)
 # amihud.amihudGraph(btcusd, btceur, btcgbp, btcjpy, 3)
 # amihud.showAutocorrGraph(btcusd, btceur, btcgbp, btcjpy, 3)
-# amihud.calcPartialAutocorr(btcusd, btceur, btcgbp, btcjpy, 2)
-# amihud.getMonthlyAggregated(btcusd, btceur, btcgbp, btcjpy, 0)
-# amihud.addLaggedVariableColumns(btcusd, btceur, btcgbp, btcjpy, 0)
-# amihud.lagCombinations()
-# amihud.linearRegressionModel(btcusd, btceur, btcgbp, btcjpy, 0)
-
-
-# TODO Werte prüfen
-# Uncomment this line of code to show the single CS value on the console
-# cs.corwinSchultzValueOnly(btcusd, 'USD')
-# cs.corwinSchultzValueOnly(btceur, 'EUR')
-# cs.corwinSchultzValueOnly(btcjpy, 'JPY')
-# cs.corwinSchultzValueOnly(btcgbp, 'GBP')
 
 
 # Uncomment this line of code to show the single AR value on the console
-# ar.abdiRanaldoValueOnly(btcusd, 'USD')
-# ar.abdiRanaldoValueOnly(btceur, 'EUR')
-# ar.abdiRanaldoValueOnly(btcjpy, 'JPY')
-# ar.abdiRanaldoValueOnly(btcgbp, 'GBP')
-# ar.getStandardisedAr(btcusd, btceur, btcgbp, btcjpy)
-# ar.arGraph(btcusd, btceur, btcgbp, btcjpy, 3)
-# ar.showAutocorrGraph(btcusd, btceur, btcgbp, btcjpy, 3)
-ar.crossCorrGraph(btcusd, btceur, btcgbp, btcjpy)
+#ar.arGraph(btcusd, btceur, btcgbp, btcjpy, 3)
+#ar.showAutocorrGraph(btcusd, btceur, btcgbp, btcjpy)
+#ar.crossCorrGraph(btcusd, btceur, btcgbp, btcjpy)
+#ar.getBiggest(btcusd, btceur, btcgbp, btcjpy)
+#ar.autocorrData(btcusd, btceur, btcgbp, btcjpy)
 
 
 # Uncomment this line of code to show the CS, the Amihud and the AR value
@@ -133,34 +102,3 @@ ar.crossCorrGraph(btcusd, btceur, btcgbp, btcjpy)
 # comp.comparison(btcjpy, 'JPY')
 # comp.comparison(btcgbp, 'GBP')
 
-
-# Uncomment this line of code to show the detailed AR calculation on the console
-# ar.printAbdiRanaldo(btcusd, 'USD')
-# ar.printAbdiRanaldo(btceur, 'EUR')
-# ar.printAbdiRanaldo(btcjpy, 'JPY')
-# ar.printAbdiRanaldo(btcgbp, 'GBP')
-
-
-# Uncomment this lines of code to show the returns of each BTC-currency pair
-# ll.printFullReturns(btcusd, btceur, btcjpy, btcgbp)
-# ll.printFullPercentageReturns(btcusd, btceur, btcjpy, btcgbp)
-# ll.printReturns(btcusd, btceur, btcjpy, btcgbp)
-# ll.printPercentageReturns(btcusd, btceur, btcjpy, btcgbp)
-
-
-# TODO Ausreißerwert
-# Uncomment this lines of code to plot the returns of BTC currency pairs
-#ll.plotDf(btcusd, btceur, btcjpy, btcgbp, 'JPY', 'USD', 'EUR', 'JPY')       #Ausreißer
-#ll.createDataFrame(btcusd, btceur, btcjpy, btcgbp)
-#ll.createDataFrameSingeCurrency(btcusd, btceur, btcjpy, btcgbp, 'USD')
-#ll.plotOne(btcusd, btceur, btcjpy, btcgbp, 'USD')
-#ll.plotOne(btcusd, btceur, btcjpy, btcgbp, 'EUR')
-#ll.plotOne(btcusd, btceur, btcjpy, btcgbp, 'GBP')
-#ll.plotOne(btcusd, btceur, btcjpy, btcgbp, 'JPY')
-
-#ll.getOutliersIndex(btcusd)
-#ll.getDates(ll.getOutliersIndex(btcusd), btcusd)
-#ll.getAutocorrelation(btcusd, 'btcusd')
-#ll.getAutocorrelation(btceur, 'btceur')
-#ll.getAutocorrelation(btcjpy, 'btcjpy')
-#ll.getAutocorrelation(btcgbp, 'btcgbp')
