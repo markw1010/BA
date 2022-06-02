@@ -91,9 +91,13 @@ ll = LeadLag()
 # Uncomment this line of code to show the single AR value on the console
 #ar.arGraph(btcusd, btceur, btcgbp, btcjpy, 3)
 #ar.showAutocorrGraph(btcusd, btceur, btcgbp, btcjpy)
-#ar.crossCorrGraph(btcusd, btceur, btcgbp, btcjpy)
+ar.crossCorrGraph(btcusd, btceur, btcgbp, btcjpy)
 #ar.getBiggest(btcusd, btceur, btcgbp, btcjpy)
 #ar.autocorrData(btcusd, btceur, btcgbp, btcjpy)
+#ar.cutArArray(btcusd, btceur, btcgbp, btcjpy)
+#ar.getSmallest(btcusd, btceur, btcgbp, btcjpy)
+#ar.getARi(btcgbp)
+#ar.mergeARiTupel(btcusd)
 
 
 # Uncomment this line of code to show the CS, the Amihud and the AR value

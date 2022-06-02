@@ -119,7 +119,25 @@ class AbdiRanaldo:
 
         ARi = np.power(term3, 0.5)
 
+        #date = file['date'].to_numpy()
+        #date = np.delete(date, 0)
+
+        #ARiTupel = []
+
+        #for i in range(len(date)):
+            #datei = date[i]
+            #ARIi = ARi[i]
+            #tupel = [datei, ARIi]
+            #print(tupel)
+
+            #ARiTupel.append(tupel)
+
+        #print(len(date))
+        #print(len(ARi))
+        #print(ARiTupel)
+
         return ARi
+        #return ARiTupel
 
     """
     This method calculates and returns the AR_t estimator for interval t which is the average of the AR_t,i measures
@@ -169,22 +187,71 @@ class AbdiRanaldo:
     Returns:    cuttet arrays on the smallest amount of data of each currency pair 
     """
     def cutArArray(self, usd, eur, gbp, jpy):
-
+        #pd.set_option("display.max_rows", None, "display.max_columns", None)
         smallestArray = self.getSmallest(usd, eur, gbp, jpy)
 
-        date = usd['date'].to_numpy()
+        dateUSD = usd['date'].to_numpy()
+        dateEUR = eur['date'].to_numpy()
+        dateGBP = gbp['date'].to_numpy()
+        dateJPY = jpy['date'].to_numpy()
+
+        dateUSD = np.delete(dateUSD, 0)
+        dateEUR = np.delete(dateEUR, 0)
+        dateGBP = np.delete(dateGBP, 0)
+        dateJPY = np.delete(dateJPY, 0)
+
+
+       #print('usd')
+       # print(len(dateUSD))
         usd = self.getARi(usd)
+        #print(len(usd))
+        #print('eur')
+        #print(len(dateEUR))
         eur = self.getARi(eur)
+        #print(len(eur))
+        #print('gbp')
+        #print(len(dateGBP))
         gbp = self.getARi(gbp)
+        #print(len(gbp))
+        #print('jpy')
+        #print(len(dateJPY))
         jpy = self.getARi(jpy)
+        #print(len(jpy))
 
-        date = date[:smallestArray]
-        usd = usd[:smallestArray]
-        eur = eur[:smallestArray]
-        jpy = jpy[:smallestArray]
-        gbp = gbp[:smallestArray]
+        usd = pd.DataFrame({'date': dateUSD,
+                            'BTCUSD': usd})
+        eur = pd.DataFrame({'date': dateEUR,
+                            'BTCEUR': eur})
+        gbp = pd.DataFrame({'date': dateGBP,
+                            'BTCGBP': gbp})
+        jpy = pd.DataFrame({'date': dateJPY,
+                            'BTCJPY': jpy})
 
-        return date, usd, eur, gbp, jpy
+        usd = usd.set_index('date')
+        eur = eur.set_index('date')
+        gbp = gbp.set_index('date')
+        jpy = jpy.set_index('date')
+
+        df = usd.join(eur)
+        df = df.join(gbp)
+        df = df.join(jpy)
+
+        df.dropna(subset=["BTCUSD"], inplace=True)
+        df.dropna(subset=["BTCEUR"], inplace=True)
+        df.dropna(subset=["BTCGBP"], inplace=True)
+        df.dropna(subset=["BTCJPY"], inplace=True)
+
+        #TODO evt. Zeitpunktverschiebung
+        date = dateUSD[:smallestArray]
+        #usd = usd[:smallestArray]
+        #eur = eur[:smallestArray]
+        #jpy = jpy[:smallestArray]
+        #gbp = gbp[:smallestArray]
+        #print(df)
+
+
+        #return date, usd, eur, gbp, jpy
+        return df
 
     """
     This method prints the standardised arrays containing the amihud values for each currency pair
@@ -215,8 +282,8 @@ class AbdiRanaldo:
     """
     def arGraph(self, fileUSD, fileEUR, fileGBP, fileJPY, int):
 
-        # dataframe = self.getNormalizedDataframe(fileEUR, fileGBP, fileJPY, fileUSD, int)
-        dataframe = self.getStandardisedAr(fileEUR, fileGBP, fileJPY, fileUSD)
+        #dataframe = self.getNormalizedDataframe(fileEUR, fileGBP, fileJPY, fileUSD, int)
+        dataframe = self.cutArArray(fileEUR, fileGBP, fileJPY, fileUSD)
 
         date = dataframe.index
         usd = dataframe['BTCUSD']
@@ -233,7 +300,7 @@ class AbdiRanaldo:
         plt.ylabel('Wert')
         plt.legend(['BTC/USD', 'BTC/EUR', 'BTC/GBP', ' BTC/JPY'])
         plt.title('Abdi und Ranaldo Liquiditätsmaß')
-        # plt.plot(dataframe)
+        plt.plot(dataframe)
         plt.show()
 
         #dataframe = self.getNormalizedDataframe(fileEUR, fileGBP, fileJPY, fileUSD, int)
@@ -456,13 +523,13 @@ class AbdiRanaldo:
     crosscorr.
     """
     def normaliseDfForCc(self, btceur, btcgbp, btcjpy, btcusd):
-        df = self.getStandardisedAr(btcusd, btceur, btcgbp, btcjpy).reset_index()
-        df2 = self.getStandardisedAr(btcusd, btceur, btcgbp, btcjpy).reset_index()
+        df = self.cutArArray(btcusd, btceur, btcgbp, btcjpy).reset_index()
+        df2 = self.cutArArray(btcusd, btceur, btcgbp, btcjpy).reset_index()
         dfUpsideDown = df.loc[::-1]
         df2UpsideDown = df2.loc[::-1]
         dfUpsideDown.reset_index(drop=True, inplace=True)
         df2UpsideDown.reset_index(drop=True, inplace=True)
-        date = dfUpsideDown['Date']
+        date = dfUpsideDown['date']
         usd = dfUpsideDown['BTCUSD']
         df2UpsideDown.drop('BTCUSD', inplace=True, axis=1)
         return date, df, df2UpsideDown, usd
@@ -488,7 +555,7 @@ class AbdiRanaldo:
             lag.append(i)
             print(i)
 
-        #self.plotCrossCorr(crosscorreur, crosscorrgbp, crosscorrjpy, lag)
+        self.plotCrossCorr(crosscorreur, crosscorrgbp, crosscorrjpy, lag)
 
         df = pd.DataFrame({'lag': lag,
                            'BTC/USD-BTC/EUR': crosscorreur,
@@ -598,6 +665,19 @@ class AbdiRanaldo:
         print(df)
 
         df.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/ARAutocorr.xlsx', index=True)
+
+
+    def mergeARiTupel(self, fileUSD):
+        date = fileUSD['date'].to_numpy()
+        tupel = self.getARi(fileUSD)
+
+        for i in range(len(date)):
+            date[i]
+            for value in tupel:
+                value[0]
+
+        #conc = np.concatenate((date, tupel), axis=0)
+        #print(conc)
 
 
 
