@@ -22,5 +22,7 @@ class Filter:
     # TODO: new Commentation, printing all columns inline
     def print_full(self, dataset):
         pd.set_option("display.max_rows", None, "display.max_columns", None)
+
+        dataset.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/Amihud/AHDataset.xlsx', index=True)
         print(dataset)
 

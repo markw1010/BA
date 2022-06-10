@@ -347,21 +347,74 @@ class CorwinSchultz:
     """
     def cutCsArray(self, usd, eur, gbp, jpy):
 
-        smallestArray = self.getSmallest(usd, eur, gbp, jpy)
+        #smallestArray = self.getSmallest(usd, eur, gbp, jpy)
 
-        date = usd['date'].to_numpy()
+        dateUSD = usd['date'].to_numpy()
+        dateEUR = eur['date'].to_numpy()
+        dateGBP = gbp['date'].to_numpy()
+        dateJPY = jpy['date'].to_numpy()
+
+        dateUSD = np.delete(dateUSD, 0)
+        dateEUR = np.delete(dateEUR, 0)
+        dateGBP = np.delete(dateGBP, 0)
+        dateJPY = np.delete(dateJPY, 0)
+
+        # print('usd')
+        print(len(dateUSD))
         usd = self.calculateCSArray(usd)
+        print(len(usd))
+        # print('eur')
+        # print(len(dateEUR))
         eur = self.calculateCSArray(eur)
+        # print(len(eur))
+        # print('gbp')
+        # print(len(dateGBP))
         gbp = self.calculateCSArray(gbp)
+        # print(len(gbp))
+        # print('jpy')
+        # print(len(dateJPY))
         jpy = self.calculateCSArray(jpy)
+        # print(len(jpy))
 
-        date = date[:smallestArray]
-        usd = usd[:smallestArray]
-        eur = eur[:smallestArray]
-        jpy = jpy[:smallestArray]
-        gbp = gbp[:smallestArray]
+        usd = pd.DataFrame({'date': dateUSD,
+                            'BTCUSD': usd})
+        eur = pd.DataFrame({'date': dateEUR,
+                            'BTCEUR': eur})
+        gbp = pd.DataFrame({'date': dateGBP,
+                            'BTCGBP': gbp})
+        jpy = pd.DataFrame({'date': dateJPY,
+                            'BTCJPY': jpy})
 
-        return date, usd, eur, gbp, jpy
+        # print(eur)
+
+        usd = usd.set_index('date')
+        eur = eur.set_index('date')
+        gbp = gbp.set_index('date')
+        jpy = jpy.set_index('date')
+
+        df = usd.join(eur)
+        df = df.join(gbp)
+        df = df.join(jpy)
+
+        df.dropna(subset=["BTCUSD"], inplace=True)
+        df.dropna(subset=["BTCEUR"], inplace=True)
+        df.dropna(subset=["BTCGBP"], inplace=True)
+        df.dropna(subset=["BTCJPY"], inplace=True)
+
+        # date = usd['date'].to_numpy()
+        # usd = self.calculateCSArray(usd)
+        # eur = self.calculateCSArray(eur)
+        # gbp = self.calculateCSArray(gbp)
+        # jpy = self.calculateCSArray(jpy)
+        #
+        # date = date[:smallestArray]
+        # usd = usd[:smallestArray]
+        # eur = eur[:smallestArray]
+        # jpy = jpy[:smallestArray]
+        # gbp = gbp[:smallestArray]
+
+        # return date, usd, eur, gbp, jpy
+        return df
 
     """
     This method gets the standardised arrays containing the cs values for each currency pair
@@ -370,14 +423,14 @@ class CorwinSchultz:
     """
     def getStandardisedCS(self, fileUSD, fileEUR, fileGBP, fileJPY):
 
-        date, usd, eur, gbp, jpy = self.cutCsArray(fileUSD, fileEUR, fileGBP, fileJPY)
+        df = self.cutCsArray(fileUSD, fileEUR, fileGBP, fileJPY)
 
         csValues = {
-            'Date': date,
-            'BTCUSD': usd,
-            'BTCEUR': eur,
-            'BTCGBP': gbp,
-            'BTCJPY': jpy
+            'Date': df.index,
+            'BTCUSD': df['BTCUSD'],
+            'BTCEUR': df['BTCEUR'],
+            'BTCGBP': df['BTCGBP'],
+            'BTCJPY': df['BTCJPY']
         }
 
         dataframe = pd.DataFrame(csValues)
@@ -407,7 +460,8 @@ class CorwinSchultz:
     def csGraph(self, fileUSD, fileEUR, fileGBP, fileJPY):
 
         #dataframe = self.getNormalizedDataframe(fileEUR, fileGBP, fileJPY, fileUSD, int)
-        dataframe = self.getStandardisedCS(fileEUR, fileGBP, fileJPY, fileUSD)
+        #dataframe = self.getStandardisedCS(fileEUR, fileGBP, fileJPY, fileUSD)
+        dataframe = self.cutCsArray(fileUSD, fileEUR, fileGBP, fileJPY)
 
         date = dataframe.index
         usd = dataframe['BTCUSD']
@@ -506,12 +560,13 @@ class CorwinSchultz:
     int = 3: BTC/JPY
     """
     def calcAutocorrGraph(self, fileEUR, fileGBP, fileJPY, fileUSD):
-        dataframe = self.getStandardisedCS(fileEUR, fileGBP, fileJPY, fileUSD)
+        #dataframe = self.getStandardisedCS(fileEUR, fileGBP, fileJPY, fileUSD)
+        dataframe = self.cutCsArray(fileEUR, fileGBP, fileJPY, fileUSD)
 
         for variable in dataframe.columns:
             autocorr = autocorrelation_plot(dataframe[variable], label= variable)
 
-        autocorr.set_xlim([0, 169])
+        autocorr.set_xlim([0, 61])
         autocorr.set(xlabel="Verzögerung", ylabel="Autokorrelation", title='Corwin und Schultz Autokorrelation')
 
         self.chooseTitle(int)
@@ -705,14 +760,29 @@ class CorwinSchultz:
 
         print('The graph will be shown when the number 168 is reached')
 
-        crosscorreur, crosscorrgbp, crosscorrjpy, lag = self.crossCorrData(btceur, btcgbp, btcjpy, btcusd)
+        #crosscorreur, crosscorrgbp, crosscorrjpy, lag = self.crossCorrData(btceur, btcgbp, btcjpy, btcusd)
 
-        #self.plotCrossCorr(crosscorreur, crosscorrgbp, crosscorrjpy, lag)
+        crosscorreur = []
+        crosscorrgbp = []
+        crosscorrjpy = []
+        lag = []
+        for i in range(61):
+            print(i)
+            correur = self.getCrossCorrelation(1, btcusd, btceur, btcgbp, btcjpy, i)
+            corrgbp = self.getCrossCorrelation(2, btcusd, btceur, btcgbp, btcjpy, i)
+            corrjpy = self.getCrossCorrelation(3, btcusd, btceur, btcgbp, btcjpy, i)
+            crosscorreur.append(correur)
+            crosscorrgbp.append(corrgbp)
+            crosscorrjpy.append(corrjpy)
+            lag.append(i)
+
+
+        self.plotCrossCorr(crosscorreur, crosscorrgbp, crosscorrjpy, lag)
 
         df = pd.DataFrame({'lag': lag,
-                           'BTC/USD-BTC/EUR': crosscorreur,
-                           'BTC/USD-BTC/GBP': crosscorrgbp,
-                           'BTC/USD-BTC/JPY': crosscorrjpy})
+                            'BTC/USD-BTC/EUR': crosscorreur,
+                            'BTC/USD-BTC/GBP': crosscorrgbp,
+                            'BTC/USD-BTC/JPY': crosscorrjpy})
 
         df.set_index('lag')
         df.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/CrossCorrCS.xlsx', index=True)
@@ -736,23 +806,23 @@ class CorwinSchultz:
     This is a helper method which saves the cross correlations with all BTC-currency pairs with the currency pair BTCUSD 
     as leading variable in arrays up to lag 168.
     """
-    def crossCorrData(self, btceur, btcgbp, btcjpy, btcusd):
-        crosscorreur = []
-        crosscorrgbp = []
-        crosscorrjpy = []
-        lag = []
-        for i in range(169):
-            correur = self.getCrossCorrelation(1, btcusd, btceur, btcgbp, btcjpy, i)
-            corrgbp = self.getCrossCorrelation(2, btcusd, btceur, btcgbp, btcjpy, i)
-            corrjpy = self.getCrossCorrelation(3, btcusd, btceur, btcgbp, btcjpy, i)
-            crosscorreur.append(correur)
-            crosscorrgbp.append(corrgbp)
-            crosscorrjpy.append(corrjpy)
-            lag.append(i)
-            print(i)
-
-        print(crosscorreur)
-        return crosscorreur, crosscorrgbp, crosscorrjpy, lag
+    # def crossCorrData(self, btceur, btcgbp, btcjpy, btcusd):
+    #     crosscorreur = []
+    #     crosscorrgbp = []
+    #     crosscorrjpy = []
+    #     lag = []
+    #     for i in range(61):
+    #         correur = self.getCrossCorrelation(1, btcusd, btceur, btcgbp, btcjpy, i)
+    #         corrgbp = self.getCrossCorrelation(2, btcusd, btceur, btcgbp, btcjpy, i)
+    #         corrjpy = self.getCrossCorrelation(3, btcusd, btceur, btcgbp, btcjpy, i)
+    #         crosscorreur.append(correur)
+    #         crosscorrgbp.append(corrgbp)
+    #         crosscorrjpy.append(corrjpy)
+    #         lag.append(i)
+    #         print(i)
+    #
+    #     print(crosscorreur)
+    #     return crosscorreur, crosscorrgbp, crosscorrjpy, lag
 
     def getBiggestUSD(self, fileEUR, fileGBP, fileJPY, fileUSD):
         df = self.getStandardisedCS(fileEUR, fileGBP, fileJPY, fileUSD)
@@ -805,7 +875,8 @@ class CorwinSchultz:
         self.getBiggestJPY(fileEUR, fileGBP, fileJPY, fileUSD)
 
     def autocorrData(self, fileEUR, fileGBP, fileJPY, fileUSD):
-        df = self.getStandardisedCS(fileEUR, fileGBP, fileJPY, fileUSD)
+        #df = self.getStandardisedCS(fileEUR, fileGBP, fileJPY, fileUSD)
+        df = self.cutCsArray(fileEUR, fileGBP, fileJPY, fileUSD)
 
         usd = df['BTCUSD']
         eur = df['BTCEUR']
@@ -818,7 +889,7 @@ class CorwinSchultz:
         autocorrGBP = []
         autocorrJPY = []
 
-        for i in range(169):
+        for i in range(61):
             usdAutocorr = usd.autocorr(lag=i)
             eurAutocorr = eur.autocorr(lag=i)
             gbpAutocorr = gbp.autocorr(lag=i)

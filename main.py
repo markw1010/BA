@@ -42,10 +42,21 @@ btcgbpD = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/daily/Bitfi
 """
 Amount of standardised data: 34137
 """
-btcusd = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/hourly/Bitfinex_BTCUSD_1h.csv')
-btceur = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/hourly/Bitfinex_BTCEUR_1h.csv')
-btcjpy = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/hourly/Bitfinex_BTCJPY_1h.csv')
-btcgbp = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/hourly/Bitfinex_BTCGBP_1h.csv')
+btcusdH = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/hourly/Bitfinex_BTCUSD_1h.csv')
+btceurH = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/hourly/Bitfinex_BTCEUR_1h.csv')
+btcjpyH = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/hourly/Bitfinex_BTCJPY_1h.csv')
+btcgbpH = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/hourly/Bitfinex_BTCGBP_1h.csv')
+
+# Minutely Data
+btcusd = pd.read_csv('/Users/markwagner/Documents/Uni/WS21: 22/BA /Kursdaten/minütlich/Bitfinex_BTCUSD_minute.csv')
+btceur = pd.read_csv('/Users/markwagner/Documents/Uni/WS21: 22/BA /Kursdaten/minütlich/Bitfinex_BTCEUR_minute (1).csv')
+btcgbp = pd.read_csv('/Users/markwagner/Documents/Uni/WS21: 22/BA /Kursdaten/minütlich/Bitfinex_BTCGBP_minute (1).csv')
+btcjpy = pd.read_csv('/Users/markwagner/Documents/Uni/WS21: 22/BA /Kursdaten/minütlich/Bitfinex_BTCJPY_minute (1).csv')
+
+xvgusd = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/minutely/Bitfinex_XVGUSD_minute.csv')
+xvgeur = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/minutely/Bitfinex_XVGEUR_minute.csv')
+xvggbp = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/minutely/Bitfinex_XVGGBP_minute.csv')
+xvgjpy = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/minutely/Bitfinex_XVGJPY_minute.csv')
 
 amihud = Amihud()
 cs = CorwinSchultz()
@@ -55,13 +66,13 @@ filter = Filter()
 ll = LeadLag()
 
 # Uncomment this line of code to show the whole dataset on the console
-# filter.print_full(btcusd)
+#filter.print_full(btcusdH)
 # filter.print_full(btceur)
 # filter.print_full(btcjpy)
 # filter.print_full(btcgbp)
 
 # Uncomment this lines of code to show the dataset on the console
-# print(btcusd)
+#print(btcusdH)
 # print(btceur)
 # print(btcjpy)
 # print(btcgbp)
@@ -70,9 +81,8 @@ ll = LeadLag()
 # Uncomment this line of code to show the detailed CS calculation on the console
 # cs.printCsValues(btcusd, btceur, btcgbp, btcjpy)
 # cs.printAllCsValues(btcusd, btceur, btcgbp, btcjpy)
-# cs.csGraph(btcusd, btceur, btcgbp, btcjpy)
+#cs.csGraph(btcusd, btceur, btcgbp, btcjpy)
 #cs.showAutocorrGraph(btcusd, btceur, btcgbp, btcjpy)
-# cs.getCrossCorrelation(3, btcusd, btceur, btcgbp, btcjpy, 101)
 #cs.crossCorrGraph(btcusd, btceur, btcgbp, btcjpy)
 #cs.crossCorrTable(btcusd, btceur, btcgbp, btcjpy)
 #cs.crossCorrData(btcusd, btceur, btcgbp, btcjpy)
@@ -84,25 +94,24 @@ ll = LeadLag()
 # TODO JPY values checking
 # Uncomment this line of code to show the single Amihud value on the console
 # amihud.printStandardisedAh(btcusd, btceur, btcgbp, btcjpy)
-# amihud.amihudGraph(btcusd, btceur, btcgbp, btcjpy, 3)
+#amihud.amihudGraph(btcusd, btceur, btcgbp, btcjpy)
 # amihud.showAutocorrGraph(btcusd, btceur, btcgbp, btcjpy, 3)
+#amihud.crossCorrGraph(btcusd, btceur, btcgbp, btcjpy)
+#amihud.getBiggest(btcusd, btceur, btcgbp, btcjpy)
+#amihud.autocorrData(btcusd, btceur, btcgbp, btcjpy)
+amihud.showAutocorrGraph(btcusd, btceur, btcgbp, btcjpy)
 
 
 # Uncomment this line of code to show the single AR value on the console
-#ar.arGraph(btcusd, btceur, btcgbp, btcjpy, 3)
+#ar.arGraph(btcusd, btceur, btcgbp, btcjpy)
 #ar.showAutocorrGraph(btcusd, btceur, btcgbp, btcjpy)
-ar.crossCorrGraph(btcusd, btceur, btcgbp, btcjpy)
+#ar.crossCorrGraph(btcusdH, btceurH, btcgbpH, btcjpyH)
 #ar.getBiggest(btcusd, btceur, btcgbp, btcjpy)
 #ar.autocorrData(btcusd, btceur, btcgbp, btcjpy)
-#ar.cutArArray(btcusd, btceur, btcgbp, btcjpy)
-#ar.getSmallest(btcusd, btceur, btcgbp, btcjpy)
-#ar.getARi(btcgbp)
-#ar.mergeARiTupel(btcusd)
+#ar.crossCorrGraphMntl(btcusd, btceur, btcgbp, btcjpy)
 
 
-# Uncomment this line of code to show the CS, the Amihud and the AR value
-# comp.comparison(btcusd, 'USD')
-# comp.comparison(btceur, 'EUR')
-# comp.comparison(btcjpy, 'JPY')
-# comp.comparison(btcgbp, 'GBP')
 
+#cs.cutCsArray(btcusd, btceur, btcgbp, btcjpy)
+#amihud.cutAhArray(btcusd, btceur, btcgbp, btcjpy)
+#amihud.getAmihudExpression(btcgbpH, 'GBP')

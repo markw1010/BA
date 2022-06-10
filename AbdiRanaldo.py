@@ -78,6 +78,7 @@ class AbdiRanaldo:
     def getCi(self, file):
         close = file['close'].to_numpy()
         ci = np.log(close)
+        #print(ci)
         return ci
 
     """
@@ -119,25 +120,8 @@ class AbdiRanaldo:
 
         ARi = np.power(term3, 0.5)
 
-        #date = file['date'].to_numpy()
-        #date = np.delete(date, 0)
-
-        #ARiTupel = []
-
-        #for i in range(len(date)):
-            #datei = date[i]
-            #ARIi = ARi[i]
-            #tupel = [datei, ARIi]
-            #print(tupel)
-
-            #ARiTupel.append(tupel)
-
-        #print(len(date))
-        #print(len(ARi))
-        #print(ARiTupel)
-
+        #print(ARi)
         return ARi
-        #return ARiTupel
 
     """
     This method calculates and returns the AR_t estimator for interval t which is the average of the AR_t,i measures
@@ -188,7 +172,7 @@ class AbdiRanaldo:
     """
     def cutArArray(self, usd, eur, gbp, jpy):
         #pd.set_option("display.max_rows", None, "display.max_columns", None)
-        smallestArray = self.getSmallest(usd, eur, gbp, jpy)
+        #smallestArray = self.getSmallest(usd, eur, gbp, jpy)
 
         dateUSD = usd['date'].to_numpy()
         dateEUR = eur['date'].to_numpy()
@@ -201,8 +185,8 @@ class AbdiRanaldo:
         dateJPY = np.delete(dateJPY, 0)
 
 
-       #print('usd')
-       # print(len(dateUSD))
+        #print('usd')
+        #print(len(dateUSD))
         usd = self.getARi(usd)
         #print(len(usd))
         #print('eur')
@@ -227,6 +211,8 @@ class AbdiRanaldo:
         jpy = pd.DataFrame({'date': dateJPY,
                             'BTCJPY': jpy})
 
+        #print(eur)
+
         usd = usd.set_index('date')
         eur = eur.set_index('date')
         gbp = gbp.set_index('date')
@@ -242,7 +228,7 @@ class AbdiRanaldo:
         df.dropna(subset=["BTCJPY"], inplace=True)
 
         #TODO evt. Zeitpunktverschiebung
-        date = dateUSD[:smallestArray]
+        #date = dateUSD[:smallestArray]
         #usd = usd[:smallestArray]
         #eur = eur[:smallestArray]
         #jpy = jpy[:smallestArray]
@@ -260,14 +246,15 @@ class AbdiRanaldo:
     """
     def getStandardisedAr(self, fileUSD, fileEUR, fileGBP, fileJPY):
 
-        date, usd, eur, gbp, jpy = self.cutArArray(fileUSD, fileEUR, fileGBP, fileJPY)
+        #date, usd, eur, gbp, jpy = self.cutArArray(fileUSD, fileEUR, fileGBP, fileJPY)
+        df = self.cutArArray(fileUSD, fileEUR, fileGBP, fileJPY)
 
         arValues = {
-            'Date': date,
-            'BTCUSD': usd,
-            'BTCEUR': eur,
-            'BTCGBP': gbp,
-            'BTCJPY': jpy
+            'Date': df.index,
+            'BTCUSD': df['BTCUSD'],
+            'BTCEUR': df['BTCEUR'],
+            'BTCGBP': df['BTCGBP'],
+            'BTCJPY': df['BTCJPY']
         }
 
         dataframe = pd.DataFrame(arValues)
@@ -280,7 +267,7 @@ class AbdiRanaldo:
     """
     This method plots all the CS values in one graph with the date oin the x-axis and the value on the y-axis
     """
-    def arGraph(self, fileUSD, fileEUR, fileGBP, fileJPY, int):
+    def arGraph(self, fileUSD, fileEUR, fileGBP, fileJPY):
 
         #dataframe = self.getNormalizedDataframe(fileEUR, fileGBP, fileJPY, fileUSD, int)
         dataframe = self.cutArArray(fileEUR, fileGBP, fileJPY, fileUSD)
@@ -300,7 +287,7 @@ class AbdiRanaldo:
         plt.ylabel('Wert')
         plt.legend(['BTC/USD', 'BTC/EUR', 'BTC/GBP', ' BTC/JPY'])
         plt.title('Abdi und Ranaldo Liquiditätsmaß')
-        plt.plot(dataframe)
+        #plt.plot(dataframe)
         plt.show()
 
         #dataframe = self.getNormalizedDataframe(fileEUR, fileGBP, fileJPY, fileUSD, int)
@@ -380,7 +367,7 @@ class AbdiRanaldo:
         for variable in dataframe.columns:
             autocorr = autocorrelation_plot(dataframe[variable], label=variable)
 
-        autocorr.set_xlim([0, 169])
+        autocorr.set_xlim([0, 61])
         autocorr.set(xlabel="Verzögerung", ylabel="Autokorrelation", title='Abdi und Ranaldo Autokorrelation')
 
         self.chooseTitle(int)
@@ -540,12 +527,13 @@ class AbdiRanaldo:
     """
     def crossCorrGraph(self, btcusd, btceur, btcgbp, btcjpy):
 
-        print('The graph will be shown when the number 168 is reached')
+        print('The graph will be shown when the number 24 is reached')
         crosscorreur = []
         crosscorrgbp = []
         crosscorrjpy = []
         lag = []
-        for i in range(169):
+        for i in range(61):
+            print(i)
             correur = self.getCrossCorrelation(1, btcusd, btceur, btcgbp, btcjpy, i)
             corrgbp = self.getCrossCorrelation(2, btcusd, btceur, btcgbp, btcjpy, i)
             corrjpy = self.getCrossCorrelation(3, btcusd, btceur, btcgbp, btcjpy, i)
@@ -553,7 +541,6 @@ class AbdiRanaldo:
             crosscorrgbp.append(corrgbp)
             crosscorrjpy.append(corrjpy)
             lag.append(i)
-            print(i)
 
         self.plotCrossCorr(crosscorreur, crosscorrgbp, crosscorrjpy, lag)
 
@@ -632,7 +619,7 @@ class AbdiRanaldo:
         self.getBiggestJPY(fileEUR, fileGBP, fileJPY, fileUSD)
 
     def autocorrData(self, fileEUR, fileGBP, fileJPY, fileUSD):
-        df = self.getStandardisedAr(fileEUR, fileGBP, fileJPY, fileUSD)
+        df = self.cutArArray(fileEUR, fileGBP, fileJPY, fileUSD)
 
         usd = df['BTCUSD']
         eur = df['BTCEUR']
@@ -645,7 +632,7 @@ class AbdiRanaldo:
         autocorrGBP = []
         autocorrJPY = []
 
-        for i in range(169):
+        for i in range(61):
             usdAutocorr = usd.autocorr(lag=i)
             eurAutocorr = eur.autocorr(lag=i)
             gbpAutocorr = gbp.autocorr(lag=i)
@@ -667,17 +654,57 @@ class AbdiRanaldo:
         df.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/ARAutocorr.xlsx', index=True)
 
 
-    def mergeARiTupel(self, fileUSD):
-        date = fileUSD['date'].to_numpy()
-        tupel = self.getARi(fileUSD)
+    # def mergeARiTupel(self, fileUSD):
+    #     date = fileUSD['date'].to_numpy()
+    #     tupel = self.getARi(fileUSD)
+    #
+    #     for i in range(len(date)):
+    #         date[i]
+    #         for value in tupel:
+    #             value[0]
+    #
+    #     #conc = np.concatenate((date, tupel), axis=0)
+    #     #print(conc)
 
-        for i in range(len(date)):
-            date[i]
-            for value in tupel:
-                value[0]
+    def crossCorrGraphMntl(self, btcusd, btceur, btcgbp, btcjpy):
 
-        #conc = np.concatenate((date, tupel), axis=0)
-        #print(conc)
+        print('The graph will be shown when the number 24 is reached')
+        crosscorreur = []
+        #crosscorrgbp = []
+        #crosscorrjpy = []
+        lag = []
+        for i in range(61):
+            correur = self.getCrossCorrelation(1, btcusd, btceur, btcgbp, btcjpy, i)
+            #corrgbp = self.getCrossCorrelation(2, btcusd, btceur, btcgbp, btcjpy, i)
+            #corrjpy = self.getCrossCorrelation(3, btcusd, btceur, btcgbp, btcjpy, i)
+            crosscorreur.append(correur)
+            #crosscorrgbp.append(corrgbp)
+            #crosscorrjpy.append(corrjpy)
+            lag.append(i)
+            print(i)
+
+        self.plotCrossCorrMntl(crosscorreur, lag)
+
+        df = pd.DataFrame({'lag': lag,
+                           'BTC/USD-BTC/EUR': crosscorreur,
+                           #'BTC/USD-BTC/GBP': crosscorrgbp,
+                           #'BTC/USD-BTC/JPY': crosscorrjpy
+                           })
+
+        df.set_index('lag')
+        df.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/CrossCorrAReur..xlsx', index=True)
+
+        #print(df)
+
+    def plotCrossCorrMntl(self, crosscorreur, lag):
+        plt.xlabel('Verzögerung')
+        plt.ylabel('Pearson Korrelationskoeffizient')
+        plt.title('Abdi und Ranaldo Kreuzkorrelation')
+        plt.plot(lag, crosscorreur)
+        #plt.plot(lag, crosscorrgbp)
+        #plt.plot(lag, crosscorrjpy)
+        plt.legend(['BTC/USD - BTC/EUR'])
+        plt.show()
 
 
 
