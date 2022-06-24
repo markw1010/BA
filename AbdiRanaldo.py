@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from pandas.plotting import autocorrelation_plot
+import matplotlib.dates as mdates
 
 """
 This class provides all necessary methods and variables to calculate the AR liquidity estimator for a daily, hourly 
@@ -272,22 +273,28 @@ class AbdiRanaldo:
         #dataframe = self.getNormalizedDataframe(fileEUR, fileGBP, fileJPY, fileUSD, int)
         dataframe = self.cutArArray(fileEUR, fileGBP, fileJPY, fileUSD)
 
-        date = dataframe.index
+        dataframe.index = pd.to_datetime(dataframe.index)
         usd = dataframe['BTCUSD']
         eur = dataframe['BTCEUR']
         gbp = dataframe['BTCGBP']
         jpy = dataframe['BTCJPY']
 
-        plt.plot(date, usd)
-        plt.plot(date, eur)
-        plt.plot(date, gbp)
-        plt.plot(date, jpy)
+        plt.figure()
+        plt.plot(usd)
+        plt.plot(eur)
+        plt.plot(gbp)
+        plt.plot(jpy)
+        ax = plt.gca()
+
+        ax.xaxis.set_major_locator(mdates.HourLocator(interval=6))
+        ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d %H:%M:%S'))
+        plt.gcf().autofmt_xdate()
+
 
         plt.xlabel('Datum')
         plt.ylabel('Wert')
         plt.legend(['BTC/USD', 'BTC/EUR', 'BTC/GBP', ' BTC/JPY'])
         plt.title('Abdi und Ranaldo Liquiditätsmaß')
-        #plt.plot(dataframe)
         plt.show()
 
         #dataframe = self.getNormalizedDataframe(fileEUR, fileGBP, fileJPY, fileUSD, int)
@@ -322,10 +329,10 @@ class AbdiRanaldo:
     int = 2: BTC/GBP
     int = 3: BTC/JPY
     """
-    def getNormalizedDataframe(self, fileEUR, fileGBP, fileJPY, fileUSD, int):
-        date, usd, eur, gbp, jpy = self.cutArArray(fileUSD, fileEUR, fileGBP, fileJPY)
-        dataframe = self.chooseCurrencyPair(date, eur, gbp, int, jpy, usd)
-        return dataframe
+    # def getNormalizedDataframe(self, fileEUR, fileGBP, fileJPY, fileUSD, int):
+    #     date, usd, eur, gbp, jpy = self.cutArArray(fileUSD, fileEUR, fileGBP, fileJPY)
+    #     dataframe = self.chooseCurrencyPair(date, eur, gbp, int, jpy, usd)
+    #     return dataframe
 
     """
     In this method are all the settings defined to plot a dataframe with some kind of numerical values on y-axis and 

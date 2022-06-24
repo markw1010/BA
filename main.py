@@ -6,6 +6,8 @@ from Comparison import Comparison
 from CorwinSchultz import CorwinSchultz
 from Filter import Filter
 from LeadLag import LeadLag
+from Regression import Regression
+
 
 """
 This program will take a cvs file which contains daily, hourly or minutely high and low, open and close as well as other 
@@ -53,26 +55,22 @@ btceur = pd.read_csv('/Users/markwagner/Documents/Uni/WS21: 22/BA /Kursdaten/min
 btcgbp = pd.read_csv('/Users/markwagner/Documents/Uni/WS21: 22/BA /Kursdaten/minütlich/Bitfinex_BTCGBP_minute (1).csv')
 btcjpy = pd.read_csv('/Users/markwagner/Documents/Uni/WS21: 22/BA /Kursdaten/minütlich/Bitfinex_BTCJPY_minute (1).csv')
 
-xvgusd = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/minutely/Bitfinex_XVGUSD_minute.csv')
-xvgeur = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/minutely/Bitfinex_XVGEUR_minute.csv')
-xvggbp = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/minutely/Bitfinex_XVGGBP_minute.csv')
-xvgjpy = pd.read_csv('/Users/markwagner/PycharmProjects/BA/DataSets/minutely/Bitfinex_XVGJPY_minute.csv')
-
 amihud = Amihud()
 cs = CorwinSchultz()
 comp = Comparison()
 ar = AbdiRanaldo()
 filter = Filter()
 ll = LeadLag()
+reg = Regression()
 
 # Uncomment this line of code to show the whole dataset on the console
-#filter.print_full(btcusdH)
+# filter.print_full(btcusd)
 # filter.print_full(btceur)
 # filter.print_full(btcjpy)
 # filter.print_full(btcgbp)
 
 # Uncomment this lines of code to show the dataset on the console
-#print(btcusdH)
+#print(btcusd)
 # print(btceur)
 # print(btcjpy)
 # print(btcgbp)
@@ -90,7 +88,6 @@ ll = LeadLag()
 #cs.autocorrData(btcusd, btceur, btcgbp, btcjpy)
 
 
-
 # TODO JPY values checking
 # Uncomment this line of code to show the single Amihud value on the console
 # amihud.printStandardisedAh(btcusd, btceur, btcgbp, btcjpy)
@@ -99,7 +96,8 @@ ll = LeadLag()
 #amihud.crossCorrGraph(btcusd, btceur, btcgbp, btcjpy)
 #amihud.getBiggest(btcusd, btceur, btcgbp, btcjpy)
 #amihud.autocorrData(btcusd, btceur, btcgbp, btcjpy)
-amihud.showAutocorrGraph(btcusd, btceur, btcgbp, btcjpy)
+#amihud.showAutocorrGraph(btcgbp, btceur, btcjpy)
+#amihud.cutAhArray(btcusd, btceur, btcgbp, btcjpy)
 
 
 # Uncomment this line of code to show the single AR value on the console
@@ -111,7 +109,20 @@ amihud.showAutocorrGraph(btcusd, btceur, btcgbp, btcjpy)
 #ar.crossCorrGraphMntl(btcusd, btceur, btcgbp, btcjpy)
 
 
-
 #cs.cutCsArray(btcusd, btceur, btcgbp, btcjpy)
 #amihud.cutAhArray(btcusd, btceur, btcgbp, btcjpy)
 #amihud.getAmihudExpression(btcgbpH, 'GBP')
+#amihud.showAutocorrGraph(btcusd, btceur, btcgbp, btcjpy)
+
+#cs.printCsValues(btcusdH, btceurH, btcgbpH, btcjpyH)
+#reg.marketLiqEURCS(btcusdH, btceurH, btcgbpH, btcjpyH)
+#reg.weightedMarketLiqEURCS(btcusdH, btceurH, btcgbpH, btcjpyH)
+
+reg.regEurCS(btcusd, btceur, btcgbp, btcjpy)
+#reg.regGbpCS(btcusd, btceur, btcgbp, btcjpy)
+#reg.regJpyCS(btcusd, btceur, btcgbp, btcjpy)
+#reg.regUsdCS(btcusd, btceur, btcgbp, btcjpy)
+#reg.olsEurCS(btcusd, btceur, btcgbp, btcjpy)
+#reg.olsGbpCS(btcusd, btceur, btcgbp, btcjpy)
+#reg.olsJpyCS(btcusd, btceur, btcgbp, btcjpy)
+#reg.olsUsdCS(btcusd, btceur, btcgbp, btcjpy)

@@ -1,4 +1,3 @@
-import itertools
 import sys
 
 import np as np
@@ -6,10 +5,7 @@ import numpy
 import matplotlib.pyplot as plt
 import pandas as pd
 from pandas.plotting import autocorrelation_plot
-from collections import OrderedDict
-import statsmodels.formula.api as smf
-
-from patsy.highlevel import dmatrices
+import matplotlib.dates as mdates
 
 
 """
@@ -308,6 +304,18 @@ class Amihud:
         df.dropna(subset=["BTCGBP"], inplace=True)
         df.dropna(subset=["BTCJPY"], inplace=True)
 
+        # for variable in df.columns:
+        #     autocorr = autocorrelation_plot(df[variable], label=variable)
+        #     print(variable)
+        #
+        # #autocorr = autocorrelation_plot(df)
+        #
+        # autocorr.set_xlim([0, 61])
+        # autocorr.set(xlabel="Verzögerung", ylabel="Autokorrelation", title='Amihud Autokorrelation')
+        #
+        # self.chooseTitle(int)
+
+        #print(df)
         return df
 
     """
@@ -351,27 +359,30 @@ class Amihud:
 
         dataframe = self.cutAhArray(fileUSD, fileEUR, fileGBP, fileJPY)
 
-        date = dataframe.index
+        dataframe.index = pd.to_datetime(dataframe.index)
         usd = dataframe['BTCUSD']
         eur = dataframe['BTCEUR']
         gbp = dataframe['BTCGBP']
         jpy = dataframe['BTCJPY']
 
-        #plt.plot(date, usd)
-        #plt.plot(date, eur)
-        #plt.plot(date, gbp)
-        plt.plot(date, jpy)
+        plt.figure()
+        plt.plot(usd)
+        plt.plot(jpy)
+        ax = plt.gca()
+
+        ax.xaxis.set_major_locator(mdates.HourLocator(interval=6))
+        ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d %H:%M:%S'))
+        plt.gcf().autofmt_xdate()
 
         plt.xlabel('Datum')
         plt.ylabel('Wert')
         plt.legend([
-                    #'BTC/USD',
+                    'BTC/USD',
                     #'BTC/EUR',
                     #'BTC/GBP',
                     'BTC/JPY'
                     ])
         plt.title('Amihud Liquiditätsmaß')
-        # plt.plot(dataframe)
         plt.show()
 
     """
@@ -440,7 +451,7 @@ class Amihud:
     """
     def showAutocorrGraph(self, fileUSD, fileEUR, fileGBP, fileJPY):
 
-        self.calcAutocorrGraph(fileEUR, fileGBP, fileJPY, fileUSD)
+        self.calcAutocorrGraph(fileUSD, fileEUR, fileGBP, fileJPY)
 
         plt.show()
 
@@ -458,7 +469,7 @@ class Amihud:
         dataframe = self.cutAhArray(fileEUR, fileGBP, fileJPY, fileUSD)
 
         for variable in dataframe.columns:
-            autocorr = autocorrelation_plot(dataframe[variable], label=variable)
+            autocorr = autocorrelation_plot(dataframe[variable], label= variable)
 
         autocorr.set_xlim([0, 61])
         autocorr.set(xlabel="Verzögerung", ylabel="Autokorrelation", title='Amihud Autokorrelation')
@@ -467,7 +478,7 @@ class Amihud:
 
         # ahValues = self.getNormalizedDataframe(fileEUR, fileGBP, fileJPY, fileUSD, int)
         # dataframe = pd.DataFrame(ahValues)
-        # dataframe['Date'] = dataframe['Date'].astype('datetime64')  # to set date as integer values
+        #dataframe['Date'] = dataframe['Date'].astype('datetime64')  # to set date as integer values
         # dataframe = dataframe.set_index('Date')
         # autocorrelation_plot(dataframe)
         # self.chooseTitle(int)

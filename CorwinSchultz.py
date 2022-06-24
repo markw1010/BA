@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from pandas.plotting import autocorrelation_plot
+import matplotlib.dates as mdates
 
 """
 This class provides all necessary methods and variables to calculate the Corwin and Schultz (CS) liquidity estimator for 
@@ -360,9 +361,9 @@ class CorwinSchultz:
         dateJPY = np.delete(dateJPY, 0)
 
         # print('usd')
-        print(len(dateUSD))
+        #print(len(dateUSD))
         usd = self.calculateCSArray(usd)
-        print(len(usd))
+        #print(len(usd))
         # print('eur')
         # print(len(dateEUR))
         eur = self.calculateCSArray(eur)
@@ -385,8 +386,6 @@ class CorwinSchultz:
         jpy = pd.DataFrame({'date': dateJPY,
                             'BTCJPY': jpy})
 
-        # print(eur)
-
         usd = usd.set_index('date')
         eur = eur.set_index('date')
         gbp = gbp.set_index('date')
@@ -401,20 +400,11 @@ class CorwinSchultz:
         df.dropna(subset=["BTCGBP"], inplace=True)
         df.dropna(subset=["BTCJPY"], inplace=True)
 
-        # date = usd['date'].to_numpy()
-        # usd = self.calculateCSArray(usd)
-        # eur = self.calculateCSArray(eur)
-        # gbp = self.calculateCSArray(gbp)
-        # jpy = self.calculateCSArray(jpy)
-        #
-        # date = date[:smallestArray]
-        # usd = usd[:smallestArray]
-        # eur = eur[:smallestArray]
-        # jpy = jpy[:smallestArray]
-        # gbp = gbp[:smallestArray]
-
-        # return date, usd, eur, gbp, jpy
         return df
+
+    def printCsValues(self, usd, eur, gbp, jpy):
+        df = self.cutCsArray(usd, eur, gbp, jpy)
+        print(df)
 
     """
     This method gets the standardised arrays containing the cs values for each currency pair
@@ -463,16 +453,22 @@ class CorwinSchultz:
         #dataframe = self.getStandardisedCS(fileEUR, fileGBP, fileJPY, fileUSD)
         dataframe = self.cutCsArray(fileUSD, fileEUR, fileGBP, fileJPY)
 
-        date = dataframe.index
+        dataframe.index = pd.to_datetime(dataframe.index)
         usd = dataframe['BTCUSD']
         eur = dataframe['BTCEUR']
         gbp = dataframe['BTCGBP']
         jpy = dataframe['BTCJPY']
 
-        plt.plot(date, usd)
-        plt.plot(date, eur)
-        plt.plot(date, gbp)
-        plt.plot(date, jpy)
+        plt.figure()
+        plt.plot(usd)
+        plt.plot(eur)
+        plt.plot(gbp)
+        plt.plot(jpy)
+        ax = plt.gca()
+
+        ax.xaxis.set_major_locator(mdates.HourLocator(interval=6))
+        ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d %H:%M:%S'))
+        plt.gcf().autofmt_xdate()
 
         plt.xlabel('Datum')
         plt.ylabel('Wert')
