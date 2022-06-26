@@ -3,8 +3,9 @@ from CorwinSchultz import CorwinSchultz
 import matplotlib.pyplot as plt
 import seaborn as sb
 import statsmodels.api as sm
+import scipy.stats as stats
 
-class Regression:
+class RegressionCS:
 
     def marketLiqEURCS(self, fileEUR, fileGBP, fileJPY, fileUSD):
         cs = CorwinSchultz()
@@ -92,11 +93,7 @@ class Regression:
                                                                                              fileUSD)
 
         add1 = [x + y for x, y in zip(weightedBtcusd, weightedBtceur)]
-        add2 = [x + y for x, y in zip(add1, weightedBtcjpy)]
-
-        for value in add2:
-            value /= 3
-            weightedMarketLiq.append(value)
+        weightedMarketLiq = [x + y for x, y in zip(add1, weightedBtcjpy)]
 
         return weightedMarketLiq
 
@@ -131,11 +128,7 @@ class Regression:
                                                                                              fileUSD)
 
         add1 = [x + y for x, y in zip(weightedBtcusd, weightedBtceur)]
-        add2 = [x + y for x, y in zip(add1, weightedBtcgbp)]
-
-        for value in add2:
-            value /= 3
-            weightedMarketLiq.append(value)
+        weightedMarketLiq = [x + y for x, y in zip(add1, weightedBtcgbp)]
 
         return weightedMarketLiq
 
@@ -231,11 +224,7 @@ class Regression:
                                                                                              fileUSD)
 
         add1 = [x + y for x, y in zip(weightedBtcjpy, weightedBtceur)]
-        add2 = [x + y for x, y in zip(add1, weightedBtcgbp)]
-
-        for value in add2:
-            value /= 3
-            weightedMarketLiq.append(value)
+        weightedMarketLiq = [x + y for x, y in zip(add1, weightedBtcgbp)]
 
         return weightedMarketLiq
 
@@ -246,7 +235,7 @@ class Regression:
 
         plt.xlabel('Markt Liquidität')
         plt.ylabel('BTC/EUR Liquidität')
-        plt.title('Lineare Regression - BTC/EUR (Corwin und Schultz) [Täglich]')
+        plt.title('Lineare Regression - BTC/EUR (Corwin und Schultz) [Minütlich]')
         plt.scatter(marketLiq, eurLiq, 7, alpha=0.6, color='blue')
         sb.regplot(marketLiq, eurLiq, ci=None, scatter_kws={"color": "blue", 's':0.5}, line_kws={"color": "red",
                                                                                                  'linewidth':1.5})
@@ -265,7 +254,7 @@ class Regression:
 
         plt.xlabel('Markt Liquidität')
         plt.ylabel('BTC/GBP Liquidität')
-        plt.title('Lineare Regression - BTC/GBP (Corwin und Schultz) [Täglich]')
+        plt.title('Lineare Regression - BTC/GBP (Corwin und Schultz) [Minütlich]')
         plt.scatter(marketLiq, gbpLiq, 7, alpha=0.6, color='blue')
         sb.regplot(marketLiq, gbpLiq, ci=None, scatter_kws={"color": "blue", 's':0.5}, line_kws={"color": "red",
                                                                                                  'linewidth':1.5})
@@ -284,7 +273,7 @@ class Regression:
 
         plt.xlabel('Markt Liquidität')
         plt.ylabel('BTC/JPY Liquidität')
-        plt.title('Lineare Regression - BTC/JPY (Corwin und Schultz) [Täglich]')
+        plt.title('Lineare Regression - BTC/JPY (Corwin und Schultz) [Minütlich]')
         plt.scatter(marketLiq, jpyLiq, 7, alpha=0.6, color='blue')
         sb.regplot(marketLiq, jpyLiq, ci=None, scatter_kws={"color": "blue", 's':0.5}, line_kws={"color": "red",
                                                                                                  'linewidth':1.5})
@@ -303,7 +292,7 @@ class Regression:
 
         plt.xlabel('Markt Liquidität')
         plt.ylabel('BTC/USD Liquidität')
-        plt.title('Lineare Regression - BTC/USD (Corwin und Schultz) [Täglich]')
+        plt.title('Lineare Regression - BTC/USD (Corwin und Schultz) [Minütlich]')
         plt.scatter(marketLiq, usdLiq, 7, alpha=0.6, color='blue')
         sb.regplot(marketLiq, usdLiq, ci=None, scatter_kws={"color": "blue", 's':0.5}, line_kws={"color": "red",
                                                                                                  'linewidth':1.5})
@@ -315,3 +304,120 @@ class Regression:
         marketLiq = sm.add_constant(marketLiq)
         result = sm.OLS(usdLiq, marketLiq).fit()
         print(result.summary())
+
+    def histogram(self, fileEUR, fileGBP, fileJPY, fileUSD):
+        x = self.percentageUSDCS(fileEUR, fileGBP, fileJPY, fileUSD)
+        plt.hist(x, bins=10000)
+        plt.title('Histogram Marktliqitität (exkl. BTCUSD) - CS')
+        plt.show()
+
+    def tTestEUR(self, fileEUR, fileGBP, fileJPY, fileUSD):
+        eurLiq = self.percentageEURCS(fileEUR, fileGBP, fileJPY, fileUSD)
+        marketLiq = self.weightedMarketLiqEURCS(fileEUR, fileGBP, fileJPY, fileUSD)
+
+        meanEur = self.getMean(eurLiq)
+        meanMarket = self.getMean(marketLiq)
+
+        eurVar = self.getVar(eurLiq)
+        marketVar = self.getVar(marketLiq)
+
+        print('meanEur')
+        print(meanEur)
+        print('meanMarket')
+        print(meanMarket)
+
+        #print('eurVar')
+        #print(eurVar)
+        #print('marketVar')
+        #print(marketVar)
+
+        #print(eurVar/ marketVar)
+
+        ttest = stats.ttest_ind(a=eurLiq, b=marketLiq, equal_var=True)
+        print('ttest')
+        print(ttest)
+
+    def tTestGBP(self, fileEUR, fileGBP, fileJPY, fileUSD):
+        gbpLiq = self.percentageGBPCS(fileEUR, fileGBP, fileJPY, fileUSD)
+        marketLiq = self.weightedMarketLiqGBPCS(fileEUR, fileGBP, fileJPY, fileUSD)
+
+        meanGbp = self.getMean(gbpLiq)
+        meanMarket = self.getMean(marketLiq)
+
+        gbpVar = self.getVar(gbpLiq)
+        marketVar = self.getVar(marketLiq)
+
+        print('meanGbp')
+        print(meanGbp)
+        print('meanMarket')
+        print(meanMarket)
+
+        # print('gbpVar')
+        # print(gbpVar)
+        # print('marketVar')
+        # print(marketVar)
+
+        print(gbpVar/ marketVar)
+
+        ttest = stats.ttest_ind(a=gbpLiq, b=marketLiq, equal_var=True)
+        print('ttest')
+        print(ttest)
+
+    def tTestJPY(self, fileEUR, fileGBP, fileJPY, fileUSD):
+        jpyLiq = self.percentageJPYCS(fileEUR, fileGBP, fileJPY, fileUSD)
+        marketLiq = self.weightedMarketLiqJPYCS(fileEUR, fileGBP, fileJPY, fileUSD)
+
+        meanJpy = self.getMean(jpyLiq)
+        meanMarket = self.getMean(marketLiq)
+
+        jpyVar = self.getVar(jpyLiq)
+        marketVar = self.getVar(marketLiq)
+
+        print('meanJpy')
+        print(meanJpy)
+        print('meanMarket')
+        print(meanMarket)
+
+        # print('jpyVar')
+        # print(jpyVar)
+        # print('marketVar')
+        # print(marketVar)
+
+        print(jpyVar/ marketVar)
+
+        ttest = stats.ttest_ind(a=jpyLiq, b=marketLiq, equal_var=True)
+        print('ttest')
+        print(ttest)
+
+    def tTestUSD(self, fileEUR, fileGBP, fileJPY, fileUSD):
+        usdLiq = self.percentageUSDCS(fileEUR, fileGBP, fileJPY, fileUSD)
+        marketLiq = self.weightedMarketLiqUSDCS(fileEUR, fileGBP, fileJPY, fileUSD)
+
+        meanUsd = self.getMean(usdLiq)
+        meanMarket = self.getMean(marketLiq)
+
+        usdVar = self.getVar(usdLiq)
+        marketVar = self.getVar(marketLiq)
+
+        print('meanUsd')
+        print(meanUsd)
+        print('meanMarket')
+        print(meanMarket)
+
+        # print('usdVar')
+        # print(usdVar)
+        # print('marketVar')
+        # print(marketVar)
+
+        print(usdVar/ marketVar)
+
+        ttest = stats.ttest_ind(a=usdLiq, b=marketLiq, equal_var=True)
+        print('ttest')
+        print(ttest)
+
+
+    def getMean(self, list):
+        return sum(list)/len(list)
+
+    def getVar(self, list):
+        return np.var(list)

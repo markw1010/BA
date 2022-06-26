@@ -6,7 +6,8 @@ from Comparison import Comparison
 from CorwinSchultz import CorwinSchultz
 from Filter import Filter
 from LeadLag import LeadLag
-from Regression import Regression
+from RegressionCS import RegressionCS
+from RegressionAR import RegressionAR
 
 
 """
@@ -57,11 +58,10 @@ btcjpy = pd.read_csv('/Users/markwagner/Documents/Uni/WS21: 22/BA /Kursdaten/min
 
 amihud = Amihud()
 cs = CorwinSchultz()
-comp = Comparison()
 ar = AbdiRanaldo()
 filter = Filter()
-ll = LeadLag()
-reg = Regression()
+regCS = RegressionCS()
+regAR = RegressionAR()
 
 # Uncomment this line of code to show the whole dataset on the console
 # filter.print_full(btcusd)
@@ -118,11 +118,28 @@ reg = Regression()
 #reg.marketLiqEURCS(btcusdH, btceurH, btcgbpH, btcjpyH)
 #reg.weightedMarketLiqEURCS(btcusdH, btceurH, btcgbpH, btcjpyH)
 
-reg.regEurCS(btcusd, btceur, btcgbp, btcjpy)
-#reg.regGbpCS(btcusd, btceur, btcgbp, btcjpy)
-#reg.regJpyCS(btcusd, btceur, btcgbp, btcjpy)
-#reg.regUsdCS(btcusd, btceur, btcgbp, btcjpy)
-#reg.olsEurCS(btcusd, btceur, btcgbp, btcjpy)
-#reg.olsGbpCS(btcusd, btceur, btcgbp, btcjpy)
-#reg.olsJpyCS(btcusd, btceur, btcgbp, btcjpy)
-#reg.olsUsdCS(btcusd, btceur, btcgbp, btcjpy)
+#regCS.regEurCS(btcusd, btceur, btcgbp, btcjpy)
+#regCS.regGbpCS(btcusd, btceur, btcgbp, btcjpy)
+#regCS.regJpyCS(btcusd, btceur, btcgbp, btcjpy)
+#regCS.regUsdCS(btcusd, btceur, btcgbp, btcjpy)
+#regCS.olsEurCS(btcusd, btceur, btcgbp, btcjpy)
+#regCS.olsGbpCS(btcusd, btceur, btcgbp, btcjpy)
+#regCS.olsJpyCS(btcusd, btceur, btcgbp, btcjpy)
+#regCS.olsUsdCS(btcusd, btceur, btcgbp, btcjpy)
+
+#regCS.tTestEUR(btcusd, btceur, btcgbp, btcjpy)
+#regCS.tTestGBP(btcusd, btceur, btcgbp, btcjpy)
+#regCS.tTestJPY(btcusd, btceur, btcgbp, btcjpy)
+#regCS.tTestUSD(btcusd, btceur, btcgbp, btcjpy)
+
+#regCS.histogram(btcusdD, btceurD, btcgbpD, btcjpyD)
+
+regAR.regEurAR(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.regGbpAR(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.regJpyAR(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.regUsdAR(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsEurAR(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsGbpAR(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsJpyAR(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsUsdAR(btcusdH, btceurH, btcgbpH, btcjpyH)
+
