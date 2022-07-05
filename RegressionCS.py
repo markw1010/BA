@@ -376,7 +376,7 @@ class RegressionCS:
         plt.show()
 
     def regMarketGbpLagged(self, fileEUR, fileGBP, fileJPY, fileUSD):
-        marketLiq = self.percentageMarketLiqGbpCS(fileEUR, fileGBP, fileJPY, fileUSD)
+        marketLiq = self.percentageMarketLiqGBPCS(fileEUR, fileGBP, fileJPY, fileUSD)
         jpyLiq = self.percentageGBPCS(fileEUR, fileGBP, fileJPY, fileUSD)
 
         lead = np.delete(jpyLiq, -1)
@@ -1344,7 +1344,7 @@ class RegressionCS:
 
     def olsGbpLagged(self, fileEUR, fileGBP, fileJPY, fileUSD):
         gbpLiq = self.percentageGBPCS(fileEUR, fileGBP, fileJPY, fileUSD)
-        marketLiq = self.marketLiqGBPCS(fileEUR, fileGBP, fileJPY, fileUSD)
+        marketLiq = self.percentageMarketLiqGBPCS(fileEUR, fileGBP, fileJPY, fileUSD)
 
         lead = np.delete(marketLiq, -1)
         lag = np.delete(gbpLiq, 0)
@@ -1355,7 +1355,7 @@ class RegressionCS:
 
     def olsMarketGbpLagged(self, fileEUR, fileGBP, fileJPY, fileUSD):
         gbpLiq = self.percentageGBPCS(fileEUR, fileGBP, fileJPY, fileUSD)
-        marketLiq = self.marketLiqGBPCS(fileEUR, fileGBP, fileJPY, fileUSD)
+        marketLiq = self.percentageMarketLiqGBPCS(fileEUR, fileGBP, fileJPY, fileUSD)
 
         lead = np.delete(gbpLiq, -1)
         lag = np.delete(marketLiq, 0)
@@ -1366,7 +1366,7 @@ class RegressionCS:
 
     def olsEurLagged(self, fileEUR, fileGBP, fileJPY, fileUSD):
         eurLiq = self.percentageEURCS(fileEUR, fileGBP, fileJPY, fileUSD)
-        marketLiq = self.marketLiqEURCS(fileEUR, fileGBP, fileJPY, fileUSD)
+        marketLiq = self.percentageMarketLiqEURCS(fileEUR, fileGBP, fileJPY, fileUSD)
 
         lead = np.delete(marketLiq, -1)
         lag = np.delete(eurLiq, 0)
@@ -1377,7 +1377,7 @@ class RegressionCS:
 
     def olsMarketEurLagged(self, fileEUR, fileGBP, fileJPY, fileUSD):
         eurLiq = self.percentageGBPCS(fileEUR, fileGBP, fileJPY, fileUSD)
-        marketLiq = self.marketLiqGBPCS(fileEUR, fileGBP, fileJPY, fileUSD)
+        marketLiq = self.percentageMarketLiqGBPCS(fileEUR, fileGBP, fileJPY, fileUSD)
 
         lead = np.delete(eurLiq, -1)
         lag = np.delete(marketLiq, 0)
@@ -1388,7 +1388,7 @@ class RegressionCS:
 
     def olsJpyLagged(self, fileEUR, fileGBP, fileJPY, fileUSD):
         jpyLiq = self.percentageJPYCS(fileEUR, fileGBP, fileJPY, fileUSD)
-        marketLiq = self.marketLiqJPYCS(fileEUR, fileGBP, fileJPY, fileUSD)
+        marketLiq = self.percentageMarketLiqJPYCS(fileEUR, fileGBP, fileJPY, fileUSD)
 
         lead = np.delete(marketLiq, -1)
         lag = np.delete(jpyLiq, 0)
@@ -1399,7 +1399,7 @@ class RegressionCS:
 
     def olsMarketJpyLagged(self, fileEUR, fileGBP, fileJPY, fileUSD):
         jpyLiq = self.percentageJPYCS(fileEUR, fileGBP, fileJPY, fileUSD)
-        marketLiq = self.marketLiqJPYCS(fileEUR, fileGBP, fileJPY, fileUSD)
+        marketLiq = self.percentageMarketLiqJPYCS(fileEUR, fileGBP, fileJPY, fileUSD)
 
         lead = np.delete(jpyLiq, -1)
         lag = np.delete(marketLiq, 0)
@@ -1410,7 +1410,7 @@ class RegressionCS:
 
     def olsUsdLagged(self, fileEUR, fileGBP, fileJPY, fileUSD):
         usdLiq = self.percentageUSDCS(fileEUR, fileGBP, fileJPY, fileUSD)
-        marketLiq = self.marketLiqUSDCS(fileEUR, fileGBP, fileJPY, fileUSD)
+        marketLiq = self.percentageMarketLiqUSDCS(fileEUR, fileGBP, fileJPY, fileUSD)
 
         lead = np.delete(marketLiq, -1)
         lag = np.delete(usdLiq, 0)
@@ -1421,7 +1421,7 @@ class RegressionCS:
 
     def olsMarketUsdLagged(self, fileEUR, fileGBP, fileJPY, fileUSD):
         usdLiq = self.percentageUSDCS(fileEUR, fileGBP, fileJPY, fileUSD)
-        marketLiq = self.marketLiqUSDCS(fileEUR, fileGBP, fileJPY, fileUSD)
+        marketLiq = self.percentageMarketLiqUSDCS(fileEUR, fileGBP, fileJPY, fileUSD)
 
         lead = np.delete(usdLiq, -1)
         lag = np.delete(marketLiq, 0)

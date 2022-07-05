@@ -214,10 +214,10 @@ class AbdiRanaldo:
 
         #print(eur)
 
-        usd = usd.set_index('date')
-        eur = eur.set_index('date')
-        gbp = gbp.set_index('date')
-        jpy = jpy.set_index('date')
+        usd.set_index('date', inplace=True)
+        eur.set_index('date', inplace=True)
+        gbp.set_index('date', inplace=True)
+        jpy.set_index('date', inplace=True)
 
         df = usd.join(eur)
         df = df.join(gbp)
@@ -274,19 +274,40 @@ class AbdiRanaldo:
         dataframe = self.cutArArray(fileEUR, fileGBP, fileJPY, fileUSD)
 
         dataframe.index = pd.to_datetime(dataframe.index)
-        usd = dataframe['BTCUSD']
-        eur = dataframe['BTCEUR']
-        gbp = dataframe['BTCGBP']
-        jpy = dataframe['BTCJPY']
+        usd = dataframe['BTCUSD'].to_numpy()
+        eur = dataframe['BTCEUR'].to_numpy()
+        gbp = dataframe['BTCGBP'].to_numpy()
+        jpy = dataframe['BTCJPY'].to_numpy()
+
+        usdLiqT = np.delete(usd, -1)
+        usdLiqT1 = np.delete(usd, 0)
+
+        percentageUsd = [(x / y) - 1 for x, y in zip(usdLiqT1, usdLiqT)]
+
+        eurLiqT = np.delete(eur, -1)
+        eurLiqT1 = np.delete(eur, 0)
+
+        percentageEur = [(x / y) - 1 for x, y in zip(eurLiqT1, eurLiqT)]
+
+        gbpLiqT = np.delete(gbp, -1)
+        gbpLiqT1 = np.delete(gbp, 0)
+
+        percentageGbp = [(x / y) - 1 for x, y in zip(gbpLiqT1, gbpLiqT)]
+
+        jpyLiqT = np.delete(jpy, -1)
+        jpyLiqT1 = np.delete(jpy, 0)
+
+        percentageJpy = [(x / y) - 1 for x, y in zip(jpyLiqT1, jpyLiqT)]
+
 
         plt.figure()
-        plt.plot(usd)
-        plt.plot(eur)
-        plt.plot(gbp)
-        plt.plot(jpy)
+        plt.plot(percentageUsd)
+        plt.plot(percentageEur)
+        plt.plot(percentageGbp)
+        plt.plot(percentageJpy)
         ax = plt.gca()
 
-        ax.xaxis.set_major_locator(mdates.HourLocator(interval=6))
+        ax.xaxis.set_major_locator(mdates.HourLocator(interval=11000))
         ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d %H:%M:%S'))
         plt.gcf().autofmt_xdate()
 
@@ -294,7 +315,7 @@ class AbdiRanaldo:
         plt.xlabel('Datum')
         plt.ylabel('Wert')
         plt.legend(['BTC/USD', 'BTC/EUR', 'BTC/GBP', ' BTC/JPY'])
-        plt.title('Abdi und Ranaldo Liquiditätsmaß')
+        plt.title('Abdi und Ranaldo Liquiditätsmaß - Prozentwerte [täglich]')
         plt.show()
 
         #dataframe = self.getNormalizedDataframe(fileEUR, fileGBP, fileJPY, fileUSD, int)
@@ -371,11 +392,46 @@ class AbdiRanaldo:
     def calcAutocorrGraph(self, fileEUR, fileGBP, fileJPY, fileUSD):
         dataframe = self.getStandardisedAr(fileEUR, fileGBP, fileJPY, fileUSD)
 
-        for variable in dataframe.columns:
-            autocorr = autocorrelation_plot(dataframe[variable], label=variable)
+        btcusd = dataframe['BTCUSD'].to_numpy()
 
-        autocorr.set_xlim([0, 61])
-        autocorr.set(xlabel="Verzögerung", ylabel="Autokorrelation", title='Abdi und Ranaldo Autokorrelation')
+        usdLiqT = np.delete(btcusd, -1)
+        usdLiqT1 = np.delete(btcusd, 0)
+
+        percentageUsd = [(x / y) - 1 for x, y in zip(usdLiqT1, usdLiqT)]
+
+        btceur = dataframe['BTCEUR'].to_numpy()
+
+        eurLiqT = np.delete(btceur, -1)
+        eurLiqT1 = np.delete(btceur, 0)
+
+        percentageEur = [(x / y) - 1 for x, y in zip(eurLiqT1, eurLiqT)]
+
+        btcgbp = dataframe['BTCGBP'].to_numpy()
+
+        gbpLiqT = np.delete(btcgbp, -1)
+        gbpLiqT1 = np.delete(btcgbp, 0)
+
+        percentageGbp = [(x / y) - 1 for x, y in zip(gbpLiqT1, gbpLiqT)]
+
+        btcjpy = dataframe['BTCJPY'].to_numpy()
+
+        jpyLiqT = np.delete(btcjpy, -1)
+        jpyLiqT1 = np.delete(btcjpy, 0)
+
+        percentageJpy = [(x / y) - 1 for x, y in zip(jpyLiqT1, jpyLiqT)]
+
+        df = pd.DataFrame({'usdPercent': percentageUsd,
+                           'eurPercent': percentageEur,
+                           'gbpPercent': percentageGbp,
+                           'jpyPercent': percentageJpy,})
+
+
+
+        for variable in df.columns:
+            autocorr = autocorrelation_plot(df[variable], label=variable)
+
+        autocorr.set_xlim([0, 30])
+        autocorr.set(xlabel="Verzögerung", ylabel="Autokorrelation", title='Abdi und Ranaldo Autokorrelation [täglich]')
 
         self.chooseTitle(int)
 
@@ -539,7 +595,7 @@ class AbdiRanaldo:
         crosscorrgbp = []
         crosscorrjpy = []
         lag = []
-        for i in range(61):
+        for i in range(30):
             print(i)
             correur = self.getCrossCorrelation(1, btcusd, btceur, btcgbp, btcjpy, i)
             corrgbp = self.getCrossCorrelation(2, btcusd, btceur, btcgbp, btcjpy, i)
@@ -557,7 +613,7 @@ class AbdiRanaldo:
                            'BTC/USD-BTC/JPY': crosscorrjpy})
 
         df.set_index('lag')
-        df.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/CrossCorrAR.xlsx', index=True)
+        df.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/CrossCorr/CrossCorrAR.xlsx', index=True)
 
         print(df)
 
@@ -567,7 +623,7 @@ class AbdiRanaldo:
     def plotCrossCorr(self, crosscorreur, crosscorrgbp, crosscorrjpy, lag):
         plt.xlabel('Verzögerung')
         plt.ylabel('Pearson Korrelationskoeffizient')
-        plt.title('Abdi und Ranaldo Kreuzkorrelation')
+        plt.title('Abdi und Ranaldo Kreuzkorrelation [täglich]')
         plt.plot(lag, crosscorreur)
         plt.plot(lag, crosscorrgbp)
         plt.plot(lag, crosscorrjpy)
@@ -581,8 +637,8 @@ class AbdiRanaldo:
         df.drop('BTCGBP', inplace=True, axis=1)
         df.drop('BTCJPY', inplace=True, axis=1)
 
-        largest = df.nlargest(30, 'BTCUSD')
-        largest.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/ARLargestUSD.xlsx', index=True)
+        largest = df.nlargest(10, 'BTCUSD')
+        largest.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/Biggest/ARLargestUSD.xlsx', index=True)
 
         print(largest)
 
@@ -592,8 +648,8 @@ class AbdiRanaldo:
         df.drop('BTCGBP', inplace=True, axis=1)
         df.drop('BTCJPY', inplace=True, axis=1)
 
-        largest = df.nlargest(30, 'BTCEUR')
-        largest.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/ARLargestEUR.xlsx', index=True)
+        largest = df.nlargest(10, 'BTCEUR')
+        largest.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/Biggest/ARLargestEUR.xlsx', index=True)
 
         print(largest)
 
@@ -603,8 +659,8 @@ class AbdiRanaldo:
         df.drop('BTCEUR', inplace=True, axis=1)
         df.drop('BTCJPY', inplace=True, axis=1)
 
-        largest = df.nlargest(30, 'BTCGBP')
-        largest.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/ARLargestGBP.xlsx', index=True)
+        largest = df.nlargest(10, 'BTCGBP')
+        largest.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/Biggest/ARLargestGBP.xlsx', index=True)
 
         print(largest)
 
@@ -614,8 +670,8 @@ class AbdiRanaldo:
         df.drop('BTCGBP', inplace=True, axis=1)
         df.drop('BTCEUR', inplace=True, axis=1)
 
-        largest = df.nlargest(30, 'BTCJPY')
-        largest.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/ARLargestJPY.xlsx', index=True)
+        largest = df.nlargest(10, 'BTCJPY')
+        largest.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/Biggest/ARLargestJPY.xlsx', index=True)
 
         print(largest)
 
@@ -639,7 +695,7 @@ class AbdiRanaldo:
         autocorrGBP = []
         autocorrJPY = []
 
-        for i in range(61):
+        for i in range(31):
             usdAutocorr = usd.autocorr(lag=i)
             eurAutocorr = eur.autocorr(lag=i)
             gbpAutocorr = gbp.autocorr(lag=i)
@@ -658,7 +714,7 @@ class AbdiRanaldo:
                            'BTCJPY': autocorrJPY})
         print(df)
 
-        df.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/ARAutocorr.xlsx', index=True)
+        df.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/Autocorr/ARAutocorr.xlsx', index=True)
 
 
     # def mergeARiTupel(self, fileUSD):
@@ -699,20 +755,47 @@ class AbdiRanaldo:
                            })
 
         df.set_index('lag')
-        df.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/CrossCorrAReur..xlsx', index=True)
+        df.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/CrossCorr/CrossCorrAReur..xlsx', index=True)
 
         #print(df)
 
     def plotCrossCorrMntl(self, crosscorreur, lag):
         plt.xlabel('Verzögerung')
         plt.ylabel('Pearson Korrelationskoeffizient')
-        plt.title('Abdi und Ranaldo Kreuzkorrelation')
+        plt.title('Abdi und Ranaldo Kreuzkorrelation [minütlich]')
         plt.plot(lag, crosscorreur)
         #plt.plot(lag, crosscorrgbp)
         #plt.plot(lag, crosscorrjpy)
         plt.legend(['BTC/USD - BTC/EUR'])
         plt.show()
 
+    def getStandardisedArGroupByDay(self, fileUSD, fileEUR, fileGBP, fileJPY):
+
+        df = self.cutArArray(fileUSD, fileEUR, fileGBP, fileJPY)
+        #df.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/Überprüfungen/groupByDay.xlsx', index=True)
+
+        df.reset_index(inplace=True, drop=False)
+        df['date'] = pd.to_datetime(df['date'], format='%Y-%m-%d %H:%M:%S', errors='coerce')
+
+        df['days'] = df['date'].dt.to_period('D')
+        df2 = df.drop(columns='date')
+
+        usd = df2.groupby('days')['BTCUSD'].mean()
+        eur = df2.groupby('days')['BTCEUR'].mean()
+        gbp = df2.groupby('days')['BTCGBP'].mean()
+        jpy = df2.groupby('days')['BTCJPY'].mean()
+
+        daily = pd.DataFrame({'BTCUSD': usd,
+                              'BTCEUR': eur,
+                              'BTCGBP': gbp,
+                              'BTCJPY': jpy,})
+
+        daily.drop(index=daily.index[0],
+                axis=0,
+                inplace=True)
+
+        #print(daily)
+        return daily
 
 
 

@@ -473,7 +473,7 @@ class CorwinSchultz:
         plt.xlabel('Datum')
         plt.ylabel('Wert')
         plt.legend(['BTC/USD', 'BTC/EUR', 'BTC/GBP', ' BTC/JPY'])
-        plt.title('Corwin und Schultz Liquiditätsmaß')
+        plt.title('Corwin und Schultz Liquiditätsmaß - absolute Werte [minütlich]')
         #plt.plot(dataframe)
         plt.show()
 
@@ -562,10 +562,10 @@ class CorwinSchultz:
         for variable in dataframe.columns:
             autocorr = autocorrelation_plot(dataframe[variable], label= variable)
 
-        autocorr.set_xlim([0, 61])
-        autocorr.set(xlabel="Verzögerung", ylabel="Autokorrelation", title='Corwin und Schultz Autokorrelation')
+        autocorr.set_xlim([0, 30])
+        autocorr.set(xlabel="Verzögerung", ylabel="Autokorrelation", title='Corwin und Schultz Autokorrelation [täglich]')
 
-        self.chooseTitle(int)
+        #self.chooseTitle(int)
 
     """
     This method returns a dataframe with two columns. one column contains all date values and the other column contains 
@@ -754,15 +754,13 @@ class CorwinSchultz:
     """
     def crossCorrGraph(self, btcusd, btceur, btcgbp, btcjpy):
 
-        print('The graph will be shown when the number 168 is reached')
-
         #crosscorreur, crosscorrgbp, crosscorrjpy, lag = self.crossCorrData(btceur, btcgbp, btcjpy, btcusd)
 
         crosscorreur = []
         crosscorrgbp = []
         crosscorrjpy = []
         lag = []
-        for i in range(61):
+        for i in range(31):
             print(i)
             correur = self.getCrossCorrelation(1, btcusd, btceur, btcgbp, btcjpy, i)
             corrgbp = self.getCrossCorrelation(2, btcusd, btceur, btcgbp, btcjpy, i)
@@ -781,7 +779,7 @@ class CorwinSchultz:
                             'BTC/USD-BTC/JPY': crosscorrjpy})
 
         df.set_index('lag')
-        df.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/CrossCorrCS.xlsx', index=True)
+        df.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/CrossCorr/CrossCorrCS.xlsx', index=True)
 
         print(df)
 
@@ -791,7 +789,7 @@ class CorwinSchultz:
     def plotCrossCorr(self, crosscorreur, crosscorrgbp, crosscorrjpy, lag):
         plt.xlabel('Verzögerung')
         plt.ylabel('Pearson Korrelationskoeffizient')
-        plt.title('Corwin und Schultz Kreuzkorrelation')
+        plt.title('Corwin und Schultz Kreuzkorrelation [täglich]')
         plt.plot(lag, crosscorreur)
         plt.plot(lag, crosscorrgbp)
         plt.plot(lag, crosscorrjpy)
@@ -826,8 +824,8 @@ class CorwinSchultz:
         df.drop('BTCGBP', inplace=True, axis=1)
         df.drop('BTCJPY', inplace=True, axis=1)
 
-        largest = df.nlargest(30, 'BTCUSD')
-        largest.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/CSLargestUSD.xlsx', index=True)
+        largest = df.nlargest(10, 'BTCUSD')
+        largest.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/Biggest/CSLargestUSD.xlsx', index=True)
 
         print(largest)
 
@@ -837,8 +835,8 @@ class CorwinSchultz:
         df.drop('BTCGBP', inplace=True, axis=1)
         df.drop('BTCJPY', inplace=True, axis=1)
 
-        largest = df.nlargest(30, 'BTCEUR')
-        largest.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/CSLargestEUR.xlsx', index=True)
+        largest = df.nlargest(10, 'BTCEUR')
+        largest.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/Biggest/CSLargestEUR.xlsx', index=True)
 
         print(largest)
 
@@ -848,8 +846,8 @@ class CorwinSchultz:
         df.drop('BTCEUR', inplace=True, axis=1)
         df.drop('BTCJPY', inplace=True, axis=1)
 
-        largest = df.nlargest(30, 'BTCGBP')
-        largest.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/CSLargestGBP.xlsx', index=True)
+        largest = df.nlargest(10, 'BTCGBP')
+        largest.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/Biggest/CSLargestGBP.xlsx', index=True)
 
         print(largest)
 
@@ -859,8 +857,8 @@ class CorwinSchultz:
         df.drop('BTCGBP', inplace=True, axis=1)
         df.drop('BTCEUR', inplace=True, axis=1)
 
-        largest = df.nlargest(30, 'BTCJPY')
-        largest.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/CSLargestJPY.xlsx', index=True)
+        largest = df.nlargest(10, 'BTCJPY')
+        largest.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/Biggest/CSLargestJPY.xlsx', index=True)
 
         print(largest)
 
@@ -885,7 +883,7 @@ class CorwinSchultz:
         autocorrGBP = []
         autocorrJPY = []
 
-        for i in range(61):
+        for i in range(31):
             usdAutocorr = usd.autocorr(lag=i)
             eurAutocorr = eur.autocorr(lag=i)
             gbpAutocorr = gbp.autocorr(lag=i)
@@ -904,7 +902,7 @@ class CorwinSchultz:
                            'BTCJPY': autocorrJPY})
         print(df)
 
-        df.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/CSAutocorr.xlsx', index=True)
+        df.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/Autocorr/CSAutocorr.xlsx', index=True)
 
 
 
