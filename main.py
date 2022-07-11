@@ -75,36 +75,27 @@ regAR = RegressionAR()
 
 
 # Uncomment this line of code to show the detailed CS calculation on the console
-# cs.printCsValues(btcusd, btceur, btcgbp, btcjpy)
-# cs.printAllCsValues(btcusd, btceur, btcgbp, btcjpy)
-#cs.csGraph(btcusd, btceur, btcgbp, btcjpy)
-#cs.showAutocorrGraph(btcusd, btceur, btcgbp, btcjpy)
-#cs.crossCorrGraph(btcusdD, btceurD, btcgbpD, btcjpyD)
-#cs.crossCorrTable(btcusd, btceur, btcgbp, btcjpy)
-#cs.crossCorrData(btcusd, btceur, btcgbp, btcjpy)
-#cs.getBiggest(btcusdD, btceurD, btcgbpD, btcjpyD)
+#cs.printCsValues(btcusdH, btceurH, btcgbpH, btcjpyH)
+#cs.printAllCsValues(btcusd, btceur, btcgbp, btcjpy)
+ar.arGraph(btcusdH, btceurH, btcgbpH, btcjpyH)
+#cs.getStandardisedCsGroupByDay(btcusdH, btceurH, btcgbpH, btcjpyH)
+#cs.showAutocorrGraph(btcusdH, btceurH, btcgbpH, btcjpyH)
+#cs.crossCorrGraph(btcusdH, btceurH, btcgbpH, btcjpyH)
+#ar.crossCorrGraph(btcusdH, btceurH, btcgbpH, btcjpyH)
+#cs.getBiggest(btcusdH, btceurH, btcgbpH, btcjpyH)
+#ar.getBiggest(btcusdH, btceurH, btcgbpH, btcjpyH)
 #cs.showAutocorrGraph(btcusdD, btceurD, btcgbpD, btcjpyD)
 #cs.autocorrData(btcusdD, btceurD, btcgbpD, btcjpyD)
-
-
-# TODO JPY values checking
-# Uncomment this line of code to show the single Amihud value on the console
-# amihud.printStandardisedAh(btcusd, btceur, btcgbp, btcjpy)
-#amihud.amihudGraph(btcusd, btceur, btcgbp, btcjpy)
-# amihud.showAutocorrGraph(btcusd, btceur, btcgbp, btcjpy, 3)
-#amihud.crossCorrGraph(btcusd, btceur, btcgbp, btcjpy)
-#amihud.getBiggest(btcusd, btceur, btcgbp, btcjpy)
-#amihud.autocorrData(btcusd, btceur, btcgbp, btcjpy)
-#amihud.showAutocorrGraph(btcgbp, btceur, btcjpy)
-#amihud.cutAhArray(btcusd, btceur, btcgbp, btcjpy)
+#cs.getStandardisedCsGroupByDayPercentage(btcusdH, btceurH, btcgbpH, btcjpyH)
 
 
 # Uncomment this line of code to show the single AR value on the console
-#ar.arGraph(btcusdD, btceurD, btcgbpD, btcjpyD)
-#ar.showAutocorrGraph(btcusdD, btceurD, btcgbpD, btcjpyD)
+#ar.arGraph(btcusdH, btceurH, btcgbpH, btcjpyH)
+#ar.showAutocorrGraph(btcusdH, btceurH, btcgbpH, btcjpyH)
 #ar.crossCorrGraph(btcusdD, btceurD, btcgbpD, btcjpyD)
 #ar.getBiggest(btcusdH, btceurH, btcgbpH, btcjpyH)
 #ar.autocorrData(btcusdD, btceurD, btcgbpD, btcjpyD)
+#ar.calcAutocorrGraphAbs(btcusdD, btceurD, btcgbpD, btcjpyD)
 #ar.crossCorrGraphMntl(btcusd, btceur, btcgbp, btcjpy)
 #ar.showAutocorrGraph(btcusdD, btceurD, btcgbpD, btcjpyD)
 
@@ -115,133 +106,244 @@ regAR = RegressionAR()
 #regCS.regUsdCS(btcusdD, btceurD, btcgbpD, btcjpyD)
 
 
+#################
+# Konkurrent AR #
+#################
+
+#regAR.regEur(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsEur(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.regMarketEur(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsMarketEur(btcusdH, btceurH, btcgbpH, btcjpyH)
+
+#regAR.regGbp(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsGbp(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.regMarketGbp(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsMarketGbp(btcusdH, btceurH, btcgbpH, btcjpyH)
+
+#regAR.regJpy(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsJpy(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.regMarketJpy(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsMarketJpy(btcusdH, btceurH, btcgbpH, btcjpyH)
+
+#regAR.regUsd(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsUsd(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.regMarketUsd(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsMarketUsd(btcusdH, btceurH, btcgbpH, btcjpyH)
+
+#regAR.regEurUsd(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsEurUsd(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.regUsdEur(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsUsdEur(btcusdH, btceurH, btcgbpH, btcjpyH)
+
+#regAR.regGbpUsd(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsGbpUsd(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.regUsdGbp(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsUsdGbp(btcusdH, btceurH, btcgbpH, btcjpyH)
+
+#regAR.regJpyUsd(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsJpyUsd(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.regUsdJpy(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsUsdJpy(btcusdH, btceurH, btcgbpH, btcjpyH)
+
+#regAR.regEurJpy(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsEurJpy(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.regJpyEur(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsJpyEur(btcusdH, btceurH, btcgbpH, btcjpyH)
+
+#regAR.regEurJpy(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsEurJpy(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.regJpyEur(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsJpyEur(btcusdH, btceurH, btcgbpH, btcjpyH)
+
+#regAR.regEurGbp(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsEurGbp(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.regGbpEur(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsGbpEur(btcusdH, btceurH, btcgbpH, btcjpyH)
+
+#regAR.regGbpJpy(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsGbpJpy(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.regJpyGbp(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsJpyGbp(btcusdH, btceurH, btcgbpH, btcjpyH)
+
 ##############
-# Konkurrent #
+# Führung AR #
 ##############
 
-#regAR.regEur(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.olsEur(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.regMarketEur(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.olsMarketEur(btcusdD, btceurD, btcgbpD, btcjpyD)
+#regAR.regEurLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsEurLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.regMarketEurLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsMarketEurLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
 
-#regAR.regGbp(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.olsGbp(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.regMarketGbp(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.olsMarketGbp(btcusdD, btceurD, btcgbpD, btcjpyD)
+#regAR.regGbpLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsGbpLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.regMarketGbpLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsMarketGbpLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
 
-#regAR.regJpy(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.olsJpy(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.regMarketJpy(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.olsMarketJpy(btcusdD, btceurD, btcgbpD, btcjpyD)
+#regAR.regJpyLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsJpyLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.regMarketJpyLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsMarketJpyLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
 
-#regAR.regUsd(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.olsUsd(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.regMarketUsd(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.olsMarketUsd(btcusdD, btceurD, btcgbpD, btcjpyD)
+#regAR.regUsdLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsUsdLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.regMarketUsdLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsMarketUsdLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
 
-#regAR.regEurUsd(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.olsEurUsd(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.regUsdEur(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.olsUsdEur(btcusdD, btceurD, btcgbpD, btcjpyD)
+#regAR.regEurUsdLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsEurUsdLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.regUsdEurLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsUsdEurLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
 
-#regAR.regGbpUsd(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.olsGbpUsd(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.regUsdGbp(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.olsUsdGbp(btcusdD, btceurD, btcgbpD, btcjpyD)
+#regAR.regGbpUsdLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsGbpUsdLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.regUsdGbpLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsUsdGbpLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
 
-#regAR.regJpyUsd(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.olsJpyUsd(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.regUsdJpy(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.olsUsdJpy(btcusdD, btceurD, btcgbpD, btcjpyD)
+#regAR.regJpyUsdLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsJpyUsdLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.regUsdJpyLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsUsdJpyLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
 
-#regAR.regEurJpy(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.olsEurJpy(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.regJpyEur(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.olsJpyEur(btcusdD, btceurD, btcgbpD, btcjpyD)
+#egAR.regEurJpyLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsEurJpyLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.regJpyEurLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsJpyEurLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
 
-#regAR.regEurJpy(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.olsEurJpy(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.regJpyEur(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.olsJpyEur(btcusdD, btceurD, btcgbpD, btcjpyD)
+#regAR.regEurJpyLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsEurJpyLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.regJpyEurLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsJpyEurLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
 
-#regAR.regEurGbp(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.olsEurGbp(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.regGbpEur(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.olsGbpEur(btcusdD, btceurD, btcgbpD, btcjpyD)
+#regAR.regEurGbpLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsEurGbpLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.regGbpEurLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsGbpEurLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
 
-#regAR.regGbpJpy(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.olsGbpJpy(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.regJpyGbp(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.olsJpyGbp(btcusdD, btceurD, btcgbpD, btcjpyD)
-
-###########
-# Führung #
-###########
-
-#regAR.regEurLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.olsEurLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.regMarketEurLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.olsMarketEurLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-
-#regAR.regGbpLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.olsGbpLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.regMarketGbpLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.olsMarketGbpLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-
-#regAR.regJpyLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.olsJpyLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.regMarketJpyLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.olsMarketJpyLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-
-#regAR.regUsdLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.olsUsdLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.regMarketUsdLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.olsMarketUsdLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-
-#regAR.regEurUsdLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.olsEurUsdLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.regUsdEurLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.olsUsdEurLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-
-#regAR.regGbpUsdLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.olsGbpUsdLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.regUsdGbpLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.olsUsdGbpLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-
-#regAR.regJpyUsdLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.olsJpyUsdLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.regUsdJpyLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.olsUsdJpyLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-
-#regAR.regEurJpyLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.olsEurJpyLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.regJpyEurLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.olsJpyEurLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-
-#regAR.regEurJpyLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.olsEurJpyLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.regJpyEurLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.olsJpyEurLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-
-#regAR.regEurGbpLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.olsEurGbpLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.regGbpEurLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.olsGbpEurLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-
-#regAR.regGbpJpyLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.olsGbpJpyLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.regJpyGbpLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regAR.olsJpyGbpLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
+#regAR.regGbpJpyLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsGbpJpyLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.regJpyGbpLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regAR.olsJpyGbpLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
 
 
-#regCS.regEurUsdLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regCS.regGbpEurLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regCS.regJpyEurLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regCS.regGbpEurLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regCS.regJpyEurLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
-#regCS.regUsdEurLagged(btcusdD, btceurD, btcgbpD, btcjpyD)
+#################
+# Konkurrent CS #
+#################
+
+#regCS.regEur(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.olsEur(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.regMarketEur(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.olsMarketEur(btcusdH, btceurH, btcgbpH, btcjpyH)
+
+#regCS.regGbp(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.olsGbp(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.regMarketGbp(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.olsMarketGbp(btcusdH, btceurH, btcgbpH, btcjpyH)
+
+#regCS.regJpy(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.olsJpy(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.regMarketJpy(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.olsMarketJpy(btcusdH, btceurH, btcgbpH, btcjpyH)
+
+#regCS.regUsd(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.olsUsd(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.regMarketUsd(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.olsMarketUsd(btcusdH, btceurH, btcgbpH, btcjpyH)
+
+#regCS.regEurUsd(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.olsEurUsd(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.regUsdEur(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.olsUsdEur(btcusdH, btceurH, btcgbpH, btcjpyH)
+
+#regCS.regGbpUsd(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.olsGbpUsd(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.regUsdGbp(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.olsUsdGbp(btcusdH, btceurH, btcgbpH, btcjpyH)
+
+#regCS.regJpyUsd(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.olsJpyUsd(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.regUsdJpy(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.olsUsdJpy(btcusdH, btceurH, btcgbpH, btcjpyH)
+
+#regCS.regEurJpy(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.olsEurJpy(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.regJpyEur(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.olsJpyEur(btcusdH, btceurH, btcgbpH, btcjpyH)
+
+#regCS.regEurJpy(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.olsEurJpy(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.regJpyEur(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.olsJpyEur(btcusdH, btceurH, btcgbpH, btcjpyH)
+
+#regCS.regEurGbp(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.olsEurGbp(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.regGbpEur(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.olsGbpEur(btcusdH, btceurH, btcgbpH, btcjpyH)
+
+#regCS.regGbpJpy(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.olsGbpJpy(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.regJpyGbp(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.olsJpyGbp(btcusdH, btceurH, btcgbpH, btcjpyH)
+
+##############
+# Führung CS #
+##############
+
+#regCS.regEurLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.olsEurLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.regMarketEurLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.olsMarketEurLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+
+#regCS.regGbpLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.olsGbpLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.regMarketGbpLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.olsMarketGbpLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+
+#regCS.regJpyLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.olsJpyLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.regMarketJpyLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.olsMarketJpyLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+
+#regCS.regUsdLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.olsUsdLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.regMarketUsdLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.olsMarketUsdLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+
+#regCS.regEurUsdLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.olsEurUsdLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.regUsdEurLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.olsUsdEurLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+
+#regCS.regGbpUsdLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.olsGbpUsdLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.regUsdGbpLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.olsUsdGbpLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+
+#regCS.regJpyUsdLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.olsJpyUsdLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.regUsdJpyLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.olsUsdJpyLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+
+#regCS.regEurJpyLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.olsEurJpyLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.regJpyEurLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.olsJpyEurLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+
+#regCS.regEurJpyLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.olsEurJpyLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.regJpyEurLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.olsJpyEurLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+
+#regCS.regEurGbpLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.olsEurGbpLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.regGbpEurLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.olsGbpEurLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+
+#regCS.regGbpJpyLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.olsGbpJpyLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.regJpyGbpLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
+#regCS.olsJpyGbpLagged(btcusdH, btceurH, btcgbpH, btcjpyH)
 
 
-ar.getStandardisedArGroupByDay(btcusdH, btceurH, btcgbpH, btcjpyH)
+
 
 

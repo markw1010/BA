@@ -449,37 +449,52 @@ class CorwinSchultz:
     """
     def csGraph(self, fileUSD, fileEUR, fileGBP, fileJPY):
 
-        #dataframe = self.getNormalizedDataframe(fileEUR, fileGBP, fileJPY, fileUSD, int)
-        #dataframe = self.getStandardisedCS(fileEUR, fileGBP, fileJPY, fileUSD)
-        dataframe = self.cutCsArray(fileUSD, fileEUR, fileGBP, fileJPY)
 
-        dataframe.index = pd.to_datetime(dataframe.index)
-        usd = dataframe['BTCUSD']
-        eur = dataframe['BTCEUR']
-        gbp = dataframe['BTCGBP']
-        jpy = dataframe['BTCJPY']
+        dataframe = self.getStandardisedCsGroupByDayPercentage(fileUSD, fileEUR, fileGBP, fileJPY)
+        #dataframe.reset_index(inplace=True, drop=False)
+        dataframe.set_index('days', inplace=True)
 
-        plt.figure()
-        plt.plot(usd)
-        plt.plot(eur)
-        plt.plot(gbp)
-        plt.plot(jpy)
-        ax = plt.gca()
+        #dataframe['days'] = pd.to_datetime(dataframe['days'])
+        #dataframe.index = dataframe.index.dt.to_timestamp('s').dt.strftime('%Y-%m-%d %H:%M:%S.000')
+        #dataframe.to_timestamp(dataframe.index)
 
-        ax.xaxis.set_major_locator(mdates.HourLocator(interval=6))
-        ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d %H:%M:%S'))
-        plt.gcf().autofmt_xdate()
+        dataframe.index = dataframe.index.to_series().astype(str)
+
+        date = dataframe.index
+        usd = dataframe['BTCUSD'].to_numpy()
+        eur = dataframe['BTCEUR'].to_numpy()
+        gbp = dataframe['BTCGBP'].to_numpy()
+        jpy = dataframe['BTCJPY'].to_numpy()
+
+
+        plt.plot(date, usd)
+        plt.plot(date, eur)
+        plt.plot(date, gbp)
+        plt.plot(date, jpy)
+
+        #plt.figure()
+        #plt.plot(usd)
+        #plt.plot(eur)
+        #plt.plot(gbp)
+        #plt.plot(jpy)
+        #ax = plt.gca()
+
+        #ax.xaxis.set_major_locator(mdates.HourLocator(interval=100000))
+        #ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d %H:%M:%S'))
+        #plt.gcf().autofmt_xdate()
 
         plt.xlabel('Datum')
-        plt.ylabel('Wert')
+        plt.ylabel('Wert (Prozent)')
         plt.legend(['BTC/USD', 'BTC/EUR', 'BTC/GBP', ' BTC/JPY'])
-        plt.title('Corwin und Schultz Liquiditätsmaß - absolute Werte [minütlich]')
-        #plt.plot(dataframe)
+        plt.title('Corwin und Schultz Liquiditätsmaß - Prozentwerte [Täglich]')
         plt.show()
+
+        #dataframe.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/LiqWerte/CS.xlsx', index=True)
 
 
         #dataframe = self.setDateIndex(dataframe)
-        #print(dataframe)
+
+        print(dataframe)
         #self.pltShow(dataframe, int)
 
     """
@@ -557,13 +572,46 @@ class CorwinSchultz:
     """
     def calcAutocorrGraph(self, fileEUR, fileGBP, fileJPY, fileUSD):
         #dataframe = self.getStandardisedCS(fileEUR, fileGBP, fileJPY, fileUSD)
-        dataframe = self.cutCsArray(fileEUR, fileGBP, fileJPY, fileUSD)
+        df = self.getStandardisedCsGroupByDay(fileEUR, fileGBP, fileJPY, fileUSD)
 
-        for variable in dataframe.columns:
-            autocorr = autocorrelation_plot(dataframe[variable], label= variable)
+        btcusd = df['BTCUSD'].to_numpy()
+
+        usdLiqT = np.delete(btcusd, -1)
+        usdLiqT1 = np.delete(btcusd, 0)
+        percentageUsd = [(x / y) - 1 for x, y in zip(usdLiqT1, usdLiqT)]
+
+        btceur = df['BTCEUR'].to_numpy()
+
+        eurLiqT = np.delete(btceur, -1)
+        eurLiqT1 = np.delete(btceur, 0)
+
+        percentageEur = [(x / y) - 1 for x, y in zip(eurLiqT1, eurLiqT)]
+
+        btcgbp = df['BTCGBP'].to_numpy()
+
+        gbpLiqT = np.delete(btcgbp, -1)
+        gbpLiqT1 = np.delete(btcgbp, 0)
+
+        percentageGbp = [(x / y) - 1 for x, y in zip(gbpLiqT1, gbpLiqT)]
+
+        btcjpy = df['BTCJPY'].to_numpy()
+
+        jpyLiqT = np.delete(btcjpy, -1)
+        jpyLiqT1 = np.delete(btcjpy, 0)
+
+        percentageJpy = [(x / y) - 1 for x, y in zip(jpyLiqT1, jpyLiqT)]
+
+        df = pd.DataFrame({'BTCUSD': percentageUsd,
+                           'BTCEUR': percentageEur,
+                           'BTCGBP': percentageGbp,
+                           'BTCJPY': percentageJpy, })
+
+
+        for variable in df.columns:
+           autocorr = autocorrelation_plot(df[variable], label= variable)
 
         autocorr.set_xlim([0, 30])
-        autocorr.set(xlabel="Verzögerung", ylabel="Autokorrelation", title='Corwin und Schultz Autokorrelation [täglich]')
+        autocorr.set(xlabel="Verzögerung", ylabel="Autokorrelation", title='Corwin und Schultz Autokorrelation - prozentuale Veränderungen [Täglich]')
 
         #self.chooseTitle(int)
 
@@ -737,13 +785,13 @@ class CorwinSchultz:
     crosscorr.
     """
     def normaliseDfForCc(self, btceur, btcgbp, btcjpy, btcusd):
-        df = self.getStandardisedCS(btcusd, btceur, btcgbp, btcjpy).reset_index()
-        df2 = self.getStandardisedCS(btcusd, btceur, btcgbp, btcjpy).reset_index()
+        df = self.getStandardisedCsGroupByDayPercentage(btcusd, btceur, btcgbp, btcjpy).reset_index()
+        df2 = self.getStandardisedCsGroupByDayPercentage(btcusd, btceur, btcgbp, btcjpy).reset_index()
         dfUpsideDown = df.loc[::-1]
         df2UpsideDown = df2.loc[::-1]
         dfUpsideDown.reset_index(drop=True, inplace=True)
         df2UpsideDown.reset_index(drop=True, inplace=True)
-        date = dfUpsideDown['Date']
+        date = dfUpsideDown['days']
         usd = dfUpsideDown['BTCUSD']
         df2UpsideDown.drop('BTCUSD', inplace=True, axis=1)
         return date, df, df2UpsideDown, usd
@@ -779,7 +827,7 @@ class CorwinSchultz:
                             'BTC/USD-BTC/JPY': crosscorrjpy})
 
         df.set_index('lag')
-        df.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/CrossCorr/CrossCorrCS.xlsx', index=True)
+        df.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/CrossCorr/CrossCorrCSPercentage.xlsx', index=True)
 
         print(df)
 
@@ -789,80 +837,59 @@ class CorwinSchultz:
     def plotCrossCorr(self, crosscorreur, crosscorrgbp, crosscorrjpy, lag):
         plt.xlabel('Verzögerung')
         plt.ylabel('Pearson Korrelationskoeffizient')
-        plt.title('Corwin und Schultz Kreuzkorrelation [täglich]')
+        plt.title('Corwin und Schultz Kreuzkorrelation - prozentuale Verandärungen [Täglich]')
         plt.plot(lag, crosscorreur)
         plt.plot(lag, crosscorrgbp)
         plt.plot(lag, crosscorrjpy)
         plt.legend(['BTC/USD - BTC/EUR', 'BTC/USD - BTC/GBP', 'BTC/USD - BTC/JPY'])
         plt.show()
 
-    """
-    This is a helper method which saves the cross correlations with all BTC-currency pairs with the currency pair BTCUSD 
-    as leading variable in arrays up to lag 168.
-    """
-    # def crossCorrData(self, btceur, btcgbp, btcjpy, btcusd):
-    #     crosscorreur = []
-    #     crosscorrgbp = []
-    #     crosscorrjpy = []
-    #     lag = []
-    #     for i in range(61):
-    #         correur = self.getCrossCorrelation(1, btcusd, btceur, btcgbp, btcjpy, i)
-    #         corrgbp = self.getCrossCorrelation(2, btcusd, btceur, btcgbp, btcjpy, i)
-    #         corrjpy = self.getCrossCorrelation(3, btcusd, btceur, btcgbp, btcjpy, i)
-    #         crosscorreur.append(correur)
-    #         crosscorrgbp.append(corrgbp)
-    #         crosscorrjpy.append(corrjpy)
-    #         lag.append(i)
-    #         print(i)
-    #
-    #     print(crosscorreur)
-    #     return crosscorreur, crosscorrgbp, crosscorrjpy, lag
-
     def getBiggestUSD(self, fileEUR, fileGBP, fileJPY, fileUSD):
-        df = self.getStandardisedCS(fileEUR, fileGBP, fileJPY, fileUSD)
+        df = self.getStandardisedCsGroupByDayPercentage(fileEUR, fileGBP, fileJPY, fileUSD)
         df.drop('BTCEUR', inplace=True, axis=1)
         df.drop('BTCGBP', inplace=True, axis=1)
         df.drop('BTCJPY', inplace=True, axis=1)
 
-        largest = df.nlargest(10, 'BTCUSD')
+        largest = df.nlargest(30, 'BTCUSD')
         largest.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/Biggest/CSLargestUSD.xlsx', index=True)
 
         print(largest)
 
     def getBiggestEUR(self, fileEUR, fileGBP, fileJPY, fileUSD):
-        df = self.getStandardisedCS(fileEUR, fileGBP, fileJPY, fileUSD)
+        df = self.getStandardisedCsGroupByDayPercentage(fileEUR, fileGBP, fileJPY, fileUSD)
         df.drop('BTCUSD', inplace=True, axis=1)
         df.drop('BTCGBP', inplace=True, axis=1)
         df.drop('BTCJPY', inplace=True, axis=1)
 
-        largest = df.nlargest(10, 'BTCEUR')
+        largest = df.nlargest(30, 'BTCEUR')
         largest.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/Biggest/CSLargestEUR.xlsx', index=True)
 
         print(largest)
 
     def getBiggestGBP(self, fileEUR, fileGBP, fileJPY, fileUSD):
-        df = self.getStandardisedCS(fileEUR, fileGBP, fileJPY, fileUSD)
+        df = self.getStandardisedCsGroupByDayPercentage(fileEUR, fileGBP, fileJPY, fileUSD)
         df.drop('BTCUSD', inplace=True, axis=1)
         df.drop('BTCEUR', inplace=True, axis=1)
         df.drop('BTCJPY', inplace=True, axis=1)
 
-        largest = df.nlargest(10, 'BTCGBP')
+        largest = df.nlargest(30, 'BTCGBP')
         largest.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/Biggest/CSLargestGBP.xlsx', index=True)
 
         print(largest)
 
     def getBiggestJPY(self, fileEUR, fileGBP, fileJPY, fileUSD):
-        df = self.getStandardisedCS(fileEUR, fileGBP, fileJPY, fileUSD)
+        df = self.getStandardisedCsGroupByDayPercentage(fileEUR, fileGBP, fileJPY, fileUSD)
         df.drop('BTCUSD', inplace=True, axis=1)
         df.drop('BTCGBP', inplace=True, axis=1)
         df.drop('BTCEUR', inplace=True, axis=1)
 
-        largest = df.nlargest(10, 'BTCJPY')
+        largest = df.nlargest(30, 'BTCJPY')
         largest.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/Biggest/CSLargestJPY.xlsx', index=True)
 
         print(largest)
 
     def getBiggest(self, fileEUR, fileGBP, fileJPY, fileUSD):
+
         self.getBiggestUSD(fileEUR, fileGBP, fileJPY, fileUSD)
         self.getBiggestEUR(fileEUR, fileGBP, fileJPY, fileUSD)
         self.getBiggestGBP(fileEUR, fileGBP, fileJPY, fileUSD)
@@ -903,6 +930,73 @@ class CorwinSchultz:
         print(df)
 
         df.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/Autocorr/CSAutocorr.xlsx', index=True)
+
+    def getStandardisedCsGroupByDay(self, fileUSD, fileEUR, fileGBP, fileJPY):
+
+        df = self.cutCsArray(fileUSD, fileEUR, fileGBP, fileJPY)
+        #df.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/Überprüfungen/groupByDay.xlsx', index=True)
+
+        df.reset_index(inplace=True, drop=False)
+        df['date'] = pd.to_datetime(df['date'], format='%Y-%m-%d %H:%M:%S', errors='coerce')
+
+        df['days'] = df['date'].dt.to_period('D')
+        df2 = df.drop(columns='date')
+
+        usd = df2.groupby('days')['BTCUSD'].mean()
+        eur = df2.groupby('days')['BTCEUR'].mean()
+        gbp = df2.groupby('days')['BTCGBP'].mean()
+        jpy = df2.groupby('days')['BTCJPY'].mean()
+
+        daily = pd.DataFrame({'BTCUSD': usd,
+                              'BTCEUR': eur,
+                              'BTCGBP': gbp,
+                              'BTCJPY': jpy,})
+
+        daily.drop(index=daily.index[0],
+                axis=0,
+                inplace=True)
+
+        #print(daily)
+        return daily
+
+    def getStandardisedCsGroupByDayPercentage(self, fileUSD, fileEUR, fileGBP, fileJPY):
+        df = self.getStandardisedCsGroupByDay(fileUSD, fileEUR, fileGBP, fileJPY)
+
+        date = np.delete(df.index.to_numpy(), 0)
+        usd = df['BTCUSD'].to_numpy()
+        eur = df['BTCEUR'].to_numpy()
+        gbp = df['BTCGBP'].to_numpy()
+        jpy = df['BTCJPY'].to_numpy()
+
+        usdLiqT = np.delete(usd, -1)
+        usdLiqT1 = np.delete(usd, 0)
+
+        percentageUsd = [(x / y) - 1 for x, y in zip(usdLiqT1, usdLiqT)]
+
+        eurLiqT = np.delete(eur, -1)
+        eurLiqT1 = np.delete(eur, 0)
+
+        percentageEur = [(x / y) - 1 for x, y in zip(eurLiqT1, eurLiqT)]
+
+        gbpLiqT = np.delete(gbp, -1)
+        gbpLiqT1 = np.delete(gbp, 0)
+
+        percentageGbp = [(x / y) - 1 for x, y in zip(gbpLiqT1, gbpLiqT)]
+
+        jpyLiqT = np.delete(jpy, -1)
+        jpyLiqT1 = np.delete(jpy, 0)
+
+        percentageJpy = [(x / y) - 1 for x, y in zip(jpyLiqT1, jpyLiqT)]
+
+        dfPercentage = pd.DataFrame({'days': date,
+                                     'BTCUSD': percentageUsd,
+                                     'BTCEUR': percentageEur,
+                                     'BTCGBP': percentageGbp,
+                                     'BTCJPY': percentageJpy})
+
+        #print(dfPercentage)
+        return dfPercentage
+
 
 
 
