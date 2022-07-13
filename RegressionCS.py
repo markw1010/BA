@@ -411,7 +411,7 @@ class RegressionCS:
 
     def regMarketEur(self, fileEUR, fileGBP, fileJPY, fileUSD):
         eurLiq = self.percentageEUR(fileEUR, fileGBP, fileJPY, fileUSD)
-        marketLiq = self.percentageMarketLiqUSD(fileEUR, fileGBP, fileJPY, fileUSD)
+        marketLiq = self.percentageMarketLiqEUR(fileEUR, fileGBP, fileJPY, fileUSD)
 
         plt.xlabel('BTC/EUR Liquidität')
         plt.ylabel('Markt Liquidität')
@@ -423,7 +423,7 @@ class RegressionCS:
 
     def regMarketGbp(self, fileEUR, fileGBP, fileJPY, fileUSD):
         gbpLiq = self.percentageGBP(fileEUR, fileGBP, fileJPY, fileUSD)
-        marketLiq = self.percentageMarketLiqUSD(fileEUR, fileGBP, fileJPY, fileUSD)
+        marketLiq = self.percentageMarketLiqGBP(fileEUR, fileGBP, fileJPY, fileUSD)
 
         plt.xlabel('BTC/GBP Liquidität')
         plt.ylabel('Markt Liquidität')
@@ -435,7 +435,7 @@ class RegressionCS:
 
     def regMarketJpy(self, fileEUR, fileGBP, fileJPY, fileUSD):
         jpyLiq = self.percentageJPY(fileEUR, fileGBP, fileJPY, fileUSD)
-        marketLiq = self.percentageMarketLiqUSD(fileEUR, fileGBP, fileJPY, fileUSD)
+        marketLiq = self.percentageMarketLiqJPY(fileEUR, fileGBP, fileJPY, fileUSD)
 
         plt.xlabel('BTC/JPY Liquidität')
         plt.ylabel('Markt Liquidität')
@@ -555,16 +555,47 @@ class RegressionCS:
         df = pd.DataFrame({'BTC/USD Liquidität': usdLiq,
                             'BTC/GBP Liquidität': gbpLiq})
 
-        #trimEur = eurLiq[0:3957]
-        #trimMarket = marketLiq[0:3957]
-
-        #df_filtered = df[df['BTC/EUR Liquidität'] < 1000]
-
         x = df['BTC/USD Liquidität']
         y = df['BTC/GBP Liquidität']
 
         plt.xlabel('BTC/USD Liquidität')
         plt.ylabel('BTC/GBP Liquidität')
+        plt.title('Lineare Regression (Corwin und Schultz) [Täglich]')
+        plt.scatter(x, y, 7, alpha=0.6, color='blue')
+        sb.regplot(x, y, ci=None, scatter_kws={"color": "blue", 's':0.5},
+                                                                            line_kws={"color": "red", 'linewidth':1.5})
+        plt.show()
+
+    def regUsdGbp(self, fileEUR, fileGBP, fileJPY, fileUSD):
+        gbpLiq = self.percentageGBP(fileEUR, fileGBP, fileJPY, fileUSD)
+        usdLiq = self.percentageUSD(fileEUR, fileGBP, fileJPY, fileUSD)
+
+        df = pd.DataFrame({'BTC/GBP Liquidität': gbpLiq,
+                            'BTC/USD Liquidität': usdLiq})
+
+        x = df['BTC/GBP Liquidität']
+        y = df['BTC/USD Liquidität']
+
+        plt.xlabel('BTC/GBP Liquidität')
+        plt.ylabel('BTC/USD Liquidität')
+        plt.title('Lineare Regression (Corwin und Schultz) [Täglich]')
+        plt.scatter(x, y, 7, alpha=0.6, color='blue')
+        sb.regplot(x, y, ci=None, scatter_kws={"color": "blue", 's':0.5},
+                                                                            line_kws={"color": "red", 'linewidth':1.5})
+        plt.show()
+
+    def regUsdGbp(self, fileEUR, fileGBP, fileJPY, fileUSD):
+        gbpLiq = self.percentageGBP(fileEUR, fileGBP, fileJPY, fileUSD)
+        usdLiq = self.percentageUSD(fileEUR, fileGBP, fileJPY, fileUSD)
+
+        df = pd.DataFrame({'BTC/GBP Liquidität': gbpLiq,
+                            'BTC/USD Liquidität': usdLiq})
+
+        x = df['BTC/GBP Liquidität']
+        y = df['BTC/USD Liquidität']
+
+        plt.xlabel('BTC/GBP Liquidität')
+        plt.ylabel('BTC/USD Liquidität')
         plt.title('Lineare Regression (Corwin und Schultz) [Täglich]')
         plt.scatter(x, y, 7, alpha=0.6, color='blue')
         sb.regplot(x, y, ci=None, scatter_kws={"color": "blue", 's':0.5},
@@ -578,16 +609,29 @@ class RegressionCS:
         df = pd.DataFrame({'BTC/USD Liquidität': usdLiq,
                             'BTC/JPY Liquidität': jpyLiq})
 
-        #trimEur = eurLiq[0:3957]
-        #trimMarket = marketLiq[0:3957]
-
-        #df_filtered = df[df['BTC/EUR Liquidität'] < 1000]
-
         x = df['BTC/USD Liquidität']
         y = df['BTC/JPY Liquidität']
 
         plt.xlabel('BTC/USD Liquidität')
         plt.ylabel('BTC/JPY Liquidität')
+        plt.title('Lineare Regression (Corwin und Schultz) [Täglich]')
+        plt.scatter(x, y, 7, alpha=0.6, color='blue')
+        sb.regplot(x, y, ci=None, scatter_kws={"color": "blue", 's':0.5},
+                                                                            line_kws={"color": "red", 'linewidth':1.5})
+        plt.show()
+
+    def regUsdJpy(self, fileEUR, fileGBP, fileJPY, fileUSD):
+        jpyLiq = self.percentageJPY(fileEUR, fileGBP, fileJPY, fileUSD)
+        usdLiq = self.percentageUSD(fileEUR, fileGBP, fileJPY, fileUSD)
+
+        df = pd.DataFrame({'BTC/JPY Liquidität': jpyLiq,
+                            'BTC/USD Liquidität': usdLiq})
+
+        x = df['BTC/JPY Liquidität']
+        y = df['BTC/USD Liquidität']
+
+        plt.xlabel('BTC/JPY Liquidität')
+        plt.ylabel('BTC/USD Liquidität')
         plt.title('Lineare Regression (Corwin und Schultz) [Täglich]')
         plt.scatter(x, y, 7, alpha=0.6, color='blue')
         sb.regplot(x, y, ci=None, scatter_kws={"color": "blue", 's':0.5},
@@ -683,11 +727,6 @@ class RegressionCS:
         df = pd.DataFrame({'BTC/JPY Liquidität': jpyLiq,
                             'BTC/GBP Liquidität': gbpLiq})
 
-        #trimEur = eurLiq[0:3957]
-        #trimMarket = marketLiq[0:3957]
-
-        #df_filtered = df[df['BTC/EUR Liquidität'] < 1000]
-
         x = df['BTC/JPY Liquidität']
         y = df['BTC/GBP Liquidität']
 
@@ -698,6 +737,26 @@ class RegressionCS:
         sb.regplot(x, y, ci=None, scatter_kws={"color": "blue", 's':0.5},
                                                                             line_kws={"color": "red", 'linewidth':1.5})
         plt.show()
+
+
+    def regJpyGbp(self, fileEUR, fileGBP, fileJPY, fileUSD):
+        gbpLiq = self.percentageGBP(fileEUR, fileGBP, fileJPY, fileUSD)
+        jpyLiq = self.percentageJPY(fileEUR, fileGBP, fileJPY, fileUSD)
+
+        df = pd.DataFrame({'BTC/GBP Liquidität': gbpLiq,
+                            'BTC/JPY Liquidität': jpyLiq})
+
+        x = df['BTC/GBP Liquidität']
+        y = df['BTC/JPY Liquidität']
+
+        plt.xlabel('BTC/GBP Liquidität')
+        plt.ylabel('BTC/JPY Liquidität')
+        plt.title('Lineare Regression (Corwin und Schultz) [Täglich]')
+        plt.scatter(x, y, 7, alpha=0.6, color='blue')
+        sb.regplot(x, y, ci=None, scatter_kws={"color": "blue", 's':0.5},
+                                                                            line_kws={"color": "red", 'linewidth':1.5})
+        plt.show()
+
 
     def olsGbpUsd(self, fileEUR, fileGBP, fileJPY, fileUSD):
         gbpLiq = self.percentageGBP(fileEUR, fileGBP, fileJPY, fileUSD)

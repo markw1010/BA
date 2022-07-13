@@ -304,7 +304,7 @@ class AbdiRanaldo:
         # plt.gcf().autofmt_xdate()
 
         plt.xlabel('Datum')
-        plt.ylabel('Wert')
+        plt.ylabel('Prozentuale Änderungsrate (Absolutwert)')
         plt.legend(['BTC/USD', 'BTC/EUR', 'BTC/GBP', ' BTC/JPY'])
         plt.title('Abdi und Ranaldo Liquiditätsmaß - Prozentwerte [Täglich]')
         plt.show()
@@ -353,7 +353,7 @@ class AbdiRanaldo:
     """
     def pltShow(self, dataframe, int):
         plt.xlabel('Datum')
-        plt.ylabel('Wert')
+        plt.ylabel('Prozentuale Änderungsrate (Absolutwert)')
         self.chooseTitle(int)
         plt.plot(dataframe)
         plt.show()
@@ -539,7 +539,7 @@ class AbdiRanaldo:
         gbp = df['BTCGBP']
         jpy = df['BTCJPY']
 
-        xcov = self.defineLeaderLagger(usd, eur, gbp, jpy, 0, lagger)
+        xcov = self.defineLeaderLagger(usd, eur, gbp, jpy, 1, lagger)
         print(xcov)
         return (xcov)
 
@@ -609,6 +609,39 @@ class AbdiRanaldo:
         df.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/CrossCorr/CrossCorrARPercentage2.xlsx', index=True)
 
         print(df)
+
+
+
+    def crossCorrGraphEUR(self, btcusd, btceur, btcgbp, btcjpy):
+
+        print('The graph will be shown when the number 24 is reached')
+        crosscorrusd = []
+        crosscorrgbp = []
+        crosscorrjpy = []
+        lag = []
+        for i in range(31):
+            print(i)
+            correur = self.getCrossCorrelation(0, btcusd, btceur, btcgbp, btcjpy, i)
+            corrgbp = self.getCrossCorrelation(1, btcusd, btceur, btcgbp, btcjpy, i)
+            corrjpy = self.getCrossCorrelation(3, btcusd, btceur, btcgbp, btcjpy, i)
+            crosscorrusd.append(correur)
+            crosscorrgbp.append(corrgbp)
+            crosscorrjpy.append(corrjpy)
+            lag.append(i)
+
+        self.plotCrossCorr(crosscorrusd, crosscorrgbp, crosscorrjpy, lag)
+
+        df = pd.DataFrame({'lag': lag,
+                           'BTC/EUR-BTC/USD': crosscorrusd,
+                           'BTC/EUR-BTC/GBP': crosscorrgbp,
+                           'BTC/EUR-BTC/JPY': crosscorrjpy})
+
+        df.set_index('lag')
+        df.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/CrossCorr/CrossCorrARPercentageEUR.xlsx', index=True)
+
+        print(df)
+
+
 
     """
     This is a helper method that defines all attributes for plotting the corosscorr in a graph
@@ -709,36 +742,6 @@ class AbdiRanaldo:
 
         df.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/Autocorr/ARAutocorr.xlsx', index=True)
 
-
-    def crossCorrGraphMntl(self, btcusd, btceur, btcgbp, btcjpy):
-
-        print('The graph will be shown when the number 24 is reached')
-        crosscorreur = []
-        lag = []
-        for i in range(61):
-            correur = self.getCrossCorrelation(1, btcusd, btceur, btcgbp, btcjpy, i)
-            crosscorreur.append(correur)
-            lag.append(i)
-            print(i)
-
-        self.plotCrossCorrMntl(crosscorreur, lag)
-
-        df = pd.DataFrame({'lag': lag,
-                           'BTC/USD-BTC/EUR': crosscorreur,
-                           })
-
-        df.set_index('lag')
-        df.to_excel('/Users/markwagner/Documents/Uni/WS21: 22/BA /Excel/CrossCorr/CrossCorrAReur..xlsx', index=True)
-
-        #print(df)
-
-    def plotCrossCorrMntl(self, crosscorreur, lag):
-        plt.xlabel('Verzögerung')
-        plt.ylabel('Pearson Korrelationskoeffizient')
-        plt.title('Abdi und Ranaldo Kreuzkorrelation [minütlich]')
-        plt.plot(lag, crosscorreur)
-        plt.legend(['BTC/USD - BTC/EUR'])
-        plt.show()
 
     def getStandardisedArGroupByDay(self, fileUSD, fileEUR, fileGBP, fileJPY):
 

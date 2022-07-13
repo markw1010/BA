@@ -484,7 +484,7 @@ class CorwinSchultz:
         #plt.gcf().autofmt_xdate()
 
         plt.xlabel('Datum')
-        plt.ylabel('Wert (Prozent)')
+        plt.ylabel('Prozentuale Änderungsrate (Absolutwert)')
         plt.legend(['BTC/USD', 'BTC/EUR', 'BTC/GBP', ' BTC/JPY'])
         plt.title('Corwin und Schultz Liquiditätsmaß - Prozentwerte [Täglich]')
         plt.show()
@@ -547,7 +547,7 @@ class CorwinSchultz:
     """
     def pltShow(self, dataframe, int):
         plt.xlabel('Datum')
-        plt.ylabel('Wert')
+        plt.ylabel('Prozentuale Änderungsrate (Absolutwert)')
         self.chooseTitle(int)
         plt.plot(dataframe)
         plt.show()
